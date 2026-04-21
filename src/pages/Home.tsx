@@ -357,7 +357,7 @@ export default function Home() {
       {/* ── Nav — sin onMouseMove en el padre, GSAP no se interrumpe ────────── */}
       <div className="relative">
         <CardNav
-          logo="https://via.placeholder.com/150x50?text=AP"
+          logo="/faviconAP.ico"
           items={menuItems}
           baseColor={navBaseColor}
           menuColor={isDark ? "#fff" : "#111"}
