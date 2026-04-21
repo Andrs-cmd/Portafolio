@@ -8,6 +8,11 @@ import ScrollStack, { ScrollStackItem } from "../components/ScrollStack"
 import "../components/CardNav.css"
 import "../components/ScrollStack.css"
 
+/* ─────────────────────────────────────────────────────────────────────────────
+   BREAKPOINT HOOK — detecta si es desktop (≥768px)
+   Mismo patrón que el Lab fix — garantiza layout sin depender de Tailwind
+───────────────────────────────────────────────────────────────────────────── */
+
 function useIsDesktop() {
   const [isDesktop, setIsDesktop] = useState(false)
   useEffect(() => {
@@ -17,29 +22,6 @@ function useIsDesktop() {
     return () => window.removeEventListener("resize", check)
   }, [])
   return isDesktop
-}
-
-/* ─────────────────────────────────────────────────────────────────────────────
-   HOOK: detecta si el usuario está scrolleando activamente.
-   En mobile, mientras scrollea → reducimos la carga de LiquidEther
-   para liberar el compositor y que el ScrollStack vaya suave.
-───────────────────────────────────────────────────────────────────────────── */
-function useIsScrolling(idleMs = 150) {
-  const [isScrolling, setIsScrolling] = useState(false)
-  useEffect(() => {
-    let timer: ReturnType<typeof setTimeout>
-    const onScroll = () => {
-      setIsScrolling(true)
-      clearTimeout(timer)
-      timer = setTimeout(() => setIsScrolling(false), idleMs)
-    }
-    window.addEventListener("scroll", onScroll, { passive: true })
-    return () => {
-      window.removeEventListener("scroll", onScroll)
-      clearTimeout(timer)
-    }
-  }, [idleMs])
-  return isScrolling
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
@@ -87,7 +69,7 @@ const galleryData = [
 ]
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   THEME TOGGLE
+   THEME TOGGLE — portal a document.body
 ───────────────────────────────────────────────────────────────────────────── */
 
 function ThemeToggle() {
@@ -131,7 +113,7 @@ function ScrollBar() {
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   HERO IMAGE PANEL
+   HERO IMAGE PANEL — crossfade automático cada 4s
 ───────────────────────────────────────────────────────────────────────────── */
 
 const heroImages = [
@@ -156,9 +138,15 @@ function HeroImagePanel() {
           initial={{ opacity:0, scale:1.04 }} animate={{ opacity:1, scale:1 }} exit={{ opacity:0 }}
           transition={{ duration:1.2, ease:"easeInOut" }}/>
       </AnimatePresence>
+
+      {/* Overlay lateral */}
       <div style={{ position:"absolute", inset:0, pointerEvents:"none", background:isDark?"linear-gradient(to right, rgba(6,6,6,0.45) 0%, transparent 40%)":"linear-gradient(to right, rgba(245,241,233,0.45) 0%, transparent 40%)" }}/>
+
+      {/* Brackets */}
       <div style={{ position:"absolute", top:24, left:24, width:24, height:24, borderLeft:isDark?"1px solid rgba(255,255,255,0.30)":"1px solid rgba(0,0,0,0.20)", borderTop:isDark?"1px solid rgba(255,255,255,0.30)":"1px solid rgba(0,0,0,0.20)", pointerEvents:"none" }}/>
       <div style={{ position:"absolute", bottom:24, right:24, width:24, height:24, borderRight:isDark?"1px solid rgba(255,255,255,0.30)":"1px solid rgba(0,0,0,0.20)", borderBottom:isDark?"1px solid rgba(255,255,255,0.30)":"1px solid rgba(0,0,0,0.20)", pointerEvents:"none" }}/>
+
+      {/* Dots indicadores */}
       <div style={{ position:"absolute", bottom:24, left:24, display:"flex", alignItems:"center", gap:8 }}>
         {heroImages.map((_,i) => (
           <motion.div key={i} className="rounded-full"
@@ -167,6 +155,8 @@ function HeroImagePanel() {
             transition={{ duration:0.3 }}/>
         ))}
       </div>
+
+      {/* Label */}
       <div style={{ position:"absolute", top:24, right:24, fontSize:9, letterSpacing:".3em", textTransform:"uppercase", color:isDark?"rgba(255,255,255,0.40)":"rgba(0,0,0,0.35)" }}>
         Fotografía · Arte
       </div>
@@ -175,7 +165,7 @@ function HeroImagePanel() {
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   HERO TEXT
+   HERO TEXT — useMotionValue para parallax sin re-renders
 ───────────────────────────────────────────────────────────────────────────── */
 
 function HeroText() {
@@ -196,6 +186,8 @@ function HeroText() {
 
   return (
     <motion.div style={{ display:"flex", flexDirection:"column", padding:"80px 56px", width:"100%", pointerEvents:"none", x, y }}>
+
+      {/* Eyebrow */}
       <motion.div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:40 }}
         initial={{ opacity:0, y:16 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.7, delay:0.1 }}>
         <div style={{ width:24, height:.5, background:isDark?"rgba(255,255,255,0.20)":"rgba(0,0,0,0.20)" }}/>
@@ -203,6 +195,8 @@ function HeroText() {
           Developer & Visual Creator
         </span>
       </motion.div>
+
+      {/* Andres */}
       <div style={{ overflow:"hidden", marginBottom:4 }}>
         <motion.h1
           style={{ fontSize:"clamp(3.5rem,7vw,7.5rem)", fontWeight:900, textTransform:"uppercase", letterSpacing:"-.04em", lineHeight:.85, color:isDark?"#fff":"#111" }}
@@ -210,6 +204,8 @@ function HeroText() {
           Andres
         </motion.h1>
       </div>
+
+      {/* Prada — outline */}
       <div style={{ overflow:"hidden", marginBottom:48 }}>
         <motion.h1
           style={{ fontSize:"clamp(3.5rem,7vw,7.5rem)", fontWeight:900, textTransform:"uppercase", letterSpacing:"-.04em", lineHeight:.85, WebkitTextStroke:isDark?"1.5px rgba(255,255,255,0.25)":"1.5px rgba(0,0,0,0.2)", color:"transparent" }}
@@ -217,11 +213,15 @@ function HeroText() {
           Prada
         </motion.h1>
       </div>
+
+      {/* Statement */}
       <motion.p
         style={{ fontSize:15, fontWeight:300, lineHeight:1.8, maxWidth:280, marginBottom:48, color:isDark?"rgba(255,255,255,0.40)":"rgba(0,0,0,0.45)" }}
         initial={{ opacity:0, y:12 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.7, delay:0.5 }}>
         Construyo experiencias digitales que viven entre el código, el movimiento y el arte.
       </motion.p>
+
+      {/* Mini lista servicios */}
       <motion.div style={{ display:"flex", flexDirection:"column", gap:4 }}
         initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ delay:0.7 }}>
         {services.slice(0,4).map(s => (
@@ -247,6 +247,7 @@ function ServiceRow({ index, name, desc, delay, isDark }: { index:string; name:s
       onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
       initial={{ opacity:0, x:-16 }} whileInView={{ opacity:1, x:0 }}
       transition={{ duration:0.5, delay }} viewport={{ once:true }}>
+      {/* Hover fill */}
       <motion.div style={{ position:"absolute", inset:0, background:isDark?"rgba(255,255,255,0.025)":"rgba(0,0,0,0.025)", originX:0 }}
         initial={{ scaleX:0 }} animate={{ scaleX:hovered?1:0 }} transition={{ duration:0.35 }}/>
       <span style={{ fontFamily:"monospace", fontSize:10, width:24, flexShrink:0, color:isDark?"rgba(255,255,255,0.20)":"rgba(0,0,0,0.20)" }}>{index}</span>
@@ -313,14 +314,13 @@ function SectionHeader({ label, title, accent, right, isDark }: { label:string; 
 
 export default function Home() {
   const { isDark } = useTheme()
-  const isDesktop  = useIsDesktop()
-  const isScrolling = useIsScrolling(150)   // ← nuevo hook
+  const isDesktop = useIsDesktop()
 
   const WA_NUMBER = "573195768097"
   const WA_URL    = `https://wa.me/${WA_NUMBER}?text=Hola%20Andres%2C%20me%20interesa%20trabajar%20contigo`
 
-  const pageBg  = isDark ? "#060606" : "#f5f1e9"
-  const borderC = isDark ? "0.5px solid rgba(255,255,255,0.06)" : "0.5px solid rgba(0,0,0,0.07)"
+  const pageBg   = isDark ? "#060606" : "#f5f1e9"
+  const borderC  = isDark ? "0.5px solid rgba(255,255,255,0.06)" : "0.5px solid rgba(0,0,0,0.07)"
 
   const menuItems = [
     { label:"Servicios", bgColor:isDark?"#111111":"#f0ece4", textColor:isDark?"#fff":"#000",
@@ -331,37 +331,19 @@ export default function Home() {
       links:[{ label:"WhatsApp", href:WA_URL, ariaLabel:"WhatsApp" },{ label:"Email", href:"mailto:aprada.web@gmail.com", ariaLabel:"Email" }] },
   ]
 
-  /*
-   * En mobile mientras el usuario scrollea activamente:
-   * - autoIntensity baja a 0 → LiquidEther deja de hacer draw calls
-   * - resolution baja a 0.4 → menos píxeles a calcular si retoma
-   * Al dejar de scrollear (150ms idle) vuelve a los valores normales.
-   * Esto libera el compositor para que el ScrollStack sea completamente suave.
-   */
-  const liquidIntensity = !isDesktop && isScrolling ? 0   : isDark ? 2.5 : 1.2
-  const liquidResolution = !isDesktop && isScrolling ? 0.4 : 0.8
-
   return (
     <div style={{ minHeight:"100vh", overflowX:"hidden", background:pageBg, color:isDark?"#fff":"#111", position:"relative" }}>
 
-      {/* ── LiquidEther — se pausa en mobile mientras se scrollea ── */}
+      {/* ── LiquidEther — z-index 0 ── */}
       <div style={{ position:"fixed", inset:0, zIndex:0, pointerEvents:"none" }}>
-        <LiquidEther
-          mouseForce={22}
-          cursorSize={120}
-          resolution={liquidResolution}
-          dt={0.016}
-          viscous={15}
-          isViscous={false}
-          autoIntensity={liquidIntensity}
-        />
+        <LiquidEther mouseForce={22} cursorSize={120} resolution={0.8} dt={0.016} viscous={15} isViscous={false} autoIntensity={isDark?2.5:1.2}/>
         <div style={{ position:"absolute", inset:0, zIndex:1, pointerEvents:"none", background:isDark?"radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.65) 100%)":"radial-gradient(circle at center, transparent 0%, rgba(245,241,233,0.70) 100%)" }}/>
       </div>
 
       <ScrollBar/>
       <ThemeToggle/>
 
-      {/* ── Nav ── */}
+      {/* ── Nav — z-index 50 ── */}
       <div style={{ position:"relative", zIndex:50 }}>
         <CardNav logo="/faviconAP.ico" items={menuItems}
           baseColor={isDark?"rgba(6,6,6,0.92)":"rgba(245,241,233,0.95)"}
@@ -369,9 +351,13 @@ export default function Home() {
       </div>
 
       {/* ══════════════════════════════════════════════════════════════════════
-          HERO
+          HERO — split 50/50
+          isDesktop → flex row: imagen 50% sticky | texto 50%
+          mobile    → flex col: imagen encima | texto abajo
       ══════════════════════════════════════════════════════════════════════ */}
       <section style={{ position:"relative", zIndex:20, minHeight:"100vh", display:"flex", flexDirection:isDesktop?"row":"column" }}>
+
+        {/* Columna imagen */}
         <div style={{
           width: isDesktop ? "50%" : "100%",
           height: isDesktop ? "100vh" : "60vw",
@@ -385,10 +371,12 @@ export default function Home() {
           <HeroImagePanel/>
         </div>
 
+        {/* Separador vertical — solo desktop */}
         {isDesktop && (
           <div style={{ width:1, flexShrink:0, alignSelf:"stretch", background:isDark?"rgba(255,255,255,0.05)":"rgba(0,0,0,0.06)" }}/>
         )}
 
+        {/* Columna texto */}
         <div style={{
           flex: isDesktop ? 1 : "none",
           width: isDesktop ? "auto" : "100%",
@@ -396,12 +384,14 @@ export default function Home() {
           minHeight: isDesktop ? "100vh" : "60vh",
           position:"relative",
         }}>
+          {/* Grilla decorativa */}
           <div style={{ position:"absolute", inset:0, pointerEvents:"none", overflow:"hidden" }}>
             <div style={{ position:"absolute", left:"33%", top:0, bottom:0, width:.5, background:isDark?"rgba(255,255,255,0.025)":"rgba(0,0,0,0.03)" }}/>
             <div style={{ position:"absolute", top:"33%", left:0, right:0, height:.5, background:isDark?"rgba(255,255,255,0.025)":"rgba(0,0,0,0.03)" }}/>
             <div style={{ position:"absolute", top:"66%", left:0, right:0, height:.5, background:isDark?"rgba(255,255,255,0.025)":"rgba(0,0,0,0.03)" }}/>
           </div>
 
+          {/* Badge disponible */}
           <div style={{ position:"absolute", top:24, left:32, display:"flex", alignItems:"center", gap:8 }}>
             <span style={{ position:"relative", display:"flex", width:6, height:6 }}>
               <span className="animate-ping" style={{ position:"absolute", display:"inline-flex", width:"100%", height:"100%", borderRadius:"50%", background:"rgb(52,211,153)", opacity:.75 }}/>
@@ -410,11 +400,13 @@ export default function Home() {
             <span style={{ fontSize:9, letterSpacing:".25em", textTransform:"uppercase", color:isDark?"rgba(255,255,255,0.25)":"rgba(0,0,0,0.30)" }}>Disponible</span>
           </div>
 
+          {/* Indicador scroll */}
           <div style={{ position:"absolute", bottom:32, right:32, display:"flex", flexDirection:"column", alignItems:"center", gap:8, pointerEvents:"none" }}>
             <div style={{ width:.5, height:40, background:isDark?"rgba(255,255,255,0.15)":"rgba(0,0,0,0.15)" }}/>
             <span style={{ fontSize:8, letterSpacing:".3em", textTransform:"uppercase", color:isDark?"rgba(255,255,255,0.20)":"rgba(0,0,0,0.20)" }}>Scroll</span>
           </div>
 
+          {/* HeroText — parallax sin re-renders */}
           <HeroText/>
         </div>
       </section>
@@ -426,23 +418,19 @@ export default function Home() {
       </div>
 
       {/* ══════════════════════════════════════════════════════════════════════
-          PROYECTOS — ScrollStack
+          PROYECTOS — ScrollStack (sin cambios de lógica)
       ══════════════════════════════════════════════════════════════════════ */}
       <section style={{ position:"relative", zIndex:20, paddingTop:96, paddingBottom:96 }}>
         <div style={{ padding:"0 48px", maxWidth:1280, margin:"0 auto" }}>
           <SectionHeader label="Proyectos seleccionados" title="Selected" accent="Works" right={`01 — 0${projectsData.length}`} isDark={isDark}/>
         </div>
         <div style={{ padding:"0 48px" }}>
-          <ScrollStack
-            itemDistance={isDesktop ? 100 : 50}
-            itemStackDistance={isDesktop ? 35 : 18}
-            baseScale={isDesktop ? 0.92 : 0.96}
-            stackPosition="10%"
-            useWindowScroll={true}
-          >
+          <ScrollStack itemDistance={100} itemStackDistance={35} useWindowScroll={true} baseScale={0.92} stackPosition="10%">
             {projectsData.map(project => (
               <ScrollStackItem key={project.id}>
                 <div style={{ width:"100%", height:"100%", display:"flex", flexDirection:isDesktop?"row":"column", overflow:"hidden", backgroundColor:isDark?project.darkBg:project.lightBg, borderRadius:36, border:isDark?"0.5px solid rgba(255,255,255,0.07)":"0.5px solid rgba(0,0,0,0.08)", backdropFilter:"blur(8px)" }}>
+
+                  {/* Texto */}
                   <div style={{ flex:"1.1 1 0", display:"flex", flexDirection:"column", justifyContent:"space-between", padding:isDesktop?"48px":"32px", borderRight:isDesktop?(isDark?"0.5px solid rgba(255,255,255,0.05)":"0.5px solid rgba(0,0,0,0.06)"):"none", borderBottom:!isDesktop?(isDark?"0.5px solid rgba(255,255,255,0.05)":"0.5px solid rgba(0,0,0,0.06)"):"none" }}>
                     <div>
                       <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:32 }}>
@@ -462,7 +450,10 @@ export default function Home() {
                       </motion.button>
                     </div>
                   </div>
-                  <div style={{ flex:"1 1 0", position:"relative", overflow:"hidden", minHeight:isDesktop?"auto":220 }} className="group">
+
+                  {/* Imagen */}
+                  <div style={{ flex:"1 1 0", position:"relative", overflow:"hidden", minHeight:isDesktop?"auto":220 }}
+                    className="group">
                     <img src={project.img} alt={project.title} className="group-hover:scale-100 transition-all duration-700"
                       style={{ width:"100%", height:"100%", objectFit:"cover", transform:"scale(1.05)", filter:isDark?"grayscale(40%) brightness(0.75)":"grayscale(10%) brightness(0.95)" }}/>
                     <div className={`absolute inset-0 group-hover:opacity-0 transition-opacity duration-500 ${isDark?"bg-black/20":"bg-white/15"}`}/>
