@@ -1,0 +1,51 @@
+.scroll-stack-scroller {
+  position: relative;
+  width: 100%;
+  overflow: visible !important;
+  /* Forzamos a que no haya hilos de scroll compitiendo */
+  scroll-behavior: auto !important; 
+  touch-action: none; /* Opcional: si el temblor es muy fuerte en trackpads */
+  touch-action: pan-y;
+}
+
+.scroll-stack-inner {
+  padding: 10vh 2rem 40vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* Eliminamos el contain si está causando problemas de clipping */
+  isolation: isolate; 
+}
+
+.scroll-stack-card {
+  transform-origin: top center;
+  /* Hardware Acceleration total */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0); 
+  
+  will-change: transform; 
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  
+  /* ESTABILIZACIÓN DE POSICIÓN: 
+     Cambiamos el margen por padding en el wrapper si es posible, 
+     pero por ahora aseguremos que el alto sea fijo y no dependa del contenido */
+  margin: 0 auto 15vh auto; 
+  
+  min-height: 500px;
+  height: 70vh; 
+  width: 100%;
+  max-width: 1200px;
+  border-radius: 40px;
+  position: relative;
+  
+  /* Desactivamos eventos de puntero durante el scroll si es necesario */
+  pointer-events: auto;
+}
+
+/* Evita que el filtro de blur recalcule en cada frame de scroll */
+.backdrop-blur-sm {
+  /* Si el temblor sigue, comenta estas dos líneas para probar */
+  -webkit-backdrop-filter: blur(8px) saturate(180%);
+  backdrop-filter: blur(8px) saturate(180%);
+}

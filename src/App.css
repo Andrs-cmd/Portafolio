@@ -1,0 +1,84 @@
+/* index.css */
+
+/* 1. RESET Y CONFIGURACIÓN BASE */
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background-color: #000;
+  color: #fff;
+  /* Importante: El scroll debe ser auto para que el JS de ScrollStack no tiemble */
+  scroll-behavior: auto !important;
+}
+
+body {
+  font-family: 'IBM Plex Sans', 'Roboto', sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 2. LIMPIEZA DE ROOT (Para que el fondo Liquid ocupe todo) */
+#root {
+  width: 100%;
+  max-width: none; /* Quitamos el límite de 1280px */
+  margin: 0;
+  padding: 0;
+  text-align: left; /* Alineación profesional, no centrada */
+}
+
+/* 3. SCROLLBAR BRUTALISTA */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #fff; /* Blanco sólido para un look de alta gama */
+  border-radius: 0px; /* Sin bordes redondeados */
+}
+
+/* 4. ELEMENTOS DE VITE (Opcionales por si los sigues usando) */
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+
+.logo:hover {
+  filter: drop-shadow(0 0 2em rgba(255, 255, 255, 0.2));
+}
+
+@keyframes logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+/* 5. FIX PARA EVITAR EL "JITTER" (TEMBLOR) EN MÓVILES */
+* {
+  box-sizing: border-box;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
