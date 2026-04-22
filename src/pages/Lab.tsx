@@ -314,7 +314,7 @@ export default function Lab() {
 
       {/* ── Nav — z-index 50 ── */}
       <div style={{ position: "relative", zIndex: 50 }}>
-        <CardNav logo="https://via.placeholder.com/150x50?text=AP" items={menuItems}
+        <CardNav logo="/faviconAP.ico" items={menuItems}
           baseColor={isDark ? "rgba(6,6,6,.97)" : "rgba(245,241,233,.97)"}
           menuColor={isDark ? "#fff" : "#111"} buttonBgColor={isDark ? "#dde4e6" : "#111"} buttonTextColor={isDark ? "#000" : "#fff"}/>
       </div>
