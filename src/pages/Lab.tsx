@@ -305,7 +305,16 @@ export default function Lab() {
 
       {/* ── LiquidEther — z-index 0, no interfiere con contenido ── */}
       <div style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none" }}>
-        <LiquidEther mouseForce={12} cursorSize={90} resolution={.65} dt={.016} viscous={20} isViscous={false} autoIntensity={isDark ? 1.5 : .6}/>
+        <LiquidEther
+  mouseForce={22}
+  cursorSize={120}
+  resolution={0.8}
+  dt={0.016}
+  viscous={15}
+  isViscous={false}
+  autoIntensity={isDark ? 2.5 : 1.2}
+  colors={isDark ? ['#0a0014', '#7b00cc', '#c026d3', '#60a5fa', '#ffffff'] : ['#f4f1f1', '#747272', '#000000']}
+/>
         <div style={{ position: "absolute", inset: 0, zIndex: 1, pointerEvents: "none", background: isDark ? "rgba(0,0,0,.82)" : "rgba(245,241,233,.82)" }}/>
       </div>
 

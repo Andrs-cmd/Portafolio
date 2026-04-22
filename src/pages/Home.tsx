@@ -4,14 +4,12 @@ import { createPortal } from "react-dom"
 import { useTheme } from "../context/ThemeContext"
 import LiquidEther from "../components/LiquidEther"
 import CardNav from "../components/CardNav"
-import ScrollStack, { ScrollStackItem } from "../components/ScrollStack"
+import ScrollStack, { ScrollStackItem, MobileStickyStack } from "../components/ScrollStack"
 import "../components/CardNav.css"
 import "../components/ScrollStack.css"
 
-/* ─────────────────────────────────────────────────────────────────────────────
-   BREAKPOINT HOOK — detecta si es desktop (≥768px)
-   Mismo patrón que el Lab fix — garantiza layout sin depender de Tailwind
-───────────────────────────────────────────────────────────────────────────── */
+const LIQUID_DARK  = ['#0a0014', '#7b00cc', '#c026d3', '#60a5fa', '#ffffff']
+const LIQUID_LIGHT = ['#f4f1f1', '#747272', '#000000']
 
 function useIsDesktop() {
   const [isDesktop, setIsDesktop] = useState(false)
@@ -23,10 +21,6 @@ function useIsDesktop() {
   }, [])
   return isDesktop
 }
-
-/* ─────────────────────────────────────────────────────────────────────────────
-   DATOS
-───────────────────────────────────────────────────────────────────────────── */
 
 const services = [
   { index: "01", name: "Desarrollo de Software",     desc: "Aplicaciones a medida" },
@@ -68,10 +62,6 @@ const galleryData = [
   { img: "https://images.unsplash.com/photo-1561214115-f2f134cc4912?auto=format&fit=crop&q=80&w=600",  label: "Arte",       sub: "Mixto · 2024",       tall: false },
 ]
 
-/* ─────────────────────────────────────────────────────────────────────────────
-   THEME TOGGLE — portal a document.body
-───────────────────────────────────────────────────────────────────────────── */
-
 function ThemeToggle() {
   const { isDark, toggleTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
@@ -99,10 +89,6 @@ function ThemeToggle() {
   return mounted ? createPortal(toggle, document.body) : null
 }
 
-/* ─────────────────────────────────────────────────────────────────────────────
-   SCROLL BAR
-───────────────────────────────────────────────────────────────────────────── */
-
 function ScrollBar() {
   const { scrollYProgress } = useScroll()
   const width = useTransform(scrollYProgress, [0,1], ["0%","100%"])
@@ -111,10 +97,6 @@ function ScrollBar() {
     <motion.div style={{ position:"fixed", top:0, left:0, height:1.5, zIndex:300, pointerEvents:"none", width, background:isDark?"rgba(255,255,255,0.3)":"rgba(0,0,0,0.25)" }}/>
   )
 }
-
-/* ─────────────────────────────────────────────────────────────────────────────
-   HERO IMAGE PANEL — crossfade automático cada 4s
-───────────────────────────────────────────────────────────────────────────── */
 
 const heroImages = [
   "https://images.unsplash.com/photo-1554080353-a576cf803bda?auto=format&fit=crop&q=80&w=800",
@@ -129,7 +111,6 @@ function HeroImagePanel() {
     const timer = setInterval(() => setCurrent(c => (c+1) % heroImages.length), 4000)
     return () => clearInterval(timer)
   }, [])
-
   return (
     <div style={{ position:"relative", width:"100%", height:"100%", overflow:"hidden" }}>
       <AnimatePresence>
@@ -138,15 +119,9 @@ function HeroImagePanel() {
           initial={{ opacity:0, scale:1.04 }} animate={{ opacity:1, scale:1 }} exit={{ opacity:0 }}
           transition={{ duration:1.2, ease:"easeInOut" }}/>
       </AnimatePresence>
-
-      {/* Overlay lateral */}
       <div style={{ position:"absolute", inset:0, pointerEvents:"none", background:isDark?"linear-gradient(to right, rgba(6,6,6,0.45) 0%, transparent 40%)":"linear-gradient(to right, rgba(245,241,233,0.45) 0%, transparent 40%)" }}/>
-
-      {/* Brackets */}
       <div style={{ position:"absolute", top:24, left:24, width:24, height:24, borderLeft:isDark?"1px solid rgba(255,255,255,0.30)":"1px solid rgba(0,0,0,0.20)", borderTop:isDark?"1px solid rgba(255,255,255,0.30)":"1px solid rgba(0,0,0,0.20)", pointerEvents:"none" }}/>
       <div style={{ position:"absolute", bottom:24, right:24, width:24, height:24, borderRight:isDark?"1px solid rgba(255,255,255,0.30)":"1px solid rgba(0,0,0,0.20)", borderBottom:isDark?"1px solid rgba(255,255,255,0.30)":"1px solid rgba(0,0,0,0.20)", pointerEvents:"none" }}/>
-
-      {/* Dots indicadores */}
       <div style={{ position:"absolute", bottom:24, left:24, display:"flex", alignItems:"center", gap:8 }}>
         {heroImages.map((_,i) => (
           <motion.div key={i} className="rounded-full"
@@ -155,8 +130,6 @@ function HeroImagePanel() {
             transition={{ duration:0.3 }}/>
         ))}
       </div>
-
-      {/* Label */}
       <div style={{ position:"absolute", top:24, right:24, fontSize:9, letterSpacing:".3em", textTransform:"uppercase", color:isDark?"rgba(255,255,255,0.40)":"rgba(0,0,0,0.35)" }}>
         Fotografía · Arte
       </div>
@@ -164,17 +137,12 @@ function HeroImagePanel() {
   )
 }
 
-/* ─────────────────────────────────────────────────────────────────────────────
-   HERO TEXT — useMotionValue para parallax sin re-renders
-───────────────────────────────────────────────────────────────────────────── */
-
 function HeroText() {
   const { isDark } = useTheme()
   const rawX = useMotionValue(0)
   const rawY = useMotionValue(0)
   const x = useSpring(rawX, { stiffness:40, damping:20 })
   const y = useSpring(rawY, { stiffness:40, damping:20 })
-
   useEffect(() => {
     const onMove = (e: MouseEvent) => {
       rawX.set((e.clientX/window.innerWidth  - 0.5) * 18)
@@ -183,11 +151,8 @@ function HeroText() {
     window.addEventListener("mousemove", onMove)
     return () => window.removeEventListener("mousemove", onMove)
   }, [rawX, rawY])
-
   return (
     <motion.div style={{ display:"flex", flexDirection:"column", padding:"80px 56px", width:"100%", pointerEvents:"none", x, y }}>
-
-      {/* Eyebrow */}
       <motion.div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:40 }}
         initial={{ opacity:0, y:16 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.7, delay:0.1 }}>
         <div style={{ width:24, height:.5, background:isDark?"rgba(255,255,255,0.20)":"rgba(0,0,0,0.20)" }}/>
@@ -195,33 +160,18 @@ function HeroText() {
           Developer & Visual Creator
         </span>
       </motion.div>
-
-      {/* Andres */}
       <div style={{ overflow:"hidden", marginBottom:4 }}>
-        <motion.h1
-          style={{ fontSize:"clamp(3.5rem,7vw,7.5rem)", fontWeight:900, textTransform:"uppercase", letterSpacing:"-.04em", lineHeight:.85, color:isDark?"#fff":"#111" }}
-          initial={{ y:90 }} animate={{ y:0 }} transition={{ duration:0.9, delay:0.15, ease:[0.16,1,0.3,1] }}>
-          Andres
-        </motion.h1>
+        <motion.h1 style={{ fontSize:"clamp(3.5rem,7vw,7.5rem)", fontWeight:900, textTransform:"uppercase", letterSpacing:"-.04em", lineHeight:.85, color:isDark?"#fff":"#111" }}
+          initial={{ y:90 }} animate={{ y:0 }} transition={{ duration:0.9, delay:0.15, ease:[0.16,1,0.3,1] }}>Andres</motion.h1>
       </div>
-
-      {/* Prada — outline */}
       <div style={{ overflow:"hidden", marginBottom:48 }}>
-        <motion.h1
-          style={{ fontSize:"clamp(3.5rem,7vw,7.5rem)", fontWeight:900, textTransform:"uppercase", letterSpacing:"-.04em", lineHeight:.85, WebkitTextStroke:isDark?"1.5px rgba(255,255,255,0.25)":"1.5px rgba(0,0,0,0.2)", color:"transparent" }}
-          initial={{ y:90 }} animate={{ y:0 }} transition={{ duration:0.9, delay:0.22, ease:[0.16,1,0.3,1] }}>
-          Prada
-        </motion.h1>
+        <motion.h1 style={{ fontSize:"clamp(3.5rem,7vw,7.5rem)", fontWeight:900, textTransform:"uppercase", letterSpacing:"-.04em", lineHeight:.85, WebkitTextStroke:isDark?"1.5px rgba(255,255,255,0.25)":"1.5px rgba(0,0,0,0.2)", color:"transparent" }}
+          initial={{ y:90 }} animate={{ y:0 }} transition={{ duration:0.9, delay:0.22, ease:[0.16,1,0.3,1] }}>Prada</motion.h1>
       </div>
-
-      {/* Statement */}
-      <motion.p
-        style={{ fontSize:15, fontWeight:300, lineHeight:1.8, maxWidth:280, marginBottom:48, color:isDark?"rgba(255,255,255,0.40)":"rgba(0,0,0,0.45)" }}
+      <motion.p style={{ fontSize:15, fontWeight:300, lineHeight:1.8, maxWidth:280, marginBottom:48, color:isDark?"rgba(255,255,255,0.40)":"rgba(0,0,0,0.45)" }}
         initial={{ opacity:0, y:12 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.7, delay:0.5 }}>
         Construyo experiencias digitales que viven entre el código, el movimiento y el arte.
       </motion.p>
-
-      {/* Mini lista servicios */}
       <motion.div style={{ display:"flex", flexDirection:"column", gap:4 }}
         initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ delay:0.7 }}>
         {services.slice(0,4).map(s => (
@@ -235,10 +185,6 @@ function HeroText() {
   )
 }
 
-/* ─────────────────────────────────────────────────────────────────────────────
-   SERVICE ROW
-───────────────────────────────────────────────────────────────────────────── */
-
 function ServiceRow({ index, name, desc, delay, isDark }: { index:string; name:string; desc:string; delay:number; isDark:boolean }) {
   const [hovered, setHovered] = useState(false)
   return (
@@ -247,7 +193,6 @@ function ServiceRow({ index, name, desc, delay, isDark }: { index:string; name:s
       onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
       initial={{ opacity:0, x:-16 }} whileInView={{ opacity:1, x:0 }}
       transition={{ duration:0.5, delay }} viewport={{ once:true }}>
-      {/* Hover fill */}
       <motion.div style={{ position:"absolute", inset:0, background:isDark?"rgba(255,255,255,0.025)":"rgba(0,0,0,0.025)", originX:0 }}
         initial={{ scaleX:0 }} animate={{ scaleX:hovered?1:0 }} transition={{ duration:0.35 }}/>
       <span style={{ fontFamily:"monospace", fontSize:10, width:24, flexShrink:0, color:isDark?"rgba(255,255,255,0.20)":"rgba(0,0,0,0.20)" }}>{index}</span>
@@ -260,10 +205,6 @@ function ServiceRow({ index, name, desc, delay, isDark }: { index:string; name:s
     </motion.div>
   )
 }
-
-/* ─────────────────────────────────────────────────────────────────────────────
-   GALLERY ITEM
-───────────────────────────────────────────────────────────────────────────── */
 
 function GalleryItem({ item, i, isDark }: { item:typeof galleryData[0]; i:number; isDark:boolean }) {
   const [hovered, setHovered] = useState(false)
@@ -288,10 +229,6 @@ function GalleryItem({ item, i, isDark }: { item:typeof galleryData[0]; i:number
   )
 }
 
-/* ─────────────────────────────────────────────────────────────────────────────
-   SECTION HEADER
-───────────────────────────────────────────────────────────────────────────── */
-
 function SectionHeader({ label, title, accent, right, isDark }: { label:string; title:string; accent:string; right?:string; isDark:boolean }) {
   return (
     <motion.div style={{ display:"flex", alignItems:"flex-end", justifyContent:"space-between", marginBottom:56 }}
@@ -308,13 +245,44 @@ function SectionHeader({ label, title, accent, right, isDark }: { label:string; 
   )
 }
 
-/* ─────────────────────────────────────────────────────────────────────────────
-   MAIN HOME
-───────────────────────────────────────────────────────────────────────────── */
+/* Card reutilizable en ambos modos */
+function ProjectCard({ project, isDesktop, isDark }: { project: typeof projectsData[0]; isDesktop: boolean; isDark: boolean }) {
+  return (
+    <div style={{ width:"100%", height:"100%", display:"flex", flexDirection:isDesktop?"row":"column", overflow:"hidden", backgroundColor:isDark?project.darkBg:project.lightBg, borderRadius:36, border:isDark?"0.5px solid rgba(255,255,255,0.07)":"0.5px solid rgba(0,0,0,0.08)", backdropFilter:"blur(8px)" }}>
+      <div style={{ flex:"1.1 1 0", display:"flex", flexDirection:"column", justifyContent:"space-between", padding:isDesktop?"48px":"32px", borderRight:isDesktop?(isDark?"0.5px solid rgba(255,255,255,0.05)":"0.5px solid rgba(0,0,0,0.06)"):"none", borderBottom:!isDesktop?(isDark?"0.5px solid rgba(255,255,255,0.05)":"0.5px solid rgba(0,0,0,0.06)"):"none" }}>
+        <div>
+          <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:32 }}>
+            <span style={{ fontFamily:"monospace", fontSize:10, color:isDark?"rgba(255,255,255,0.15)":"rgba(0,0,0,0.15)" }}>{project.index}</span>
+            <span style={{ fontSize:9, textTransform:"uppercase", letterSpacing:".25em", padding:"4px 12px", borderRadius:20, border:isDark?"0.5px solid rgba(255,255,255,0.12)":"0.5px solid rgba(0,0,0,0.10)", color:isDark?"rgba(255,255,255,0.35)":"rgba(0,0,0,0.35)" }}>{project.category}</span>
+          </div>
+          <h3 style={{ fontSize:"clamp(2rem,4vw,3.5rem)", fontWeight:900, textTransform:"uppercase", letterSpacing:"-.03em", lineHeight:.88, marginBottom:20, color:isDark?"#fff":"#111" }}>{project.title}</h3>
+          <p style={{ fontSize:13, fontWeight:300, lineHeight:1.7, maxWidth:280, color:isDark?"rgba(255,255,255,0.30)":"rgba(0,0,0,0.35)" }}>
+            Arquitectura web de alto rendimiento construida para una experiencia inmersiva.
+          </p>
+        </div>
+        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginTop:32 }}>
+          <span style={{ fontFamily:"monospace", fontSize:11, color:isDark?"rgba(255,255,255,0.20)":"rgba(0,0,0,0.20)" }}>{project.year}</span>
+          <motion.button style={{ display:"flex", alignItems:"center", gap:8, fontSize:10, textTransform:"uppercase", letterSpacing:".15em", padding:"10px 20px", borderRadius:20, border:isDark?"0.5px solid rgba(255,255,255,0.20)":"0.5px solid rgba(0,0,0,0.15)", color:isDark?"rgba(255,255,255,0.60)":"rgba(0,0,0,0.55)", background:"transparent", cursor:"pointer" }}
+            whileHover={{ scale:1.02 }} whileTap={{ scale:0.97 }}>
+            Ver proyecto <span>→</span>
+          </motion.button>
+        </div>
+      </div>
+      <div style={{ flex:"1 1 0", position:"relative", overflow:"hidden", minHeight:isDesktop?"auto":220 }} className="group">
+        <img src={project.img} alt={project.title} className="group-hover:scale-100 transition-all duration-700"
+          style={{ width:"100%", height:"100%", objectFit:"cover", transform:"scale(1.05)", filter:isDark?"grayscale(40%) brightness(0.75)":"grayscale(10%) brightness(0.95)" }}/>
+        <div className={`absolute inset-0 group-hover:opacity-0 transition-opacity duration-500 ${isDark?"bg-black/20":"bg-white/15"}`}/>
+        <div style={{ position:"absolute", top:16, right:16, width:20, height:20, borderRight:isDark?"0.5px solid rgba(255,255,255,0.20)":"0.5px solid rgba(0,0,0,0.15)", borderTop:isDark?"0.5px solid rgba(255,255,255,0.20)":"0.5px solid rgba(0,0,0,0.15)" }}/>
+        <div style={{ position:"absolute", bottom:16, left:16, width:20, height:20, borderLeft:isDark?"0.5px solid rgba(255,255,255,0.20)":"0.5px solid rgba(0,0,0,0.15)", borderBottom:isDark?"0.5px solid rgba(255,255,255,0.20)":"0.5px solid rgba(0,0,0,0.15)" }}/>
+      </div>
+    </div>
+  )
+}
 
 export default function Home() {
   const { isDark } = useTheme()
-  const isDesktop = useIsDesktop()
+  const isDesktop  = useIsDesktop()
+  const isMobile   = !isDesktop
 
   const WA_NUMBER = "573195768097"
   const WA_URL    = `https://wa.me/${WA_NUMBER}?text=Hola%20Andres%2C%20me%20interesa%20trabajar%20contigo`
@@ -334,30 +302,31 @@ export default function Home() {
   return (
     <div style={{ minHeight:"100vh", overflowX:"hidden", background:pageBg, color:isDark?"#fff":"#111", position:"relative" }}>
 
-      {/* ── LiquidEther — z-index 0 ── */}
       <div style={{ position:"fixed", inset:0, zIndex:0, pointerEvents:"none" }}>
-        <LiquidEther mouseForce={22} cursorSize={120} resolution={0.8} dt={0.016} viscous={15} isViscous={false} autoIntensity={isDark?2.5:1.2}/>
+        <LiquidEther
+          mouseForce={22}
+          cursorSize={120}
+          resolution={0.8}
+          dt={0.016}
+          viscous={15}
+          isViscous={false}
+          autoIntensity={isDark ? 2.5 : 1.2}
+          colors={isDark ? LIQUID_DARK : LIQUID_LIGHT}
+        />
         <div style={{ position:"absolute", inset:0, zIndex:1, pointerEvents:"none", background:isDark?"radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.65) 100%)":"radial-gradient(circle at center, transparent 0%, rgba(245,241,233,0.70) 100%)" }}/>
       </div>
 
       <ScrollBar/>
       <ThemeToggle/>
 
-      {/* ── Nav — z-index 50 ── */}
       <div style={{ position:"relative", zIndex:50 }}>
         <CardNav logo="/faviconAP.ico" items={menuItems}
           baseColor={isDark?"rgba(6,6,6,0.92)":"rgba(245,241,233,0.95)"}
           menuColor={isDark?"#fff":"#111"} buttonBgColor={isDark?"#dde4e6":"#111"} buttonTextColor={isDark?"#000":"#fff"}/>
       </div>
 
-      {/* ══════════════════════════════════════════════════════════════════════
-          HERO — split 50/50
-          isDesktop → flex row: imagen 50% sticky | texto 50%
-          mobile    → flex col: imagen encima | texto abajo
-      ══════════════════════════════════════════════════════════════════════ */}
+      {/* HERO */}
       <section style={{ position:"relative", zIndex:20, minHeight:"100vh", display:"flex", flexDirection:isDesktop?"row":"column" }}>
-
-        {/* Columna imagen */}
         <div style={{
           width: isDesktop ? "50%" : "100%",
           height: isDesktop ? "100vh" : "60vw",
@@ -370,13 +339,9 @@ export default function Home() {
         }}>
           <HeroImagePanel/>
         </div>
-
-        {/* Separador vertical — solo desktop */}
         {isDesktop && (
           <div style={{ width:1, flexShrink:0, alignSelf:"stretch", background:isDark?"rgba(255,255,255,0.05)":"rgba(0,0,0,0.06)" }}/>
         )}
-
-        {/* Columna texto */}
         <div style={{
           flex: isDesktop ? 1 : "none",
           width: isDesktop ? "auto" : "100%",
@@ -384,14 +349,11 @@ export default function Home() {
           minHeight: isDesktop ? "100vh" : "60vh",
           position:"relative",
         }}>
-          {/* Grilla decorativa */}
           <div style={{ position:"absolute", inset:0, pointerEvents:"none", overflow:"hidden" }}>
             <div style={{ position:"absolute", left:"33%", top:0, bottom:0, width:.5, background:isDark?"rgba(255,255,255,0.025)":"rgba(0,0,0,0.03)" }}/>
             <div style={{ position:"absolute", top:"33%", left:0, right:0, height:.5, background:isDark?"rgba(255,255,255,0.025)":"rgba(0,0,0,0.03)" }}/>
             <div style={{ position:"absolute", top:"66%", left:0, right:0, height:.5, background:isDark?"rgba(255,255,255,0.025)":"rgba(0,0,0,0.03)" }}/>
           </div>
-
-          {/* Badge disponible */}
           <div style={{ position:"absolute", top:24, left:32, display:"flex", alignItems:"center", gap:8 }}>
             <span style={{ position:"relative", display:"flex", width:6, height:6 }}>
               <span className="animate-ping" style={{ position:"absolute", display:"inline-flex", width:"100%", height:"100%", borderRadius:"50%", background:"rgb(52,211,153)", opacity:.75 }}/>
@@ -399,77 +361,54 @@ export default function Home() {
             </span>
             <span style={{ fontSize:9, letterSpacing:".25em", textTransform:"uppercase", color:isDark?"rgba(255,255,255,0.25)":"rgba(0,0,0,0.30)" }}>Disponible</span>
           </div>
-
-          {/* Indicador scroll */}
           <div style={{ position:"absolute", bottom:32, right:32, display:"flex", flexDirection:"column", alignItems:"center", gap:8, pointerEvents:"none" }}>
             <div style={{ width:.5, height:40, background:isDark?"rgba(255,255,255,0.15)":"rgba(0,0,0,0.15)" }}/>
             <span style={{ fontSize:8, letterSpacing:".3em", textTransform:"uppercase", color:isDark?"rgba(255,255,255,0.20)":"rgba(0,0,0,0.20)" }}>Scroll</span>
           </div>
-
-          {/* HeroText — parallax sin re-renders */}
           <HeroText/>
         </div>
       </section>
 
-      {/* ── Divisor editorial ── */}
       <div style={{ position:"relative", zIndex:20, margin:"0 48px", display:"flex", alignItems:"center", justifyContent:"space-between", padding:"16px 0", borderTop:borderC }}>
         <span style={{ fontSize:9, letterSpacing:".35em", textTransform:"uppercase", color:isDark?"rgba(255,255,255,0.15)":"rgba(0,0,0,0.15)" }}>Selected Works</span>
         <span style={{ fontFamily:"monospace", fontSize:9, color:isDark?"rgba(255,255,255,0.10)":"rgba(0,0,0,0.10)" }}>2024 — 2026</span>
       </div>
 
       {/* ══════════════════════════════════════════════════════════════════════
-          PROYECTOS — ScrollStack (sin cambios de lógica)
+          PROYECTOS
+          Desktop → ScrollStack con Lenis
+          Mobile  → MobileStickyStack CSS puro (60fps nativo)
       ══════════════════════════════════════════════════════════════════════ */}
       <section style={{ position:"relative", zIndex:20, paddingTop:96, paddingBottom:96 }}>
         <div style={{ padding:"0 48px", maxWidth:1280, margin:"0 auto" }}>
           <SectionHeader label="Proyectos seleccionados" title="Selected" accent="Works" right={`01 — 0${projectsData.length}`} isDark={isDark}/>
         </div>
-        <div style={{ padding:"0 48px" }}>
-          <ScrollStack itemDistance={100} itemStackDistance={35} useWindowScroll={true} baseScale={0.92} stackPosition="10%">
-            {projectsData.map(project => (
-              <ScrollStackItem key={project.id}>
-                <div style={{ width:"100%", height:"100%", display:"flex", flexDirection:isDesktop?"row":"column", overflow:"hidden", backgroundColor:isDark?project.darkBg:project.lightBg, borderRadius:36, border:isDark?"0.5px solid rgba(255,255,255,0.07)":"0.5px solid rgba(0,0,0,0.08)", backdropFilter:"blur(8px)" }}>
+        <div style={{ padding:"0 24px" }}>
 
-                  {/* Texto */}
-                  <div style={{ flex:"1.1 1 0", display:"flex", flexDirection:"column", justifyContent:"space-between", padding:isDesktop?"48px":"32px", borderRight:isDesktop?(isDark?"0.5px solid rgba(255,255,255,0.05)":"0.5px solid rgba(0,0,0,0.06)"):"none", borderBottom:!isDesktop?(isDark?"0.5px solid rgba(255,255,255,0.05)":"0.5px solid rgba(0,0,0,0.06)"):"none" }}>
-                    <div>
-                      <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:32 }}>
-                        <span style={{ fontFamily:"monospace", fontSize:10, color:isDark?"rgba(255,255,255,0.15)":"rgba(0,0,0,0.15)" }}>{project.index}</span>
-                        <span style={{ fontSize:9, textTransform:"uppercase", letterSpacing:".25em", padding:"4px 12px", borderRadius:20, border:isDark?"0.5px solid rgba(255,255,255,0.12)":"0.5px solid rgba(0,0,0,0.10)", color:isDark?"rgba(255,255,255,0.35)":"rgba(0,0,0,0.35)" }}>{project.category}</span>
-                      </div>
-                      <h3 style={{ fontSize:"clamp(2rem,4vw,3.5rem)", fontWeight:900, textTransform:"uppercase", letterSpacing:"-.03em", lineHeight:.88, marginBottom:20, color:isDark?"#fff":"#111" }}>{project.title}</h3>
-                      <p style={{ fontSize:13, fontWeight:300, lineHeight:1.7, maxWidth:280, color:isDark?"rgba(255,255,255,0.30)":"rgba(0,0,0,0.35)" }}>
-                        Arquitectura web de alto rendimiento construida para una experiencia inmersiva.
-                      </p>
-                    </div>
-                    <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginTop:32 }}>
-                      <span style={{ fontFamily:"monospace", fontSize:11, color:isDark?"rgba(255,255,255,0.20)":"rgba(0,0,0,0.20)" }}>{project.year}</span>
-                      <motion.button style={{ display:"flex", alignItems:"center", gap:8, fontSize:10, textTransform:"uppercase", letterSpacing:".15em", padding:"10px 20px", borderRadius:20, border:isDark?"0.5px solid rgba(255,255,255,0.20)":"0.5px solid rgba(0,0,0,0.15)", color:isDark?"rgba(255,255,255,0.60)":"rgba(0,0,0,0.55)", background:"transparent", cursor:"pointer" }}
-                        whileHover={{ scale:1.02 }} whileTap={{ scale:0.97 }}>
-                        Ver proyecto <span>→</span>
-                      </motion.button>
-                    </div>
-                  </div>
+          {/* MOBILE: sticky CSS puro */}
+          {isMobile && (
+            <MobileStickyStack itemStackDistance={18}>
+              {projectsData.map(project => (
+                <ProjectCard key={project.id} project={project} isDesktop={false} isDark={isDark}/>
+              ))}
+            </MobileStickyStack>
+          )}
 
-                  {/* Imagen */}
-                  <div style={{ flex:"1 1 0", position:"relative", overflow:"hidden", minHeight:isDesktop?"auto":220 }}
-                    className="group">
-                    <img src={project.img} alt={project.title} className="group-hover:scale-100 transition-all duration-700"
-                      style={{ width:"100%", height:"100%", objectFit:"cover", transform:"scale(1.05)", filter:isDark?"grayscale(40%) brightness(0.75)":"grayscale(10%) brightness(0.95)" }}/>
-                    <div className={`absolute inset-0 group-hover:opacity-0 transition-opacity duration-500 ${isDark?"bg-black/20":"bg-white/15"}`}/>
-                    <div style={{ position:"absolute", top:16, right:16, width:20, height:20, borderRight:isDark?"0.5px solid rgba(255,255,255,0.20)":"0.5px solid rgba(0,0,0,0.15)", borderTop:isDark?"0.5px solid rgba(255,255,255,0.20)":"0.5px solid rgba(0,0,0,0.15)" }}/>
-                    <div style={{ position:"absolute", bottom:16, left:16, width:20, height:20, borderLeft:isDark?"0.5px solid rgba(255,255,255,0.20)":"0.5px solid rgba(0,0,0,0.15)", borderBottom:isDark?"0.5px solid rgba(255,255,255,0.20)":"0.5px solid rgba(0,0,0,0.15)" }}/>
-                  </div>
-                </div>
-              </ScrollStackItem>
-            ))}
-          </ScrollStack>
+          {/* DESKTOP: ScrollStack con Lenis */}
+          {!isMobile && (
+            <ScrollStack itemDistance={100} itemStackDistance={35} useWindowScroll={true} baseScale={0.92} stackPosition="10%">
+              {projectsData.map(project => (
+                <ScrollStackItem key={project.id}>
+                  <ProjectCard project={project} isDesktop={true} isDark={isDark}/>
+                </ScrollStackItem>
+              ))}
+            </ScrollStack>
+          )}
+
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════════════════════════════════
-          SERVICIOS
-      ══════════════════════════════════════════════════════════════════════ */}
+      {/* SERVICIOS */}
       <section style={{ position:"relative", zIndex:20, padding:"96px 48px", maxWidth:900, margin:"0 auto" }}>
         <SectionHeader label="Lo que ofrezco" title="Servicios" accent="& Disciplinas" isDark={isDark}/>
         <div>
@@ -479,9 +418,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════════════════════════════════
-          GALERÍA
-      ══════════════════════════════════════════════════════════════════════ */}
+      {/* GALERÍA */}
       <section style={{ position:"relative", zIndex:20, padding:"96px 48px" }}>
         <div style={{ maxWidth:1280, margin:"0 auto" }}>
           <SectionHeader label="Objetos visuales" title="Foto &" accent="Arte" right="Fotografía · Escultura · Mixto" isDark={isDark}/>
@@ -493,9 +430,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════════════════════════════════
-          CTA CONTACTO
-      ══════════════════════════════════════════════════════════════════════ */}
+      {/* CTA */}
       <section style={{ position:"relative", zIndex:20, padding:"112px 48px", maxWidth:1280, margin:"0 auto", display:"flex", flexDirection:isDesktop?"row":"column", alignItems:isDesktop?"flex-end":"flex-start", justifyContent:"space-between", gap:48, borderTop:borderC }}>
         <motion.div initial={{ opacity:0, y:24 }} whileInView={{ opacity:1, y:0 }} transition={{ duration:0.7 }} viewport={{ once:true }}>
           <span style={{ fontSize:9, letterSpacing:".35em", textTransform:"uppercase", display:"block", marginBottom:16, color:isDark?"rgba(255,255,255,0.20)":"rgba(0,0,0,0.25)" }}>Próximo proyecto</span>
