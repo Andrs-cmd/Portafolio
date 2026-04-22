@@ -12,6 +12,43 @@ export const ScrollStackItem: React.FC<ScrollStackItemProps> = ({ children, item
   <div className={`scroll-stack-card ${itemClassName}`.trim()}>{children}</div>
 );
 
+/* ─────────────────────────────────────────────────────────────────────────────
+   MOBILE STICKY STACK — CSS puro, 60fps nativo, cero JS durante el scroll
+───────────────────────────────────────────────────────────────────────────── */
+export const MobileStickyStack: React.FC<{ children: ReactNode; itemStackDistance?: number }> = ({
+  children,
+  itemStackDistance = 18,
+}) => {
+  const cards = React.Children.toArray(children);
+  return (
+    <div style={{ position: 'relative' }}>
+      {cards.map((child, i) => (
+        <div
+          key={i}
+          style={{
+            position: 'sticky',
+            top: 60 + i * itemStackDistance,
+            zIndex: i + 1,
+            marginBottom: i < cards.length - 1 ? '24px' : '0',
+            borderRadius: 36,
+            overflow: 'hidden',
+            transform: `scale(${1 - i * 0.018})`,
+            transformOrigin: 'top center',
+          }}
+        >
+          {child}
+        </div>
+      ))}
+      <div style={{ height: '30vh' }} />
+    </div>
+  );
+};
+
+export function getIsMobile() {
+  if (typeof window === 'undefined') return false;
+  return ('ontouchstart' in window || navigator.maxTouchPoints > 0) && window.innerWidth < 768;
+}
+
 interface ScrollStackProps {
   className?: string;
   children: ReactNode;
@@ -68,7 +105,6 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
 
     const { scrollTop, containerHeight } = getScrollData();
     
-    // Parseo de posiciones
     const stackPos = (parseFloat(stackPosition) / 100) * containerHeight;
     const scaleEndPos = (parseFloat(scaleEndPosition) / 100) * containerHeight;
 
@@ -82,17 +118,14 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
       const triggerStart = cardTop - stackPos - (itemStackDistance * i);
       const pinEnd = endElementTop - containerHeight / 1.5;
 
-      // 1. Cálculo de Pinning (TranslateY)
       let translateY = 0;
       if (scrollTop >= triggerStart) {
         translateY = Math.max(0, scrollTop - triggerStart);
-        // Limitar el pin al final del stack
         if (scrollTop > pinEnd) {
           translateY = pinEnd - triggerStart;
         }
       }
 
-      // 2. Cálculo de Escala y Blur (basado en el progreso del siguiente item)
       let scale = 1;
       let blur = 0;
       
@@ -102,13 +135,11 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
         const nextTop = nextRect.top + window.scrollY - (lastTransformsRef.current.get(i+1)?.translateY || 0);
         const nextTrigger = nextTop - stackPos - (itemStackDistance * (i + 1));
         
-        // Progreso de cuánto ha avanzado la siguiente tarjeta sobre esta
         const progress = Math.min(1, Math.max(0, (scrollTop - nextTrigger) / 500));
         scale = 1 - (progress * (1 - (baseScale + i * itemScale)));
         blur = progress * blurAmount;
       }
 
-      // IMPORTANTE: No redondear los valores para mantener la fluidez de sub-píxeles
       const transform = `translate3d(0, ${translateY}px, 0) scale(${scale})`;
       const filter = blur > 0 ? `blur(${blur}px)` : 'none';
 
@@ -127,10 +158,9 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
     const cards = Array.from(document.querySelectorAll('.scroll-stack-card')) as HTMLElement[];
     cardsRef.current = cards;
 
-    // Configuración de Lenis optimizada
     const lenis = new Lenis({
       duration: 1,
-      lerp: 0.1, // Suavizado equilibrado
+      lerp: 0.1,
       smoothWheel: true,
       wheelMultiplier: 1,
     });
@@ -144,7 +174,6 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
     animationFrameRef.current = requestAnimationFrame(raf);
     lenisRef.current = lenis;
 
-    // Aplicar espaciado inicial
     cards.forEach((card, i) => {
       if (i < cards.length - 1) card.style.marginBottom = `${itemDistance}px`;
       card.style.willChange = 'transform';
