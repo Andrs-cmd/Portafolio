@@ -5,6 +5,8 @@ import { useTheme } from "../context/ThemeContext"
 import LiquidEther from "../components/LiquidEther"
 import CardNav from "../components/CardNav"
 import "../components/CardNav.css"
+import { photosStudio, motionPieces } from "../data/gallery"
+import { WhatsAppFAB, WhatsAppPill, WhatsAppBanner } from "../components/WhatsAppCTA"
 
 const WA_NUMBER = "573195768097"
 const WA_BASE   = `https://wa.me/${WA_NUMBER}?text=`
@@ -192,7 +194,7 @@ function DetailPanel({ service, isDark }: { service: typeof services[0]; isDark:
       <div style={{ padding: "40px 48px", maxWidth: 900 }}>
 
         {/* Descripción */}
-        <p style={{ fontSize: 15, fontWeight: 300, lineHeight: 1.85, marginBottom: 40, maxWidth: 680, color: isDark ? "rgba(255,255,255,.90)" : "rgba(0,0,0,.85)" }}>
+        <p style={{ fontSize: 15, fontWeight: 300, lineHeight: 1.85, marginBottom: 40, maxWidth: 680, color: isDark ? "#fff" : "#000" }}>
           {service.description}
         </p>
 
@@ -202,7 +204,7 @@ function DetailPanel({ service, isDark }: { service: typeof services[0]; isDark:
           {/* Proceso */}
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24 }}>
-              <span style={{ fontSize: 9, textTransform: "uppercase", letterSpacing: ".35em", color: isDark ? "rgba(255,255,255,.70)" : "rgba(0,0,0,.65)", whiteSpace: "nowrap" }}>Proceso</span>
+              <span style={{ fontSize: 9, textTransform: "uppercase", letterSpacing: ".35em", color: isDark ? "#fff" : "#000", whiteSpace: "nowrap" }}>Proceso</span>
               <div style={{ flex: 1, height: .5, background: isDark ? "rgba(255,255,255,.07)" : "rgba(0,0,0,.07)" }}/>
             </div>
             {service.process.map((p, i) => (
@@ -210,10 +212,10 @@ function DetailPanel({ service, isDark }: { service: typeof services[0]; isDark:
                 style={{ display: "flex", gap: 20, paddingTop: 14, paddingBottom: 14, borderBottom: i < service.process.length - 1 ? (isDark ? "1px solid rgba(255,255,255,.05)" : "1px solid rgba(0,0,0,.05)") : "none" }}
                 initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: .35, delay: i * .06 }}>
-                <span style={{ fontFamily: "monospace", fontSize: 9, paddingTop: 2, flexShrink: 0, width: 20, color: isDark ? "rgba(255,255,255,.60)" : "rgba(0,0,0,.55)" }}>{p.step}</span>
+                <span style={{ fontFamily: "monospace", fontSize: 9, paddingTop: 2, flexShrink: 0, width: 20, color: isDark ? "#fff" : "#000" }}>{p.step}</span>
                 <div>
-                  <p style={{ fontSize: 12, fontWeight: 600, marginBottom: 3, color: isDark ? "rgba(255,255,255,.95)" : "rgba(0,0,0,.92)" }}>{p.label}</p>
-                  <p style={{ fontSize: 11, fontWeight: 300, lineHeight: 1.6, color: isDark ? "rgba(255,255,255,.78)" : "rgba(0,0,0,.72)" }}>{p.desc}</p>
+                  <p style={{ fontSize: 12, fontWeight: 600, marginBottom: 3, color: isDark ? "#fff" : "#000" }}>{p.label}</p>
+                  <p style={{ fontSize: 11, fontWeight: 300, lineHeight: 1.6, color: isDark ? "#fff" : "#000" }}>{p.desc}</p>
                 </div>
               </motion.div>
             ))}
@@ -222,7 +224,7 @@ function DetailPanel({ service, isDark }: { service: typeof services[0]; isDark:
           {/* Precios */}
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24 }}>
-              <span style={{ fontSize: 9, textTransform: "uppercase", letterSpacing: ".35em", color: isDark ? "rgba(255,255,255,.70)" : "rgba(0,0,0,.65)", whiteSpace: "nowrap" }}>Inversión</span>
+              <span style={{ fontSize: 9, textTransform: "uppercase", letterSpacing: ".35em", color: isDark ? "#fff" : "#000", whiteSpace: "nowrap" }}>Inversión</span>
               <div style={{ flex: 1, height: .5, background: isDark ? "rgba(255,255,255,.07)" : "rgba(0,0,0,.07)" }}/>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -240,12 +242,12 @@ function DetailPanel({ service, isDark }: { service: typeof services[0]; isDark:
                   transition={{ duration: .35, delay: .1 + i * .07 }}
                   whileHover={{ scale: 1.01 }}>
                   <div>
-                    <span style={{ fontFamily: "monospace", fontSize: 9, textTransform: "uppercase", letterSpacing: ".25em", display: "block", marginBottom: 4, color: isDark ? "rgba(255,255,255,.70)" : "rgba(0,0,0,.65)" }}>{p.tier}</span>
+                    <span style={{ fontFamily: "monospace", fontSize: 9, textTransform: "uppercase", letterSpacing: ".25em", display: "block", marginBottom: 4, color: isDark ? "#fff" : "#000" }}>{p.tier}</span>
                     <span style={{ fontSize: 17, fontWeight: 900, color: isDark ? "#fff" : "#111" }}>{p.price}</span>
                   </div>
                   <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                    <span style={{ fontSize: 11, fontWeight: 300, maxWidth: 130, textAlign: "right", lineHeight: 1.5, color: isDark ? "rgba(255,255,255,.78)" : "rgba(0,0,0,.72)" }}>{p.desc}</span>
-                    <span style={{ fontSize: 12, color: isDark ? "rgba(255,255,255,.65)" : "rgba(0,0,0,.55)" }}>→</span>
+                    <span style={{ fontSize: 11, fontWeight: 300, maxWidth: 130, textAlign: "right", lineHeight: 1.5, color: isDark ? "#fff" : "#000" }}>{p.desc}</span>
+                    <span style={{ fontSize: 12, color: isDark ? "#fff" : "#000" }}>→</span>
                   </div>
                 </motion.a>
               ))}
@@ -255,10 +257,10 @@ function DetailPanel({ service, isDark }: { service: typeof services[0]; isDark:
 
         {/* Stack */}
         <div>
-          <span style={{ fontSize: 9, textTransform: "uppercase", letterSpacing: ".3em", display: "block", marginBottom: 12, color: isDark ? "rgba(255,255,255,.65)" : "rgba(0,0,0,.60)" }}>Stack & herramientas</span>
+          <span style={{ fontSize: 9, textTransform: "uppercase", letterSpacing: ".3em", display: "block", marginBottom: 12, color: isDark ? "#fff" : "#000" }}>Stack & herramientas</span>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
             {service.stack.map(t => (
-              <span key={t} style={{ fontFamily: "monospace", fontSize: 10, padding: "6px 12px", borderRadius: 20, background: isDark ? "rgba(255,255,255,.06)" : "rgba(0,0,0,.05)", border: isDark ? "1px solid rgba(255,255,255,.20)" : "1px solid rgba(0,0,0,.18)", color: isDark ? "rgba(255,255,255,.90)" : "rgba(0,0,0,.85)" }}>
+              <span key={t} style={{ fontFamily: "monospace", fontSize: 10, padding: "6px 12px", borderRadius: 20, background: isDark ? "rgba(255,255,255,.06)" : "rgba(0,0,0,.05)", border: isDark ? "1px solid rgba(255,255,255,.20)" : "1px solid rgba(0,0,0,.18)", color: isDark ? "#fff" : "#000" }}>
                 {t}
               </span>
             ))}
@@ -295,7 +297,7 @@ export default function Lab() {
     { label: "Servicios", bgColor: isDark ? "#111111" : "#f0ece4", textColor: isDark ? "#fff" : "#000",
       links: [{ label: "Software", href: "/lab", ariaLabel: "Software" }, { label: "Páginas Web", href: "/lab", ariaLabel: "Web" }] },
     { label: "Proyectos", bgColor: isDark ? "#1a1a1a" : "#e8e4dc", textColor: isDark ? "#fff" : "#000",
-      links: [{ label: "Ver todos", href: "/archive", ariaLabel: "Archive" }, { label: "Home", href: "/", ariaLabel: "Home" }] },
+      links: [{ label: "Archive", href: "/archive", ariaLabel: "Archive" }, { label: "Visual Editorial", href: "/visual", ariaLabel: "Visual" }] },
     { label: "Contacto", bgColor: isDark ? "#dde4e6" : "#1a1a1a", textColor: isDark ? "#000" : "#fff",
       links: [{ label: "WhatsApp", href: `https://wa.me/${WA_NUMBER}?text=Hola%20Andres`, ariaLabel: "WA" }, { label: "Email", href: "mailto:andres@tudominio.com", ariaLabel: "Email" }] },
   ]
@@ -333,7 +335,7 @@ export default function Lab() {
         <motion.div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 28 }}
           initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: .6 }}>
           <div style={{ width: 22, height: .5, background: isDark ? "rgba(255,255,255,.2)" : "rgba(0,0,0,.2)" }}/>
-          <span style={{ fontSize: 9, textTransform: "uppercase", letterSpacing: ".35em", color: isDark ? "rgba(255,255,255,.75)" : "rgba(0,0,0,.70)" }}>Lab — Servicios</span>
+          <span style={{ fontSize: 9, textTransform: "uppercase", letterSpacing: ".35em", color: isDark ? "#fff" : "#000" }}>Lab — Servicios</span>
         </motion.div>
 
         <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 24, flexWrap: "wrap" }}>
@@ -351,15 +353,15 @@ export default function Lab() {
               </motion.h1>
             </div>
           </div>
-          <motion.p style={{ fontSize: 14, fontWeight: 300, lineHeight: 1.7, maxWidth: 280, paddingBottom: 4, color: isDark ? "rgba(255,255,255,.85)" : "rgba(0,0,0,.80)" }}
+          <motion.p style={{ fontSize: 14, fontWeight: 300, lineHeight: 1.7, maxWidth: 280, paddingBottom: 4, color: isDark ? "#fff" : "#000" }}
             initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .7, delay: .3 }}>
             5 disciplinas, un mismo estándar. Selecciona un servicio para ver proceso, tecnología e inversión.
           </motion.p>
         </div>
 
         <div style={{ marginTop: 32, display: "flex", alignItems: "center", justifyContent: "space-between", borderTop: isDark ? "1px solid rgba(255,255,255,.05)" : "1px solid rgba(0,0,0,.06)", paddingTop: 12 }}>
-          <span style={{ fontSize: 9, letterSpacing: ".3em", textTransform: "uppercase", color: isDark ? "rgba(255,255,255,.60)" : "rgba(0,0,0,.55)" }}>Servicios disponibles</span>
-          <span style={{ fontFamily: "monospace", fontSize: 9, color: isDark ? "rgba(255,255,255,.50)" : "rgba(0,0,0,.45)" }}>01 — 05</span>
+          <span style={{ fontSize: 9, letterSpacing: ".3em", textTransform: "uppercase", color: isDark ? "#fff" : "#000" }}>Servicios disponibles</span>
+          <span style={{ fontFamily: "monospace", fontSize: 9, color: isDark ? "#fff" : "#000" }}>01 — 05</span>
         </div>
       </section>
 
@@ -397,7 +399,7 @@ export default function Lab() {
             {/* Label — solo desktop */}
             {isDesktop && (
               <div>
-                <span style={{ fontSize: 9, textTransform: "uppercase", letterSpacing: ".3em", color: isDark ? "rgba(255,255,255,.65)" : "rgba(0,0,0,.60)" }}>
+                <span style={{ fontSize: 9, textTransform: "uppercase", letterSpacing: ".3em", color: isDark ? "#fff" : "#000" }}>
                   Selecciona un servicio
                 </span>
               </div>
@@ -436,7 +438,7 @@ export default function Lab() {
                           style={{ height: 1.5, borderRadius: 1, flexShrink: 0 }}
                         />
                         <div style={{ minWidth: 0 }}>
-                          <span style={{ fontFamily: "monospace", fontSize: 8, display: "block", marginBottom: 2, color: isDark ? "rgba(255,255,255,.60)" : "rgba(0,0,0,.55)" }}>{s.index}</span>
+                          <span style={{ fontFamily: "monospace", fontSize: 8, display: "block", marginBottom: 2, color: isDark ? "#fff" : "#000" }}>{s.index}</span>
                           <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "-.01em", lineHeight: 1.2, display: "block", whiteSpace: isDesktop ? "normal" : "nowrap", color: isActive ? (isDark ? "#fff" : "#111") : (isDark ? "rgba(255,255,255,.82)" : "rgba(0,0,0,.78)"), transition: "color .25s" }}>
                             {s.nameFlat}
                           </span>
@@ -447,7 +449,7 @@ export default function Lab() {
                         <motion.span
                           animate={{ rotate: expanded === i ? 45 : 0, opacity: isActive ? 1 : 0.3 }}
                           transition={{ duration: .2 }}
-                          style={{ fontSize: 14, flexShrink: 0, color: isDark ? "rgba(255,255,255,.4)" : "rgba(0,0,0,.35)" }}>
+                          style={{ fontSize: 14, flexShrink: 0, color: isDark ? "#fff" : "#000" }}>
                           +
                         </motion.span>
                       )}
@@ -459,7 +461,7 @@ export default function Lab() {
                         <motion.div
                           initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
                           transition={{ duration: .22 }} style={{ overflow: "hidden" }}>
-                          <span style={{ fontFamily: "monospace", fontSize: 8, display: "block", marginTop: 6, paddingLeft: 24, color: isDark ? "rgba(255,255,255,.75)" : "rgba(0,0,0,.70)" }}>
+                          <span style={{ fontFamily: "monospace", fontSize: 8, display: "block", marginTop: 6, paddingLeft: 24, color: isDark ? "#fff" : "#000" }}>
                             {s.pricing[0].price}
                           </span>
                         </motion.div>
@@ -476,7 +478,7 @@ export default function Lab() {
                 style={{ display: "flex", alignItems: "center", gap: 12, textDecoration: "none", marginTop: 24 }}
                 whileHover={{ x: 4 }}>
                 <span style={{ display: "inline-block", width: 20, height: .5, background: isDark ? "rgba(255,255,255,.2)" : "rgba(0,0,0,.2)", transition: "width .3s" }}/>
-                <span style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: ".2em", color: isDark ? "rgba(255,255,255,.85)" : "rgba(0,0,0,.80)" }}>
+                <span style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: ".2em", color: isDark ? "#fff" : "#000" }}>
                   Cotizar
                 </span>
               </motion.a>
@@ -505,19 +507,19 @@ export default function Lab() {
                     initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: .5, ease: [.16, 1, .3, 1] }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
-                      <span style={{ fontFamily: "monospace", fontSize: 9, color: "rgba(255,255,255,.40)" }}>{current.index} / 05</span>
-                      <div style={{ width: 20, height: .5, background: "rgba(255,255,255,.30)" }}/>
-                      <span style={{ fontSize: 9, textTransform: "uppercase", letterSpacing: ".22em", color: "rgba(255,255,255,.45)" }}>{current.tagline}</span>
+                      <span style={{ fontFamily: "monospace", fontSize: 9, color: "#fff" }}>{current.index} / 05</span>
+                      <div style={{ width: 20, height: .5, background: "rgba(255,255,255,.55)" }}/>
+                      <span style={{ fontSize: 9, textTransform: "uppercase", letterSpacing: ".22em", color: "#fff" }}>{current.tagline}</span>
                     </div>
                     <h2 style={{ fontWeight: 900, textTransform: "uppercase", color: "#fff", fontSize: "clamp(2rem,4.5vw,3.5rem)", letterSpacing: "-.03em", lineHeight: .87, textShadow: "0 2px 24px rgba(0,0,0,.5)" }}>
                       {current.name.split("\n").map((line, i) => <span key={i} style={{ display: "block" }}>{line}</span>)}
                     </h2>
                     <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 16 }}>
                       {current.stack.slice(0, 4).map(t => (
-                        <span key={t} style={{ fontFamily: "monospace", fontSize: 8, padding: "4px 10px", borderRadius: 20, color: "rgba(255,255,255,.65)", background: "rgba(255,255,255,.12)", border: "1px solid rgba(255,255,255,.18)" }}>{t}</span>
+                        <span key={t} style={{ fontFamily: "monospace", fontSize: 8, padding: "4px 10px", borderRadius: 20, color: "#fff", background: "rgba(255,255,255,.18)", border: "1px solid rgba(255,255,255,.30)" }}>{t}</span>
                       ))}
                       {current.stack.length > 4 && (
-                        <span style={{ fontFamily: "monospace", fontSize: 8, padding: "4px 10px", borderRadius: 20, color: "rgba(255,255,255,.45)", background: "rgba(255,255,255,.07)", border: "1px solid rgba(255,255,255,.12)" }}>+{current.stack.length - 4}</span>
+                        <span style={{ fontFamily: "monospace", fontSize: 8, padding: "4px 10px", borderRadius: 20, color: "#fff", background: "rgba(255,255,255,.10)", border: "1px solid rgba(255,255,255,.18)" }}>+{current.stack.length - 4}</span>
                       )}
                     </div>
                   </motion.div>
@@ -530,11 +532,11 @@ export default function Lab() {
                   onClick={() => setExpanded(expanded === active ? null : active)}
                   style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 16px", borderRadius: 20, background: isDark ? "rgba(0,0,0,.55)" : "rgba(255,255,255,.75)", border: isDark ? "1px solid rgba(255,255,255,.15)" : "1px solid rgba(0,0,0,.10)", backdropFilter: "blur(8px)", cursor: "pointer" }}
                   whileHover={{ scale: 1.03 }} whileTap={{ scale: .97 }}>
-                  <span style={{ fontSize: 9, textTransform: "uppercase", letterSpacing: ".2em", color: isDark ? "rgba(255,255,255,.75)" : "rgba(0,0,0,.65)" }}>
+                  <span style={{ fontSize: 9, textTransform: "uppercase", letterSpacing: ".2em", color: isDark ? "#fff" : "#000" }}>
                     {expanded === active ? "Cerrar" : "Ver detalle"}
                   </span>
                   <motion.span animate={{ rotate: expanded === active ? 45 : 0 }} transition={{ duration: .2 }}
-                    style={{ fontSize: 13, color: isDark ? "rgba(255,255,255,.5)" : "rgba(0,0,0,.4)" }}>+</motion.span>
+                    style={{ fontSize: 13, color: isDark ? "#fff" : "#000" }}>+</motion.span>
                 </motion.button>
               </div>
 
@@ -551,8 +553,8 @@ export default function Lab() {
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 40px", background: colBg, borderTop: isDark ? "1px solid rgba(255,255,255,.05)" : "1px solid rgba(0,0,0,.06)", marginTop: "auto" }}>
               <button onClick={() => { setActive(a => (a - 1 + services.length) % services.length); setExpanded(null) }}
                 style={{ display: "flex", alignItems: "center", gap: 10, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
-                <span style={{ fontSize: 14, color: isDark ? "rgba(255,255,255,.80)" : "rgba(0,0,0,.75)", transition: "transform .2s" }}>←</span>
-                <span style={{ fontSize: 9, textTransform: "uppercase", letterSpacing: ".2em", color: isDark ? "rgba(255,255,255,.80)" : "rgba(0,0,0,.75)" }}>Anterior</span>
+                <span style={{ fontSize: 14, color: isDark ? "#fff" : "#000", transition: "transform .2s" }}>←</span>
+                <span style={{ fontSize: 9, textTransform: "uppercase", letterSpacing: ".2em", color: isDark ? "#fff" : "#000" }}>Anterior</span>
               </button>
 
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -566,27 +568,84 @@ export default function Lab() {
 
               <button onClick={() => { setActive(a => (a + 1) % services.length); setExpanded(null) }}
                 style={{ display: "flex", alignItems: "center", gap: 10, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
-                <span style={{ fontSize: 9, textTransform: "uppercase", letterSpacing: ".2em", color: isDark ? "rgba(255,255,255,.80)" : "rgba(0,0,0,.75)" }}>Siguiente</span>
-                <span style={{ fontSize: 14, color: isDark ? "rgba(255,255,255,.80)" : "rgba(0,0,0,.75)" }}>→</span>
+                <span style={{ fontSize: 9, textTransform: "uppercase", letterSpacing: ".2em", color: isDark ? "#fff" : "#000" }}>Siguiente</span>
+                <span style={{ fontSize: 14, color: isDark ? "#fff" : "#000" }}>→</span>
               </button>
             </div>
           </div>
         </div>
       </section>
 
+      {/* ── WHATSAPP BANNER ── */}
+      <section style={{ position: "relative", zIndex: 20, padding: isDesktop ? "48px 48px 0" : "32px 20px 0", maxWidth: 1280, margin: "0 auto" }}>
+        <WhatsAppBanner isDark={isDark} isDesktop={isDesktop} headline="Cotiza tu proyecto en minutos"/>
+      </section>
+
+      {/* ── CTA VISUAL EDITORIAL ── */}
+      <section style={{ position: "relative", zIndex: 20, padding: "80px 48px 32px", maxWidth: 1280, margin: "0 auto" }}>
+        <motion.a href="/visual"
+          initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: .8, ease: [.16, 1, .3, 1] }}
+          whileHover={{ y: -4 }}
+          style={{
+            display: "grid",
+            gridTemplateColumns: isDesktop ? "200px 1fr 200px" : "1fr",
+            gap: isDesktop ? 24 : 12,
+            alignItems: "center",
+            padding: isDesktop ? "32px 32px" : "24px 20px",
+            borderRadius: 20,
+            background: isDark ? "rgba(14,12,20,0.55)" : "rgba(255,253,247,0.72)",
+            border: isDark ? "0.5px solid rgba(255,255,255,0.12)" : "0.5px solid rgba(0,0,0,0.10)",
+            textDecoration: "none",
+            cursor: "pointer",
+          }}>
+          {/* mini collage */}
+          <div style={{ display: "flex", gap: 6, height: isDesktop ? 140 : 120 }}>
+            <div style={{ flex: 1, overflow: "hidden", borderRadius: 10 }}>
+              <img src={photosStudio[5].src} alt="" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }}/>
+            </div>
+            <div style={{ flex: 1, overflow: "hidden", borderRadius: 10 }}>
+              <video src={motionPieces[0].src} autoPlay loop muted playsInline style={{ width: "100%", height: "100%", objectFit: "cover" }}/>
+            </div>
+          </div>
+
+          {/* text */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 8, padding: isDesktop ? "0 12px" : 0 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <div style={{ width: 18, height: .5, background: isDark ? "rgba(255,255,255,.35)" : "rgba(0,0,0,.30)" }}/>
+              <span style={{ fontFamily: "monospace", fontSize: 10, letterSpacing: ".22em", textTransform: "uppercase", color: isDark ? "#fff" : "#000" }}>Issue 01 · Visual</span>
+            </div>
+            <h3 style={{ fontSize: "clamp(1.4rem,3vw,2.2rem)", fontWeight: 900, textTransform: "uppercase", letterSpacing: "-.03em", lineHeight: .9, color: isDark ? "#fff" : "#111" }}>
+              Portafolio visual & motion
+            </h3>
+            <p style={{ fontSize: 12, fontWeight: 300, lineHeight: 1.6, color: isDark ? "#fff" : "#000" }}>
+              Fotografía editorial y reels en movimiento. Una revista interactiva.
+            </p>
+          </div>
+
+          {/* arrow */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: isDesktop ? "flex-end" : "flex-start", gap: 10 }}>
+            <span style={{ fontSize: 11, letterSpacing: ".22em", textTransform: "uppercase", color: isDark ? "#fff" : "#111" }}>Ver portafolio</span>
+            <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 34, height: 34, borderRadius: "50%", border: isDark ? "1px solid rgba(255,255,255,.30)" : "1px solid rgba(0,0,0,.25)", color: isDark ? "#fff" : "#111", fontSize: 14 }}>↗</span>
+          </div>
+        </motion.a>
+      </section>
+
       {/* ── CTA FINAL ── */}
-      <section style={{ position: "relative", zIndex: 20, padding: "112px 48px", maxWidth: 1280, margin: "0 auto", display: "flex", flexDirection: isDesktop ? "row" : "column", alignItems: isDesktop ? "flex-end" : "flex-start", justifyContent: "space-between", gap: 48, borderTop: isDark ? "1px solid rgba(255,255,255,.05)" : "1px solid rgba(0,0,0,.06)" }}>
+      <section style={{ position: "relative", zIndex: 20, padding: "clamp(64px, 12vw, 112px) clamp(20px, 4vw, 48px)", maxWidth: 1280, margin: "0 auto", display: "flex", flexDirection: isDesktop ? "row" : "column", alignItems: isDesktop ? "flex-end" : "flex-start", justifyContent: "space-between", gap: 48, borderTop: isDark ? "1px solid rgba(255,255,255,.05)" : "1px solid rgba(0,0,0,.06)" }}>
         <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: .7 }} viewport={{ once: true }}>
-          <span style={{ fontSize: 9, letterSpacing: ".35em", textTransform: "uppercase", display: "block", marginBottom: 16, color: isDark ? "rgba(255,255,255,.70)" : "rgba(0,0,0,.65)" }}>¿Listo para empezar?</span>
+          <span style={{ fontSize: 9, letterSpacing: ".35em", textTransform: "uppercase", display: "block", marginBottom: 16, color: isDark ? "#fff" : "#000" }}>¿Listo para empezar?</span>
           <h2 style={{ fontSize: "clamp(2.8rem,7vw,5rem)", fontWeight: 900, textTransform: "uppercase", letterSpacing: "-.04em", lineHeight: .86, color: isDark ? "#fff" : "#111" }}>
             Hablemos<br/>
             <span style={{ WebkitTextStroke: isDark ? "1.5px rgba(255,255,255,.2)" : "1.5px rgba(0,0,0,.18)", color: "transparent" }}>de tu proyecto</span>
           </h2>
         </motion.div>
         <div style={{ display: "flex", flexDirection: "column", gap: 16, flexShrink: 0 }}>
-          {[{ label: "WhatsApp", href: WA_URL }, { label: "Email", href: "mailto:andres@tudominio.com" }, { label: "Instagram", href: "https://instagram.com/tu_usuario" }].map(({ label, href }, i) => (
+          <motion.div initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: .5 }} viewport={{ once: true }}>
+            <WhatsAppPill isDark={isDark} size="lg" label="Escribir por WhatsApp"/>
+          </motion.div>
+          {[{ label: "Email", href: "mailto:aprada.web@gmail.com" }, { label: "Instagram", href: "https://instagram.com/tu_usuario" }].map(({ label, href }, i) => (
             <motion.a key={label} href={href} target={href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer"
-              style={{ display: "flex", alignItems: "center", gap: 16, textDecoration: "none", fontSize: 13, textTransform: "uppercase", letterSpacing: ".2em", color: isDark ? "rgba(255,255,255,.90)" : "rgba(0,0,0,.85)" }}
+              style={{ display: "flex", alignItems: "center", gap: 16, textDecoration: "none", fontSize: 13, textTransform: "uppercase", letterSpacing: ".2em", color: isDark ? "#fff" : "#000" }}
               initial={{ opacity: 0, x: 12 }} whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: .5, delay: i * .08 }} viewport={{ once: true }}
               whileHover={{ x: 4 }}>
@@ -598,11 +657,13 @@ export default function Lab() {
       </section>
 
       {/* Footer */}
-      <footer style={{ position: "relative", zIndex: 20, padding: "32px 48px", display: "flex", alignItems: "center", justifyContent: "space-between", background: pageBg, borderTop: isDark ? "1px solid rgba(255,255,255,.04)" : "1px solid rgba(0,0,0,.05)" }}>
-        <span style={{ fontSize: 9, letterSpacing: ".4em", textTransform: "uppercase", color: isDark ? "rgba(255,255,255,.55)" : "rgba(0,0,0,.55)" }}>Andres Prada</span>
-        <span style={{ fontFamily: "monospace", fontSize: 9, color: isDark ? "rgba(255,255,255,.45)" : "rgba(0,0,0,.45)" }}>© 2026</span>
-        <span style={{ fontSize: 9, letterSpacing: ".4em", textTransform: "uppercase", color: isDark ? "rgba(255,255,255,.55)" : "rgba(0,0,0,.55)" }}>Bogotá, CO</span>
+      <footer style={{ position: "relative", zIndex: 20, padding: "24px clamp(16px, 4vw, 48px)", display: "flex", alignItems: "center", justifyContent: "space-between", background: pageBg, borderTop: isDark ? "1px solid rgba(255,255,255,.04)" : "1px solid rgba(0,0,0,.05)" }}>
+        <span style={{ fontSize: 9, letterSpacing: ".4em", textTransform: "uppercase", color: isDark ? "#fff" : "#000" }}>Andres Prada</span>
+        <span style={{ fontFamily: "monospace", fontSize: 9, color: isDark ? "#fff" : "#000" }}>© 2026</span>
+        <span style={{ fontSize: 9, letterSpacing: ".4em", textTransform: "uppercase", color: isDark ? "#fff" : "#000" }}>Bogotá, CO</span>
       </footer>
+
+      <WhatsAppFAB/>
     </div>
   )
 }

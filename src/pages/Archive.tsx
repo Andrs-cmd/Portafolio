@@ -6,6 +6,8 @@ import LiquidEther from "../components/LiquidEther"
 import CardNav from "../components/CardNav"
 import "../components/CardNav.css"
 import { projects } from "../data/projects"
+import { photosEditorial, motionPieces } from "../data/gallery"
+import { WhatsAppFAB, WhatsAppPill, WhatsAppBanner } from "../components/WhatsAppCTA"
 
 const LIQUID_DARK  = ['#0a0014', '#7b00cc', '#c026d3', '#60a5fa', '#ffffff']
 const LIQUID_LIGHT = ['#f4f1f1', '#747272', '#000000']
@@ -75,14 +77,14 @@ function ProjectRow({ project, isDark, isDesktop }: { project: typeof projects[0
     >
       {/* Index + year */}
       <div style={{ flexShrink: 0, width: isDesktop ? 120 : "auto", display: "flex", flexDirection: isDesktop ? "column" : "row", alignItems: isDesktop ? "flex-start" : "center", justifyContent: "space-between", gap: 8 }}>
-        <span style={{ fontFamily: "monospace", fontSize: 11, color: isDark ? "rgba(255,255,255,0.55)" : "rgba(0,0,0,0.55)" }}>{project.index}</span>
-        <span style={{ fontFamily: "monospace", fontSize: 11, color: isDark ? "rgba(255,255,255,0.55)" : "rgba(0,0,0,0.55)" }}>{project.year}</span>
+        <span style={{ fontFamily: "monospace", fontSize: 11, color: isDark ? "#fff" : "#000" }}>{project.index}</span>
+        <span style={{ fontFamily: "monospace", fontSize: 11, color: isDark ? "#fff" : "#000" }}>{project.year}</span>
       </div>
 
       {/* Title block */}
       <div style={{ flex: 1, minWidth: 0 }}>
         {project.client && (
-          <span style={{ display: "block", fontSize: 10, letterSpacing: ".25em", textTransform: "uppercase", marginBottom: 10, color: isDark ? "rgba(255,255,255,0.65)" : "rgba(0,0,0,0.60)" }}>{project.client}</span>
+          <span style={{ display: "block", fontSize: 10, letterSpacing: ".25em", textTransform: "uppercase", marginBottom: 10, color: isDark ? "#fff" : "#000" }}>{project.client}</span>
         )}
         <motion.h3
           animate={{ x: hovered && isDesktop ? 8 : 0 }}
@@ -99,19 +101,19 @@ function ProjectRow({ project, isDark, isDesktop }: { project: typeof projects[0
         >
           {project.title}
         </motion.h3>
-        <p style={{ fontSize: 13, fontWeight: 300, lineHeight: 1.7, maxWidth: 620, color: isDark ? "rgba(255,255,255,0.82)" : "rgba(0,0,0,0.78)", marginBottom: 16 }}>
+        <p style={{ fontSize: 13, fontWeight: 300, lineHeight: 1.7, maxWidth: 620, color: isDark ? "#fff" : "#000", marginBottom: 16 }}>
           {project.description}
         </p>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
           {project.stack.map(t => (
-            <span key={t} style={{ fontFamily: "monospace", fontSize: 9, padding: "4px 10px", borderRadius: 20, color: isDark ? "rgba(255,255,255,0.80)" : "rgba(0,0,0,0.75)", background: isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.05)", border: isDark ? "1px solid rgba(255,255,255,0.16)" : "1px solid rgba(0,0,0,0.12)" }}>{t}</span>
+            <span key={t} style={{ fontFamily: "monospace", fontSize: 9, padding: "4px 10px", borderRadius: 20, color: isDark ? "#fff" : "#000", background: isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.05)", border: isDark ? "1px solid rgba(255,255,255,0.16)" : "1px solid rgba(0,0,0,0.12)" }}>{t}</span>
           ))}
         </div>
       </div>
 
       {/* Meta + link */}
       <div style={{ flexShrink: 0, width: isDesktop ? 200 : "100%", display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: isDesktop ? "flex-end" : "flex-start", gap: 16 }}>
-        <span style={{ fontSize: 9, textTransform: "uppercase", letterSpacing: ".25em", padding: "4px 12px", borderRadius: 20, border: isDark ? "0.5px solid rgba(255,255,255,0.25)" : "0.5px solid rgba(0,0,0,0.22)", color: isDark ? "rgba(255,255,255,0.85)" : "rgba(0,0,0,0.80)" }}>{project.category}</span>
+        <span style={{ fontSize: 9, textTransform: "uppercase", letterSpacing: ".25em", padding: "4px 12px", borderRadius: 20, border: isDark ? "0.5px solid rgba(255,255,255,0.25)" : "0.5px solid rgba(0,0,0,0.22)", color: isDark ? "#fff" : "#000" }}>{project.category}</span>
         {primaryLink && (
           <motion.a
             href={primaryLink.href}
@@ -126,7 +128,7 @@ function ProjectRow({ project, isDark, isDesktop }: { project: typeof projects[0
               textTransform: "uppercase",
               letterSpacing: ".22em",
               textDecoration: "none",
-              color: isDark ? "rgba(255,255,255,0.95)" : "rgba(0,0,0,0.90)",
+              color: isDark ? "#fff" : "#000",
             }}
           >
             <span style={{ display: "inline-block", width: 20, height: .5, background: isDark ? "rgba(255,255,255,0.40)" : "rgba(0,0,0,0.35)" }}/>
@@ -151,7 +153,7 @@ export default function Archive() {
     { label: "Servicios", bgColor: isDark ? "#111111" : "#f0ece4", textColor: isDark ? "#fff" : "#000",
       links: [{ label: "Desarrollo Web", href: "/lab", ariaLabel: "Web" }, { label: "Ecommerce", href: "/lab", ariaLabel: "Ecommerce" }] },
     { label: "Proyectos", bgColor: isDark ? "#1a1a1a" : "#e8e4dc", textColor: isDark ? "#fff" : "#000",
-      links: [{ label: "Home", href: "/", ariaLabel: "Home" }, { label: "Lab / Demos", href: "/lab", ariaLabel: "Lab" }] },
+      links: [{ label: "Visual Editorial", href: "/visual", ariaLabel: "Visual" }, { label: "Home", href: "/", ariaLabel: "Home" }] },
     { label: "Contacto", bgColor: isDark ? "#dde4e6" : "#1a1a1a", textColor: isDark ? "#000" : "#fff",
       links: [{ label: "WhatsApp", href: WA_URL, ariaLabel: "WhatsApp" }, { label: "Email", href: "mailto:aprada.web@gmail.com", ariaLabel: "Email" }] },
   ]
@@ -188,7 +190,7 @@ export default function Archive() {
         <motion.div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 28 }}
           initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: .6 }}>
           <div style={{ width: 22, height: .5, background: isDark ? "rgba(255,255,255,.4)" : "rgba(0,0,0,.35)" }}/>
-          <span style={{ fontSize: 9, textTransform: "uppercase", letterSpacing: ".35em", color: isDark ? "rgba(255,255,255,.75)" : "rgba(0,0,0,.70)" }}>Archive — Todos los proyectos</span>
+          <span style={{ fontSize: 9, textTransform: "uppercase", letterSpacing: ".35em", color: isDark ? "#fff" : "#000" }}>Archive — Todos los proyectos</span>
         </motion.div>
 
         <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 24, flexWrap: "wrap" }}>
@@ -206,15 +208,15 @@ export default function Archive() {
               </motion.h1>
             </div>
           </div>
-          <motion.p style={{ fontSize: 14, fontWeight: 300, lineHeight: 1.7, maxWidth: 320, paddingBottom: 4, color: isDark ? "rgba(255,255,255,.85)" : "rgba(0,0,0,.80)" }}
+          <motion.p style={{ fontSize: 14, fontWeight: 300, lineHeight: 1.7, maxWidth: 320, paddingBottom: 4, color: isDark ? "#fff" : "#000" }}
             initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .7, delay: .3 }}>
             Selección completa de proyectos publicados: ecommerce, plataformas y propuestas de diseño. Click en cada uno para ver el sitio real.
           </motion.p>
         </div>
 
         <div style={{ marginTop: 32, display: "flex", alignItems: "center", justifyContent: "space-between", borderTop: borderC, paddingTop: 12 }}>
-          <span style={{ fontSize: 9, letterSpacing: ".3em", textTransform: "uppercase", color: isDark ? "rgba(255,255,255,.60)" : "rgba(0,0,0,.55)" }}>Proyectos publicados</span>
-          <span style={{ fontFamily: "monospace", fontSize: 9, color: isDark ? "rgba(255,255,255,.55)" : "rgba(0,0,0,.50)" }}>01 — {String(projects.length).padStart(2, "0")}</span>
+          <span style={{ fontSize: 9, letterSpacing: ".3em", textTransform: "uppercase", color: isDark ? "#fff" : "#000" }}>Proyectos publicados</span>
+          <span style={{ fontFamily: "monospace", fontSize: 9, color: isDark ? "#fff" : "#000" }}>01 — {String(projects.length).padStart(2, "0")}</span>
         </div>
       </section>
 
@@ -225,22 +227,74 @@ export default function Archive() {
         ))}
       </section>
 
+      {/* WHATSAPP BANNER */}
+      <section style={{ position: "relative", zIndex: 20, padding: isDesktop ? "48px 48px 0" : "32px 20px 0", maxWidth: 1280, margin: "0 auto" }}>
+        <WhatsAppBanner isDark={isDark} isDesktop={isDesktop} headline="Conversemos sobre tu próximo proyecto"/>
+      </section>
+
+      {/* CTA VISUAL EDITORIAL */}
+      <section style={{ position: "relative", zIndex: 20, padding: "32px 48px 0", maxWidth: 1280, margin: "0 auto" }}>
+        <motion.a href="/visual"
+          initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: .8, ease: [.16, 1, .3, 1] }}
+          whileHover={{ y: -4 }}
+          style={{
+            display: "grid",
+            gridTemplateColumns: isDesktop ? "200px 1fr 200px" : "1fr",
+            gap: isDesktop ? 24 : 12,
+            alignItems: "center",
+            padding: isDesktop ? "32px 32px" : "24px 20px",
+            borderRadius: 20,
+            background: isDark ? "rgba(14,12,20,0.55)" : "rgba(255,253,247,0.72)",
+            border: isDark ? "0.5px solid rgba(255,255,255,0.12)" : "0.5px solid rgba(0,0,0,0.10)",
+            textDecoration: "none",
+            cursor: "pointer",
+          }}>
+          <div style={{ display: "flex", gap: 6, height: isDesktop ? 140 : 120 }}>
+            <div style={{ flex: 1, overflow: "hidden", borderRadius: 10 }}>
+              <img src={photosEditorial[8].src} alt="" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }}/>
+            </div>
+            <div style={{ flex: 1, overflow: "hidden", borderRadius: 10 }}>
+              <video src={motionPieces[1].src} autoPlay loop muted playsInline style={{ width: "100%", height: "100%", objectFit: "cover" }}/>
+            </div>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8, padding: isDesktop ? "0 12px" : 0 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <div style={{ width: 18, height: .5, background: isDark ? "rgba(255,255,255,.35)" : "rgba(0,0,0,.30)" }}/>
+              <span style={{ fontFamily: "monospace", fontSize: 10, letterSpacing: ".22em", textTransform: "uppercase", color: isDark ? "#fff" : "#000" }}>Issue 01 · Visual</span>
+            </div>
+            <h3 style={{ fontSize: "clamp(1.4rem,3vw,2.2rem)", fontWeight: 900, textTransform: "uppercase", letterSpacing: "-.03em", lineHeight: .9, color: isDark ? "#fff" : "#111" }}>
+              Portafolio visual & motion
+            </h3>
+            <p style={{ fontSize: 12, fontWeight: 300, lineHeight: 1.6, color: isDark ? "#fff" : "#000" }}>
+              Más allá del código: fotografía, dirección y movimiento.
+            </p>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: isDesktop ? "flex-end" : "flex-start", gap: 10 }}>
+            <span style={{ fontSize: 11, letterSpacing: ".22em", textTransform: "uppercase", color: isDark ? "#fff" : "#111" }}>Ver portafolio</span>
+            <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 34, height: 34, borderRadius: "50%", border: isDark ? "1px solid rgba(255,255,255,.30)" : "1px solid rgba(0,0,0,.25)", color: isDark ? "#fff" : "#111", fontSize: 14 }}>↗</span>
+          </div>
+        </motion.a>
+      </section>
+
       {/* CTA */}
-      <section style={{ position: "relative", zIndex: 20, padding: "112px 48px", maxWidth: 1280, margin: "0 auto", display: "flex", flexDirection: isDesktop ? "row" : "column", alignItems: isDesktop ? "flex-end" : "flex-start", justifyContent: "space-between", gap: 48, borderTop: borderC }}>
+      <section style={{ position: "relative", zIndex: 20, padding: "clamp(64px, 12vw, 112px) clamp(20px, 4vw, 48px)", maxWidth: 1280, margin: "0 auto", display: "flex", flexDirection: isDesktop ? "row" : "column", alignItems: isDesktop ? "flex-end" : "flex-start", justifyContent: "space-between", gap: 48, borderTop: borderC }}>
         <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: .7 }} viewport={{ once: true }}>
-          <span style={{ fontSize: 9, letterSpacing: ".35em", textTransform: "uppercase", display: "block", marginBottom: 16, color: isDark ? "rgba(255,255,255,.70)" : "rgba(0,0,0,.65)" }}>¿Construimos el tuyo?</span>
+          <span style={{ fontSize: 9, letterSpacing: ".35em", textTransform: "uppercase", display: "block", marginBottom: 16, color: isDark ? "#fff" : "#000" }}>¿Construimos el tuyo?</span>
           <h2 style={{ fontSize: "clamp(2.8rem,7vw,5rem)", fontWeight: 900, textTransform: "uppercase", letterSpacing: "-.04em", lineHeight: .86, color: isDark ? "#fff" : "#111" }}>
             Hablemos<br/>
             <span style={{ WebkitTextStroke: isDark ? "1.5px rgba(255,255,255,.22)" : "1.5px rgba(0,0,0,.20)", color: "transparent" }}>de tu proyecto</span>
           </h2>
         </motion.div>
         <div style={{ display: "flex", flexDirection: "column", gap: 16, flexShrink: 0 }}>
+          <motion.div initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: .5 }} viewport={{ once: true }}>
+            <WhatsAppPill isDark={isDark} size="lg" label="Escribir por WhatsApp"/>
+          </motion.div>
           {[
-            { label: "WhatsApp", href: WA_URL },
             { label: "Email", href: "mailto:aprada.web@gmail.com" },
+            { label: "Instagram", href: "https://instagram.com/tu_usuario" },
           ].map(({ label, href }, i) => (
             <motion.a key={label} href={href} target={href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer"
-              style={{ display: "flex", alignItems: "center", gap: 16, textDecoration: "none", fontSize: 13, textTransform: "uppercase", letterSpacing: ".2em", color: isDark ? "rgba(255,255,255,.90)" : "rgba(0,0,0,.85)" }}
+              style={{ display: "flex", alignItems: "center", gap: 16, textDecoration: "none", fontSize: 13, textTransform: "uppercase", letterSpacing: ".2em", color: isDark ? "#fff" : "#000" }}
               initial={{ opacity: 0, x: 12 }} whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: .5, delay: i * .08 }} viewport={{ once: true }}
               whileHover={{ x: 4 }}>
@@ -251,11 +305,13 @@ export default function Archive() {
         </div>
       </section>
 
-      <footer style={{ position: "relative", zIndex: 20, padding: "32px 48px", display: "flex", alignItems: "center", justifyContent: "space-between", background: pageBg, borderTop: borderC }}>
-        <span style={{ fontSize: 9, letterSpacing: ".4em", textTransform: "uppercase", color: isDark ? "rgba(255,255,255,.55)" : "rgba(0,0,0,.55)" }}>Andres Prada</span>
-        <span style={{ fontFamily: "monospace", fontSize: 9, color: isDark ? "rgba(255,255,255,.45)" : "rgba(0,0,0,.45)" }}>© 2026</span>
-        <span style={{ fontSize: 9, letterSpacing: ".4em", textTransform: "uppercase", color: isDark ? "rgba(255,255,255,.55)" : "rgba(0,0,0,.55)" }}>Bogotá, CO</span>
+      <footer style={{ position: "relative", zIndex: 20, padding: "24px clamp(16px, 4vw, 48px)", display: "flex", alignItems: "center", justifyContent: "space-between", background: pageBg, borderTop: borderC }}>
+        <span style={{ fontSize: 9, letterSpacing: ".4em", textTransform: "uppercase", color: isDark ? "#fff" : "#000" }}>Andres Prada</span>
+        <span style={{ fontFamily: "monospace", fontSize: 9, color: isDark ? "#fff" : "#000" }}>© 2026</span>
+        <span style={{ fontSize: 9, letterSpacing: ".4em", textTransform: "uppercase", color: isDark ? "#fff" : "#000" }}>Bogotá, CO</span>
       </footer>
+
+      <WhatsAppFAB/>
     </div>
   )
 }

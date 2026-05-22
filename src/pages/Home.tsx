@@ -8,6 +8,8 @@ import ScrollStack, { ScrollStackItem, MobileStickyStack } from "../components/S
 import "../components/CardNav.css"
 import "../components/ScrollStack.css"
 import { featuredProjects, type Project } from "../data/projects"
+import { photosCaptures, photosStudio, photosEditorial, motionPieces } from "../data/gallery"
+import { WhatsAppFAB, WhatsAppPill, WhatsAppBanner } from "../components/WhatsAppCTA"
 
 const LIQUID_DARK  = ['#0a0014', '#7b00cc', '#c026d3', '#60a5fa', '#ffffff']
 const LIQUID_LIGHT = ['#f4f1f1', '#747272', '#000000']
@@ -34,12 +36,12 @@ const services = [
 const projectsData = featuredProjects
 
 const galleryData = [
-  { img: "https://images.unsplash.com/photo-1554080353-a576cf803bda?auto=format&fit=crop&q=80&w=600",  label: "Fotografía", sub: "Editorial · 2025",   tall: true  },
-  { img: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&q=80&w=600",  label: "Escultura",  sub: "Arte físico · 2024", tall: false },
-  { img: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=600",label: "Fotografía", sub: "Naturaleza · 2024",  tall: false },
-  { img: "https://images.unsplash.com/photo-1531305653978-e7a47a16e93e?auto=format&fit=crop&q=80&w=600",label: "Escultura",  sub: "Conceptual · 2023",  tall: true  },
-  { img: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?auto=format&fit=crop&q=80&w=600",label: "Fotografía", sub: "Retrato · 2025",     tall: false },
-  { img: "https://images.unsplash.com/photo-1561214115-f2f134cc4912?auto=format&fit=crop&q=80&w=600",  label: "Arte",       sub: "Mixto · 2024",       tall: false },
+  { img: photosStudio[5].src,     label: "Studio",     sub: "Belleza · 2026",   tall: true  },
+  { img: photosEditorial[8].src,  label: "GUA Series", sub: "Editorial · 2026", tall: false },
+  { img: photosEditorial[15].src, label: "GUA Series", sub: "Editorial · 2026", tall: false },
+  { img: photosStudio[3].src,     label: "Studio",     sub: "Belleza · 2026",   tall: true  },
+  { img: photosCaptures[0].src,   label: "Captures",   sub: "Daily · 2026",     tall: false },
+  { img: photosEditorial[20].src, label: "GUA Series", sub: "Editorial · 2026", tall: false },
 ]
 
 function ThemeToggle() {
@@ -79,9 +81,11 @@ function ScrollBar() {
 }
 
 const heroImages = [
-  "https://images.unsplash.com/photo-1554080353-a576cf803bda?auto=format&fit=crop&q=80&w=800",
-  "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=800",
-  "https://images.unsplash.com/photo-1617802690992-15d93263d3a9?auto=format&fit=crop&q=80&w=800",
+  photosStudio[3].src,
+  photosEditorial[8].src,
+  photosEditorial[18].src,
+  photosCaptures[0].src,
+  photosStudio[5].src,
 ]
 
 function HeroImagePanel() {
@@ -110,7 +114,7 @@ function HeroImagePanel() {
             transition={{ duration:0.3 }}/>
         ))}
       </div>
-      <div style={{ position:"absolute", top:24, right:24, fontSize:9, letterSpacing:".3em", textTransform:"uppercase", color:isDark?"rgba(255,255,255,0.85)":"rgba(0,0,0,0.78)" }}>
+      <div style={{ position:"absolute", top:24, right:24, fontSize:9, letterSpacing:".3em", textTransform:"uppercase", color:isDark?"#fff":"#000" }}>
         Fotografía · Arte
       </div>
     </div>
@@ -132,11 +136,11 @@ function HeroText() {
     return () => window.removeEventListener("mousemove", onMove)
   }, [rawX, rawY])
   return (
-    <motion.div style={{ display:"flex", flexDirection:"column", padding:"80px 56px", width:"100%", pointerEvents:"none", x, y }}>
+    <motion.div style={{ display:"flex", flexDirection:"column", padding:"clamp(48px, 8vw, 80px) clamp(20px, 5vw, 56px)", width:"100%", pointerEvents:"none", x, y }}>
       <motion.div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:40 }}
         initial={{ opacity:0, y:16 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.7, delay:0.1 }}>
         <div style={{ width:24, height:.5, background:isDark?"rgba(255,255,255,0.20)":"rgba(0,0,0,0.20)" }}/>
-        <span style={{ fontSize:9, letterSpacing:".3em", textTransform:"uppercase", color:isDark?"rgba(255,255,255,0.70)":"rgba(0,0,0,0.70)" }}>
+        <span style={{ fontSize:9, letterSpacing:".3em", textTransform:"uppercase", color:isDark?"#fff":"#000" }}>
           Developer & Visual Creator
         </span>
       </motion.div>
@@ -148,7 +152,7 @@ function HeroText() {
         <motion.h1 style={{ fontSize:"clamp(3.5rem,7vw,7.5rem)", fontWeight:900, textTransform:"uppercase", letterSpacing:"-.04em", lineHeight:.85, WebkitTextStroke:isDark?"1.5px rgba(255,255,255,0.25)":"1.5px rgba(0,0,0,0.2)", color:"transparent" }}
           initial={{ y:90 }} animate={{ y:0 }} transition={{ duration:0.9, delay:0.22, ease:[0.16,1,0.3,1] }}>Prada</motion.h1>
       </div>
-      <motion.p style={{ fontSize:15, fontWeight:300, lineHeight:1.8, maxWidth:280, marginBottom:48, color:isDark?"rgba(255,255,255,0.85)":"rgba(0,0,0,0.80)" }}
+      <motion.p style={{ fontSize:15, fontWeight:300, lineHeight:1.8, maxWidth:280, marginBottom:48, color:isDark?"#fff":"#000" }}
         initial={{ opacity:0, y:12 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.7, delay:0.5 }}>
         Construyo experiencias digitales que viven entre el código, el movimiento y el arte.
       </motion.p>
@@ -156,8 +160,8 @@ function HeroText() {
         initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ delay:0.7 }}>
         {services.slice(0,4).map(s => (
           <div key={s.index} style={{ display:"flex", alignItems:"center", gap:12 }}>
-            <span style={{ fontFamily:"monospace", fontSize:9, color:isDark?"rgba(255,255,255,0.50)":"rgba(0,0,0,0.45)" }}>{s.index}</span>
-            <span style={{ fontSize:11, color:isDark?"rgba(255,255,255,0.80)":"rgba(0,0,0,0.75)" }}>{s.name}</span>
+            <span style={{ fontFamily:"monospace", fontSize:9, color:isDark?"#fff":"#000" }}>{s.index}</span>
+            <span style={{ fontSize:11, color:isDark?"#fff":"#000" }}>{s.name}</span>
           </div>
         ))}
       </motion.div>
@@ -175,12 +179,12 @@ function ServiceRow({ index, name, desc, delay, isDark }: { index:string; name:s
       transition={{ duration:0.5, delay }} viewport={{ once:true }}>
       <motion.div style={{ position:"absolute", inset:0, background:isDark?"rgba(255,255,255,0.025)":"rgba(0,0,0,0.025)", originX:0 }}
         initial={{ scaleX:0 }} animate={{ scaleX:hovered?1:0 }} transition={{ duration:0.35 }}/>
-      <span style={{ fontFamily:"monospace", fontSize:10, width:24, flexShrink:0, color:isDark?"rgba(255,255,255,0.55)":"rgba(0,0,0,0.50)" }}>{index}</span>
+      <span style={{ fontFamily:"monospace", fontSize:10, width:24, flexShrink:0, color:isDark?"#fff":"#000" }}>{index}</span>
       <div style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"space-between" }}>
-        <motion.span style={{ fontSize:14, fontWeight:300, letterSpacing:".01em", color:isDark?"rgba(255,255,255,0.96)":"rgba(0,0,0,0.92)" }} animate={{ x:hovered?6:0 }} transition={{ duration:0.25 }}>{name}</motion.span>
-        <span style={{ fontSize:10, letterSpacing:".15em", textTransform:"uppercase", color:isDark?"rgba(255,255,255,0.55)":"rgba(0,0,0,0.55)" }}>{desc}</span>
+        <motion.span style={{ fontSize:14, fontWeight:300, letterSpacing:".01em", color:isDark?"#fff":"#000" }} animate={{ x:hovered?6:0 }} transition={{ duration:0.25 }}>{name}</motion.span>
+        <span style={{ fontSize:10, letterSpacing:".15em", textTransform:"uppercase", color:isDark?"#fff":"#000" }}>{desc}</span>
       </div>
-      <motion.span style={{ fontSize:12, flexShrink:0, color:isDark?"rgba(255,255,255,0.70)":"rgba(0,0,0,0.65)" }}
+      <motion.span style={{ fontSize:12, flexShrink:0, color:isDark?"#fff":"#000" }}
         animate={{ x:hovered?0:8, opacity:hovered?1:0 }} transition={{ duration:0.2 }}>→</motion.span>
     </motion.div>
   )
@@ -198,7 +202,7 @@ function GalleryItem({ item, i, isDark }: { item:typeof galleryData[0]; i:number
         transition={{ duration:0.55 }}/>
       <motion.div style={{ position:"absolute", inset:0, display:"flex", flexDirection:"column", justifyContent:"flex-end", padding:16, background:isDark?"rgba(0,0,0,0.55)":"rgba(255,255,255,0.60)" }}
         animate={{ opacity:hovered?1:0 }} transition={{ duration:0.3 }}>
-        <span style={{ fontSize:9, letterSpacing:".25em", textTransform:"uppercase", marginBottom:4, color:isDark?"rgba(255,255,255,0.80)":"rgba(0,0,0,0.70)" }}>{item.sub}</span>
+        <span style={{ fontSize:9, letterSpacing:".25em", textTransform:"uppercase", marginBottom:4, color:isDark?"#fff":"#000" }}>{item.sub}</span>
         <span style={{ fontSize:13, fontWeight:300, color:isDark?"#fff":"#111" }}>{item.label}</span>
       </motion.div>
       <motion.div style={{ position:"absolute", top:12, left:12, width:16, height:16, borderLeft:isDark?"1px solid rgba(255,255,255,0.40)":"1px solid rgba(0,0,0,0.30)", borderTop:isDark?"1px solid rgba(255,255,255,0.40)":"1px solid rgba(0,0,0,0.30)" }}
@@ -214,13 +218,13 @@ function SectionHeader({ label, title, accent, right, isDark }: { label:string; 
     <motion.div style={{ display:"flex", alignItems:"flex-end", justifyContent:"space-between", marginBottom:56 }}
       initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }} transition={{ duration:0.6 }} viewport={{ once:true }}>
       <div>
-        <span style={{ fontSize:9, letterSpacing:".35em", textTransform:"uppercase", display:"block", marginBottom:12, color:isDark?"rgba(255,255,255,0.65)":"rgba(0,0,0,0.65)" }}>{label}</span>
+        <span style={{ fontSize:9, letterSpacing:".35em", textTransform:"uppercase", display:"block", marginBottom:12, color:isDark?"#fff":"#000" }}>{label}</span>
         <h2 style={{ fontSize:"clamp(2.2rem,5vw,4rem)", fontWeight:900, textTransform:"uppercase", letterSpacing:"-.03em", lineHeight:.85, color:isDark?"#fff":"#111" }}>
           {title}<br/>
-          <span style={{ color:isDark?"rgba(255,255,255,0.28)":"rgba(0,0,0,0.22)" }}>{accent}</span>
+          <span style={{ color:isDark?"#fff":"#000" }}>{accent}</span>
         </h2>
       </div>
-      {right && <span style={{ fontFamily:"monospace", fontSize:11, paddingBottom:4, color:isDark?"rgba(255,255,255,0.55)":"rgba(0,0,0,0.55)" }}>{right}</span>}
+      {right && <span style={{ fontFamily:"monospace", fontSize:11, paddingBottom:4, color:isDark?"#fff":"#000" }}>{right}</span>}
     </motion.div>
   )
 }
@@ -233,27 +237,27 @@ function ProjectCard({ project, isDesktop, isDark }: { project: Project; isDeskt
       <div style={{ flex:"1.1 1 0", display:"flex", flexDirection:"column", justifyContent:"space-between", padding:isDesktop?"48px":"32px", borderRight:isDesktop?(isDark?"0.5px solid rgba(255,255,255,0.05)":"0.5px solid rgba(0,0,0,0.06)"):"none", borderBottom:!isDesktop?(isDark?"0.5px solid rgba(255,255,255,0.05)":"0.5px solid rgba(0,0,0,0.06)"):"none" }}>
         <div>
           <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:32 }}>
-            <span style={{ fontFamily:"monospace", fontSize:10, color:isDark?"rgba(255,255,255,0.45)":"rgba(0,0,0,0.45)" }}>{project.index}</span>
-            <span style={{ fontSize:9, textTransform:"uppercase", letterSpacing:".25em", padding:"4px 12px", borderRadius:20, border:isDark?"0.5px solid rgba(255,255,255,0.25)":"0.5px solid rgba(0,0,0,0.22)", color:isDark?"rgba(255,255,255,0.75)":"rgba(0,0,0,0.72)" }}>{project.category}</span>
+            <span style={{ fontFamily:"monospace", fontSize:10, color:isDark?"#fff":"#000" }}>{project.index}</span>
+            <span style={{ fontSize:9, textTransform:"uppercase", letterSpacing:".25em", padding:"4px 12px", borderRadius:20, border:isDark?"0.5px solid rgba(255,255,255,0.25)":"0.5px solid rgba(0,0,0,0.22)", color:isDark?"#fff":"#000" }}>{project.category}</span>
           </div>
           {project.client && (
-            <span style={{ display:"block", fontSize:10, letterSpacing:".25em", textTransform:"uppercase", marginBottom:12, color:isDark?"rgba(255,255,255,0.55)":"rgba(0,0,0,0.55)" }}>{project.client}</span>
+            <span style={{ display:"block", fontSize:10, letterSpacing:".25em", textTransform:"uppercase", marginBottom:12, color:isDark?"#fff":"#000" }}>{project.client}</span>
           )}
           <h3 style={{ fontSize:"clamp(2rem,4vw,3.5rem)", fontWeight:900, textTransform:"uppercase", letterSpacing:"-.03em", lineHeight:.88, marginBottom:20, color:isDark?"#fff":"#111" }}>{project.title}</h3>
-          <p style={{ fontSize:13, fontWeight:300, lineHeight:1.7, maxWidth:340, color:isDark?"rgba(255,255,255,0.82)":"rgba(0,0,0,0.80)" }}>
+          <p style={{ fontSize:13, fontWeight:300, lineHeight:1.7, maxWidth:340, color:isDark?"#fff":"#000" }}>
             {project.description}
           </p>
           <div style={{ display:"flex", flexWrap:"wrap", gap:6, marginTop:18 }}>
             {project.stack.slice(0,4).map(t => (
-              <span key={t} style={{ fontFamily:"monospace", fontSize:9, padding:"4px 10px", borderRadius:20, color:isDark?"rgba(255,255,255,0.78)":"rgba(0,0,0,0.72)", background:isDark?"rgba(255,255,255,0.06)":"rgba(0,0,0,0.05)", border:isDark?"1px solid rgba(255,255,255,0.14)":"1px solid rgba(0,0,0,0.10)" }}>{t}</span>
+              <span key={t} style={{ fontFamily:"monospace", fontSize:9, padding:"4px 10px", borderRadius:20, color:isDark?"#fff":"#000", background:isDark?"rgba(255,255,255,0.06)":"rgba(0,0,0,0.05)", border:isDark?"1px solid rgba(255,255,255,0.14)":"1px solid rgba(0,0,0,0.10)" }}>{t}</span>
             ))}
           </div>
         </div>
         <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginTop:32 }}>
-          <span style={{ fontFamily:"monospace", fontSize:11, color:isDark?"rgba(255,255,255,0.55)":"rgba(0,0,0,0.55)" }}>{project.year}</span>
+          <span style={{ fontFamily:"monospace", fontSize:11, color:isDark?"#fff":"#000" }}>{project.year}</span>
           {primaryLink && (
             <motion.a href={primaryLink.href} target="_blank" rel="noopener noreferrer"
-              style={{ display:"flex", alignItems:"center", gap:8, fontSize:10, textTransform:"uppercase", letterSpacing:".15em", padding:"10px 20px", borderRadius:20, border:isDark?"0.5px solid rgba(255,255,255,0.35)":"0.5px solid rgba(0,0,0,0.30)", color:isDark?"rgba(255,255,255,0.95)":"rgba(0,0,0,0.90)", background:"transparent", cursor:"pointer", textDecoration:"none" }}
+              style={{ display:"flex", alignItems:"center", gap:8, fontSize:10, textTransform:"uppercase", letterSpacing:".15em", padding:"10px 20px", borderRadius:20, border:isDark?"0.5px solid rgba(255,255,255,0.35)":"0.5px solid rgba(0,0,0,0.30)", color:isDark?"#fff":"#000", background:"transparent", cursor:"pointer", textDecoration:"none" }}
               whileHover={{ scale:1.02 }} whileTap={{ scale:0.97 }}>
               {primaryLink.label} <span>↗</span>
             </motion.a>
@@ -286,7 +290,7 @@ export default function Home() {
     { label:"Servicios", bgColor:isDark?"#111111":"#f0ece4", textColor:isDark?"#fff":"#000",
       links:[{ label:"Desarrollo Web", href:"/lab#svc-software", ariaLabel:"Software" },{ label:"Ecommerce", href:"/lab#svc-web", ariaLabel:"Web" }] },
     { label:"Proyectos", bgColor:isDark?"#1a1a1a":"#e8e4dc", textColor:isDark?"#fff":"#000",
-      links:[{ label:"Ver todos", href:"/archive", ariaLabel:"Archive" },{ label:"Lab / Demos", href:"/lab", ariaLabel:"Lab" }] },
+      links:[{ label:"Archive", href:"/archive", ariaLabel:"Archive" },{ label:"Visual Editorial", href:"/visual", ariaLabel:"Visual" }] },
     { label:"Contacto", bgColor:isDark?"#dde4e6":"#1a1a1a", textColor:isDark?"#000":"#fff",
       links:[{ label:"WhatsApp", href:WA_URL, ariaLabel:"WhatsApp" },{ label:"Email", href:"mailto:aprada.web@gmail.com", ariaLabel:"Email" }] },
   ]
@@ -351,19 +355,19 @@ export default function Home() {
               <span className="animate-ping" style={{ position:"absolute", display:"inline-flex", width:"100%", height:"100%", borderRadius:"50%", background:"rgb(52,211,153)", opacity:.75 }}/>
               <span style={{ position:"relative", display:"inline-flex", width:6, height:6, borderRadius:"50%", background:"rgb(16,185,129)" }}/>
             </span>
-            <span style={{ fontSize:9, letterSpacing:".25em", textTransform:"uppercase", color:isDark?"rgba(255,255,255,0.80)":"rgba(0,0,0,0.75)" }}>Disponible</span>
+            <span style={{ fontSize:9, letterSpacing:".25em", textTransform:"uppercase", color:isDark?"#fff":"#000" }}>Disponible</span>
           </div>
           <div style={{ position:"absolute", bottom:32, right:32, display:"flex", flexDirection:"column", alignItems:"center", gap:8, pointerEvents:"none" }}>
             <div style={{ width:.5, height:40, background:isDark?"rgba(255,255,255,0.15)":"rgba(0,0,0,0.15)" }}/>
-            <span style={{ fontSize:8, letterSpacing:".3em", textTransform:"uppercase", color:isDark?"rgba(255,255,255,0.60)":"rgba(0,0,0,0.55)" }}>Scroll</span>
+            <span style={{ fontSize:8, letterSpacing:".3em", textTransform:"uppercase", color:isDark?"#fff":"#000" }}>Scroll</span>
           </div>
           <HeroText/>
         </div>
       </section>
 
-      <div style={{ position:"relative", zIndex:20, margin:"0 48px", display:"flex", alignItems:"center", justifyContent:"space-between", padding:"16px 0", borderTop:borderC }}>
-        <span style={{ fontSize:9, letterSpacing:".35em", textTransform:"uppercase", color:isDark?"rgba(255,255,255,0.65)":"rgba(0,0,0,0.60)" }}>Selected Works</span>
-        <span style={{ fontFamily:"monospace", fontSize:9, color:isDark?"rgba(255,255,255,0.50)":"rgba(0,0,0,0.45)" }}>2024 — 2026</span>
+      <div style={{ position:"relative", zIndex:20, margin:"0 clamp(16px, 4vw, 48px)", display:"flex", alignItems:"center", justifyContent:"space-between", padding:"16px 0", borderTop:borderC }}>
+        <span style={{ fontSize:9, letterSpacing:".35em", textTransform:"uppercase", color:isDark?"#fff":"#000" }}>Selected Works</span>
+        <span style={{ fontFamily:"monospace", fontSize:9, color:isDark?"#fff":"#000" }}>2024 — 2026</span>
       </div>
 
       {/* ══════════════════════════════════════════════════════════════════════
@@ -372,10 +376,10 @@ export default function Home() {
           Mobile  → MobileStickyStack CSS puro (60fps nativo)
       ══════════════════════════════════════════════════════════════════════ */}
       <section style={{ position:"relative", zIndex:20, paddingTop:96, paddingBottom:96 }}>
-        <div style={{ padding:"0 48px", maxWidth:1280, margin:"0 auto" }}>
+        <div style={{ padding:"0 clamp(16px, 4vw, 48px)", maxWidth:1280, margin:"0 auto" }}>
           <SectionHeader label="Proyectos seleccionados" title="Selected" accent="Works" right={`01 — 0${projectsData.length}`} isDark={isDark}/>
         </div>
-        <div style={{ padding:"0 24px" }}>
+        <div style={{ padding:"0 clamp(12px, 3vw, 24px)" }}>
 
           {/* MOBILE: sticky CSS puro */}
           {isMobile && (
@@ -401,7 +405,7 @@ export default function Home() {
       </section>
 
       {/* SERVICIOS */}
-      <section style={{ position:"relative", zIndex:20, padding:"96px 48px", maxWidth:900, margin:"0 auto" }}>
+      <section style={{ position:"relative", zIndex:20, padding:"clamp(48px, 10vw, 96px) clamp(20px, 4vw, 48px)", maxWidth:900, margin:"0 auto" }}>
         <SectionHeader label="Lo que ofrezco" title="Servicios" accent="& Disciplinas" isDark={isDark}/>
         <div>
           {services.map((s,i) => (
@@ -411,7 +415,7 @@ export default function Home() {
       </section>
 
       {/* GALERÍA */}
-      <section style={{ position:"relative", zIndex:20, padding:"96px 48px" }}>
+      <section style={{ position:"relative", zIndex:20, padding:"clamp(48px, 10vw, 96px) clamp(16px, 4vw, 48px)" }}>
         <div style={{ maxWidth:1280, margin:"0 auto" }}>
           <SectionHeader label="Objetos visuales" title="Foto &" accent="Arte" right="Fotografía · Escultura · Mixto" isDark={isDark}/>
           <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gridAutoRows:200, gap:12 }}>
@@ -422,23 +426,90 @@ export default function Home() {
         </div>
       </section>
 
+      {/* WHATSAPP BANNER */}
+      <section style={{ position:"relative", zIndex:20, padding: isDesktop ? "48px 48px 0" : "32px 20px 0", maxWidth:1280, margin:"0 auto" }}>
+        <WhatsAppBanner isDark={isDark} isDesktop={isDesktop} headline="¿Listo para tu proyecto? Hablemos ya"/>
+      </section>
+
+      {/* CTA VISUAL EDITORIAL */}
+      <section style={{ position:"relative", zIndex:20, padding: isDesktop ? "96px 48px" : "48px 20px", maxWidth:1280, margin:"0 auto" }}>
+        <motion.a href="/visual"
+          initial={{ opacity:0, y:32 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.8, ease:[.16,1,.3,1] }}
+          whileHover={{ y:-4 }}
+          style={{
+            display:"grid",
+            gridTemplateColumns: isDesktop ? "1.2fr 1fr" : "1fr",
+            gap: isDesktop ? 0 : 12,
+            position:"relative",
+            overflow:"hidden",
+            borderRadius:24,
+            background:isDark?"rgba(14,12,20,0.65)":"rgba(255,253,247,0.78)",
+            border:isDark?"0.5px solid rgba(255,255,255,0.12)":"0.5px solid rgba(0,0,0,0.10)",
+            backdropFilter:"blur(8px)",
+            textDecoration:"none",
+            cursor:"pointer",
+            minHeight: isDesktop ? 360 : "auto",
+          }}>
+          {/* mini collage */}
+          <div style={{ position:"relative", display:"grid", gridTemplateColumns:"repeat(3, 1fr)", gridTemplateRows:"repeat(2, 1fr)", gap:6, padding:24, minHeight: isDesktop ? "auto" : 240 }}>
+            {[
+              { src: photosEditorial[8].src, span: "1 / span 2 / 3 / span 2" },
+              { src: photosStudio[5].src, span: "1 / 3 / 2 / 4" },
+              { src: motionPieces[0].id, span: "2 / 3 / 3 / 4", video: motionPieces[0].src },
+            ].map((m, i) => (
+              <motion.div key={i}
+                initial={{ opacity:0, scale:1.04 }} whileInView={{ opacity:1, scale:1 }} viewport={{ once:true }}
+                transition={{ duration:0.7, delay:i*0.08 }}
+                style={{ position:"relative", overflow:"hidden", gridArea: m.span, borderRadius:12 }}>
+                {"video" in m && m.video ? (
+                  <video src={m.video} autoPlay loop muted playsInline style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
+                ) : (
+                  <img src={m.src} alt="" loading="lazy" style={{ width:"100%", height:"100%", objectFit:"cover", filter: isDark ? "grayscale(15%) brightness(.9)" : "grayscale(8%) brightness(.97)" }}/>
+                )}
+              </motion.div>
+            ))}
+          </div>
+
+          {/* text side */}
+          <div style={{ display:"flex", flexDirection:"column", justifyContent:"center", padding:isDesktop?"56px 56px":"32px 24px 40px", gap:14 }}>
+            <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+              <div style={{ width:18, height:.5, background:isDark?"rgba(255,255,255,0.35)":"rgba(0,0,0,0.30)" }}/>
+              <span style={{ fontFamily:"monospace", fontSize:10, letterSpacing:".22em", textTransform:"uppercase", color:isDark?"#fff":"#000" }}>Nuevo · Issue 01</span>
+            </div>
+            <h3 style={{ fontSize:"clamp(2rem,4.5vw,3.6rem)", fontWeight:900, textTransform:"uppercase", letterSpacing:"-.04em", lineHeight:.88, color:isDark?"#fff":"#111" }}>
+              Visual<br/>
+              <span style={{ WebkitTextStroke:isDark?"1.5px rgba(255,255,255,0.25)":"1.5px rgba(0,0,0,0.20)", color:"transparent" }}>Editorial</span>
+            </h3>
+            <p style={{ fontSize:13, fontWeight:300, lineHeight:1.7, maxWidth:340, color:isDark?"#fff":"#000" }}>
+              Fotografía y motion como una revista. Capítulos, spreads y reels para explorar mi trabajo visual.
+            </p>
+            <div style={{ display:"flex", alignItems:"center", gap:12, marginTop:8, fontSize:11, textTransform:"uppercase", letterSpacing:".22em", color:isDark?"#fff":"#111" }}>
+              <span style={{ display:"inline-flex", alignItems:"center", justifyContent:"center", width:36, height:36, borderRadius:"50%", border:isDark?"1px solid rgba(255,255,255,0.30)":"1px solid rgba(0,0,0,0.25)", fontSize:14 }}>→</span>
+              <span>Abrir portafolio visual</span>
+            </div>
+          </div>
+        </motion.a>
+      </section>
+
       {/* CTA */}
-      <section style={{ position:"relative", zIndex:20, padding:"112px 48px", maxWidth:1280, margin:"0 auto", display:"flex", flexDirection:isDesktop?"row":"column", alignItems:isDesktop?"flex-end":"flex-start", justifyContent:"space-between", gap:48, borderTop:borderC }}>
+      <section style={{ position:"relative", zIndex:20, padding:"clamp(64px, 12vw, 112px) clamp(20px, 4vw, 48px)", maxWidth:1280, margin:"0 auto", display:"flex", flexDirection:isDesktop?"row":"column", alignItems:isDesktop?"flex-end":"flex-start", justifyContent:"space-between", gap:48, borderTop:borderC }}>
         <motion.div initial={{ opacity:0, y:24 }} whileInView={{ opacity:1, y:0 }} transition={{ duration:0.7 }} viewport={{ once:true }}>
-          <span style={{ fontSize:9, letterSpacing:".35em", textTransform:"uppercase", display:"block", marginBottom:16, color:isDark?"rgba(255,255,255,0.65)":"rgba(0,0,0,0.60)" }}>Próximo proyecto</span>
+          <span style={{ fontSize:9, letterSpacing:".35em", textTransform:"uppercase", display:"block", marginBottom:16, color:isDark?"#fff":"#000" }}>Próximo proyecto</span>
           <h2 style={{ fontSize:"clamp(2.8rem,7vw,5rem)", fontWeight:900, textTransform:"uppercase", letterSpacing:"-.04em", lineHeight:.86, color:isDark?"#fff":"#111" }}>
             Hablemos<br/>
             <span style={{ WebkitTextStroke:isDark?"1.5px rgba(255,255,255,0.20)":"1.5px rgba(0,0,0,0.18)", color:"transparent" }}>de tu idea</span>
           </h2>
         </motion.div>
         <div style={{ display:"flex", flexDirection:"column", gap:16, flexShrink:0 }}>
+          <motion.div initial={{ opacity:0, y:8 }} whileInView={{ opacity:1, y:0 }} transition={{ duration:.5 }} viewport={{ once:true }}>
+            <WhatsAppPill isDark={isDark} size="lg" label="Escribir por WhatsApp"/>
+          </motion.div>
           {[
             { label:"Email",     href:"mailto:aprada.web@gmail.com" },
-            { label:"WhatsApp",  href:WA_URL },
             { label:"Instagram", href:"https://instagram.com/tu_usuario" },
           ].map(({ label, href }, i) => (
             <motion.a key={label} href={href} target={href.startsWith("http")?"_blank":undefined} rel="noopener noreferrer"
-              style={{ display:"flex", alignItems:"center", gap:16, fontSize:13, textTransform:"uppercase", letterSpacing:".2em", textDecoration:"none", color:isDark?"rgba(255,255,255,0.90)":"rgba(0,0,0,0.85)" }}
+              style={{ display:"flex", alignItems:"center", gap:16, fontSize:13, textTransform:"uppercase", letterSpacing:".2em", textDecoration:"none", color:isDark?"#fff":"#000" }}
               initial={{ opacity:0, x:12 }} whileInView={{ opacity:1, x:0 }}
               transition={{ duration:0.5, delay:i*0.08 }} viewport={{ once:true }}
               whileHover={{ x:4 }}>
@@ -450,11 +521,13 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer style={{ position:"relative", zIndex:20, padding:"32px 48px", display:"flex", alignItems:"center", justifyContent:"space-between", background:pageBg, borderTop:borderC }}>
-        <span style={{ fontSize:9, letterSpacing:".4em", textTransform:"uppercase", color:isDark?"rgba(255,255,255,0.55)":"rgba(0,0,0,0.55)" }}>Andres Prada</span>
-        <span style={{ fontFamily:"monospace", fontSize:9, color:isDark?"rgba(255,255,255,0.45)":"rgba(0,0,0,0.45)" }}>© 2026</span>
-        <span style={{ fontSize:9, letterSpacing:".4em", textTransform:"uppercase", color:isDark?"rgba(255,255,255,0.55)":"rgba(0,0,0,0.55)" }}>Bogotá, CO</span>
+      <footer style={{ position:"relative", zIndex:20, padding:"24px clamp(16px, 4vw, 48px)", display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:12, background:pageBg, borderTop:borderC }}>
+        <span style={{ fontSize:9, letterSpacing:".4em", textTransform:"uppercase", color:isDark?"#fff":"#000" }}>Andres Prada</span>
+        <span style={{ fontFamily:"monospace", fontSize:9, color:isDark?"#fff":"#000" }}>© 2026</span>
+        <span style={{ fontSize:9, letterSpacing:".4em", textTransform:"uppercase", color:isDark?"#fff":"#000" }}>Bogotá, CO</span>
       </footer>
+
+      <WhatsAppFAB/>
     </div>
   )
 }

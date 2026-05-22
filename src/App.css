@@ -82,3 +82,9 @@ img {
   height: auto;
   display: block;
 }
+
+@keyframes wa-pulse {
+  0%   { transform: scale(1);   opacity: .55; }
+  70%  { transform: scale(1.5); opacity: 0;   }
+  100% { transform: scale(1.5); opacity: 0;   }
+}

@@ -4,6 +4,7 @@ import Home from "./pages/Home"
 import Manifesto from "./pages/Manifesto"
 import Lab from "./pages/Lab"
 import Archive from "./pages/Archive"
+import Visual from "./pages/Visual"
 import Contact from "./pages/Contact"
 import { ThemeProvider } from "./context/ThemeContext"
 
@@ -17,6 +18,7 @@ function App() {
           <Route path="/manifesto" element={<Manifesto />} />
           <Route path="/lab" element={<Lab />} />
           <Route path="/archive" element={<Archive />} />
+          <Route path="/visual" element={<Visual />} />
           <Route path="/contact" element={<Contact />} />
         </Route>
       </Routes>
