@@ -7,6 +7,7 @@ import CardNav from "../components/CardNav"
 import ScrollStack, { ScrollStackItem, MobileStickyStack } from "../components/ScrollStack"
 import "../components/CardNav.css"
 import "../components/ScrollStack.css"
+import { featuredProjects, type Project } from "../data/projects"
 
 const LIQUID_DARK  = ['#0a0014', '#7b00cc', '#c026d3', '#60a5fa', '#ffffff']
 const LIQUID_LIGHT = ['#f4f1f1', '#747272', '#000000']
@@ -30,28 +31,7 @@ const services = [
   { index: "05", name: "Esculturas & Arte",          desc: "Piezas físicas y conceptuales" },
 ]
 
-const projectsData = [
-  {
-    id: 1, index: "001", title: "Proyecto Web", category: "Desarrollo Web", year: "2025",
-    img: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=900",
-    darkBg: "rgba(10,8,18,0.93)", lightBg: "rgba(240,236,228,0.96)",
-  },
-  {
-    id: 2, index: "002", title: "Tienda Online", category: "Ecommerce", year: "2025",
-    img: "https://images.unsplash.com/photo-1557821552-17105176677c?auto=format&fit=crop&q=80&w=900",
-    darkBg: "rgba(18,10,10,0.93)", lightBg: "rgba(248,240,235,0.96)",
-  },
-  {
-    id: 3, index: "003", title: "Visual Reactivo", category: "Audioreactivo", year: "2024",
-    img: "https://images.unsplash.com/photo-1617802690992-15d93263d3a9?auto=format&fit=crop&q=80&w=900",
-    darkBg: "rgba(5,15,18,0.93)", lightBg: "rgba(232,242,245,0.96)",
-  },
-  {
-    id: 4, index: "004", title: "Portafolio", category: "Fotografía", year: "2024",
-    img: "https://images.unsplash.com/photo-1554080353-a576cf803bda?auto=format&fit=crop&q=80&w=900",
-    darkBg: "rgba(12,10,8,0.93)", lightBg: "rgba(245,242,235,0.96)",
-  },
-]
+const projectsData = featuredProjects
 
 const galleryData = [
   { img: "https://images.unsplash.com/photo-1554080353-a576cf803bda?auto=format&fit=crop&q=80&w=600",  label: "Fotografía", sub: "Editorial · 2025",   tall: true  },
@@ -130,7 +110,7 @@ function HeroImagePanel() {
             transition={{ duration:0.3 }}/>
         ))}
       </div>
-      <div style={{ position:"absolute", top:24, right:24, fontSize:9, letterSpacing:".3em", textTransform:"uppercase", color:isDark?"rgba(255,255,255,0.40)":"rgba(0,0,0,0.35)" }}>
+      <div style={{ position:"absolute", top:24, right:24, fontSize:9, letterSpacing:".3em", textTransform:"uppercase", color:isDark?"rgba(255,255,255,0.85)":"rgba(0,0,0,0.78)" }}>
         Fotografía · Arte
       </div>
     </div>
@@ -156,7 +136,7 @@ function HeroText() {
       <motion.div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:40 }}
         initial={{ opacity:0, y:16 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.7, delay:0.1 }}>
         <div style={{ width:24, height:.5, background:isDark?"rgba(255,255,255,0.20)":"rgba(0,0,0,0.20)" }}/>
-        <span style={{ fontSize:9, letterSpacing:".3em", textTransform:"uppercase", color:isDark?"rgba(255,255,255,0.30)":"rgba(0,0,0,0.30)" }}>
+        <span style={{ fontSize:9, letterSpacing:".3em", textTransform:"uppercase", color:isDark?"rgba(255,255,255,0.70)":"rgba(0,0,0,0.70)" }}>
           Developer & Visual Creator
         </span>
       </motion.div>
@@ -168,7 +148,7 @@ function HeroText() {
         <motion.h1 style={{ fontSize:"clamp(3.5rem,7vw,7.5rem)", fontWeight:900, textTransform:"uppercase", letterSpacing:"-.04em", lineHeight:.85, WebkitTextStroke:isDark?"1.5px rgba(255,255,255,0.25)":"1.5px rgba(0,0,0,0.2)", color:"transparent" }}
           initial={{ y:90 }} animate={{ y:0 }} transition={{ duration:0.9, delay:0.22, ease:[0.16,1,0.3,1] }}>Prada</motion.h1>
       </div>
-      <motion.p style={{ fontSize:15, fontWeight:300, lineHeight:1.8, maxWidth:280, marginBottom:48, color:isDark?"rgba(255,255,255,0.40)":"rgba(0,0,0,0.45)" }}
+      <motion.p style={{ fontSize:15, fontWeight:300, lineHeight:1.8, maxWidth:280, marginBottom:48, color:isDark?"rgba(255,255,255,0.85)":"rgba(0,0,0,0.80)" }}
         initial={{ opacity:0, y:12 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.7, delay:0.5 }}>
         Construyo experiencias digitales que viven entre el código, el movimiento y el arte.
       </motion.p>
@@ -176,8 +156,8 @@ function HeroText() {
         initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ delay:0.7 }}>
         {services.slice(0,4).map(s => (
           <div key={s.index} style={{ display:"flex", alignItems:"center", gap:12 }}>
-            <span style={{ fontFamily:"monospace", fontSize:9, color:isDark?"rgba(255,255,255,0.15)":"rgba(0,0,0,0.15)" }}>{s.index}</span>
-            <span style={{ fontSize:11, color:isDark?"rgba(255,255,255,0.35)":"rgba(0,0,0,0.40)" }}>{s.name}</span>
+            <span style={{ fontFamily:"monospace", fontSize:9, color:isDark?"rgba(255,255,255,0.50)":"rgba(0,0,0,0.45)" }}>{s.index}</span>
+            <span style={{ fontSize:11, color:isDark?"rgba(255,255,255,0.80)":"rgba(0,0,0,0.75)" }}>{s.name}</span>
           </div>
         ))}
       </motion.div>
@@ -195,12 +175,12 @@ function ServiceRow({ index, name, desc, delay, isDark }: { index:string; name:s
       transition={{ duration:0.5, delay }} viewport={{ once:true }}>
       <motion.div style={{ position:"absolute", inset:0, background:isDark?"rgba(255,255,255,0.025)":"rgba(0,0,0,0.025)", originX:0 }}
         initial={{ scaleX:0 }} animate={{ scaleX:hovered?1:0 }} transition={{ duration:0.35 }}/>
-      <span style={{ fontFamily:"monospace", fontSize:10, width:24, flexShrink:0, color:isDark?"rgba(255,255,255,0.20)":"rgba(0,0,0,0.20)" }}>{index}</span>
+      <span style={{ fontFamily:"monospace", fontSize:10, width:24, flexShrink:0, color:isDark?"rgba(255,255,255,0.55)":"rgba(0,0,0,0.50)" }}>{index}</span>
       <div style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"space-between" }}>
-        <motion.span style={{ fontSize:14, fontWeight:300, letterSpacing:".01em", color:isDark?"rgba(255,255,255,0.80)":"rgba(0,0,0,0.75)" }} animate={{ x:hovered?6:0 }} transition={{ duration:0.25 }}>{name}</motion.span>
-        <span style={{ fontSize:10, letterSpacing:".15em", textTransform:"uppercase", color:isDark?"rgba(255,255,255,0.20)":"rgba(0,0,0,0.20)" }}>{desc}</span>
+        <motion.span style={{ fontSize:14, fontWeight:300, letterSpacing:".01em", color:isDark?"rgba(255,255,255,0.96)":"rgba(0,0,0,0.92)" }} animate={{ x:hovered?6:0 }} transition={{ duration:0.25 }}>{name}</motion.span>
+        <span style={{ fontSize:10, letterSpacing:".15em", textTransform:"uppercase", color:isDark?"rgba(255,255,255,0.55)":"rgba(0,0,0,0.55)" }}>{desc}</span>
       </div>
-      <motion.span style={{ fontSize:12, flexShrink:0, color:isDark?"rgba(255,255,255,0.30)":"rgba(0,0,0,0.25)" }}
+      <motion.span style={{ fontSize:12, flexShrink:0, color:isDark?"rgba(255,255,255,0.70)":"rgba(0,0,0,0.65)" }}
         animate={{ x:hovered?0:8, opacity:hovered?1:0 }} transition={{ duration:0.2 }}>→</motion.span>
     </motion.div>
   )
@@ -218,7 +198,7 @@ function GalleryItem({ item, i, isDark }: { item:typeof galleryData[0]; i:number
         transition={{ duration:0.55 }}/>
       <motion.div style={{ position:"absolute", inset:0, display:"flex", flexDirection:"column", justifyContent:"flex-end", padding:16, background:isDark?"rgba(0,0,0,0.55)":"rgba(255,255,255,0.60)" }}
         animate={{ opacity:hovered?1:0 }} transition={{ duration:0.3 }}>
-        <span style={{ fontSize:9, letterSpacing:".25em", textTransform:"uppercase", marginBottom:4, color:isDark?"rgba(255,255,255,0.50)":"rgba(0,0,0,0.40)" }}>{item.sub}</span>
+        <span style={{ fontSize:9, letterSpacing:".25em", textTransform:"uppercase", marginBottom:4, color:isDark?"rgba(255,255,255,0.80)":"rgba(0,0,0,0.70)" }}>{item.sub}</span>
         <span style={{ fontSize:13, fontWeight:300, color:isDark?"#fff":"#111" }}>{item.label}</span>
       </motion.div>
       <motion.div style={{ position:"absolute", top:12, left:12, width:16, height:16, borderLeft:isDark?"1px solid rgba(255,255,255,0.40)":"1px solid rgba(0,0,0,0.30)", borderTop:isDark?"1px solid rgba(255,255,255,0.40)":"1px solid rgba(0,0,0,0.30)" }}
@@ -234,38 +214,50 @@ function SectionHeader({ label, title, accent, right, isDark }: { label:string; 
     <motion.div style={{ display:"flex", alignItems:"flex-end", justifyContent:"space-between", marginBottom:56 }}
       initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }} transition={{ duration:0.6 }} viewport={{ once:true }}>
       <div>
-        <span style={{ fontSize:9, letterSpacing:".35em", textTransform:"uppercase", display:"block", marginBottom:12, color:isDark?"rgba(255,255,255,0.20)":"rgba(0,0,0,0.25)" }}>{label}</span>
+        <span style={{ fontSize:9, letterSpacing:".35em", textTransform:"uppercase", display:"block", marginBottom:12, color:isDark?"rgba(255,255,255,0.65)":"rgba(0,0,0,0.65)" }}>{label}</span>
         <h2 style={{ fontSize:"clamp(2.2rem,5vw,4rem)", fontWeight:900, textTransform:"uppercase", letterSpacing:"-.03em", lineHeight:.85, color:isDark?"#fff":"#111" }}>
           {title}<br/>
-          <span style={{ color:isDark?"rgba(255,255,255,0.12)":"rgba(0,0,0,0.10)" }}>{accent}</span>
+          <span style={{ color:isDark?"rgba(255,255,255,0.28)":"rgba(0,0,0,0.22)" }}>{accent}</span>
         </h2>
       </div>
-      {right && <span style={{ fontFamily:"monospace", fontSize:11, paddingBottom:4, color:isDark?"rgba(255,255,255,0.15)":"rgba(0,0,0,0.15)" }}>{right}</span>}
+      {right && <span style={{ fontFamily:"monospace", fontSize:11, paddingBottom:4, color:isDark?"rgba(255,255,255,0.55)":"rgba(0,0,0,0.55)" }}>{right}</span>}
     </motion.div>
   )
 }
 
 /* Card reutilizable en ambos modos */
-function ProjectCard({ project, isDesktop, isDark }: { project: typeof projectsData[0]; isDesktop: boolean; isDark: boolean }) {
+function ProjectCard({ project, isDesktop, isDark }: { project: Project; isDesktop: boolean; isDark: boolean }) {
+  const primaryLink = project.links[0]
   return (
     <div style={{ width:"100%", height:"100%", display:"flex", flexDirection:isDesktop?"row":"column", overflow:"hidden", backgroundColor:isDark?project.darkBg:project.lightBg, borderRadius:36, border:isDark?"0.5px solid rgba(255,255,255,0.07)":"0.5px solid rgba(0,0,0,0.08)", backdropFilter:"blur(8px)" }}>
       <div style={{ flex:"1.1 1 0", display:"flex", flexDirection:"column", justifyContent:"space-between", padding:isDesktop?"48px":"32px", borderRight:isDesktop?(isDark?"0.5px solid rgba(255,255,255,0.05)":"0.5px solid rgba(0,0,0,0.06)"):"none", borderBottom:!isDesktop?(isDark?"0.5px solid rgba(255,255,255,0.05)":"0.5px solid rgba(0,0,0,0.06)"):"none" }}>
         <div>
           <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:32 }}>
-            <span style={{ fontFamily:"monospace", fontSize:10, color:isDark?"rgba(255,255,255,0.15)":"rgba(0,0,0,0.15)" }}>{project.index}</span>
-            <span style={{ fontSize:9, textTransform:"uppercase", letterSpacing:".25em", padding:"4px 12px", borderRadius:20, border:isDark?"0.5px solid rgba(255,255,255,0.12)":"0.5px solid rgba(0,0,0,0.10)", color:isDark?"rgba(255,255,255,0.35)":"rgba(0,0,0,0.35)" }}>{project.category}</span>
+            <span style={{ fontFamily:"monospace", fontSize:10, color:isDark?"rgba(255,255,255,0.45)":"rgba(0,0,0,0.45)" }}>{project.index}</span>
+            <span style={{ fontSize:9, textTransform:"uppercase", letterSpacing:".25em", padding:"4px 12px", borderRadius:20, border:isDark?"0.5px solid rgba(255,255,255,0.25)":"0.5px solid rgba(0,0,0,0.22)", color:isDark?"rgba(255,255,255,0.75)":"rgba(0,0,0,0.72)" }}>{project.category}</span>
           </div>
+          {project.client && (
+            <span style={{ display:"block", fontSize:10, letterSpacing:".25em", textTransform:"uppercase", marginBottom:12, color:isDark?"rgba(255,255,255,0.55)":"rgba(0,0,0,0.55)" }}>{project.client}</span>
+          )}
           <h3 style={{ fontSize:"clamp(2rem,4vw,3.5rem)", fontWeight:900, textTransform:"uppercase", letterSpacing:"-.03em", lineHeight:.88, marginBottom:20, color:isDark?"#fff":"#111" }}>{project.title}</h3>
-          <p style={{ fontSize:13, fontWeight:300, lineHeight:1.7, maxWidth:280, color:isDark?"rgba(255,255,255,0.30)":"rgba(0,0,0,0.35)" }}>
-            Arquitectura web de alto rendimiento construida para una experiencia inmersiva.
+          <p style={{ fontSize:13, fontWeight:300, lineHeight:1.7, maxWidth:340, color:isDark?"rgba(255,255,255,0.82)":"rgba(0,0,0,0.80)" }}>
+            {project.description}
           </p>
+          <div style={{ display:"flex", flexWrap:"wrap", gap:6, marginTop:18 }}>
+            {project.stack.slice(0,4).map(t => (
+              <span key={t} style={{ fontFamily:"monospace", fontSize:9, padding:"4px 10px", borderRadius:20, color:isDark?"rgba(255,255,255,0.78)":"rgba(0,0,0,0.72)", background:isDark?"rgba(255,255,255,0.06)":"rgba(0,0,0,0.05)", border:isDark?"1px solid rgba(255,255,255,0.14)":"1px solid rgba(0,0,0,0.10)" }}>{t}</span>
+            ))}
+          </div>
         </div>
         <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginTop:32 }}>
-          <span style={{ fontFamily:"monospace", fontSize:11, color:isDark?"rgba(255,255,255,0.20)":"rgba(0,0,0,0.20)" }}>{project.year}</span>
-          <motion.button style={{ display:"flex", alignItems:"center", gap:8, fontSize:10, textTransform:"uppercase", letterSpacing:".15em", padding:"10px 20px", borderRadius:20, border:isDark?"0.5px solid rgba(255,255,255,0.20)":"0.5px solid rgba(0,0,0,0.15)", color:isDark?"rgba(255,255,255,0.60)":"rgba(0,0,0,0.55)", background:"transparent", cursor:"pointer" }}
-            whileHover={{ scale:1.02 }} whileTap={{ scale:0.97 }}>
-            Ver proyecto <span>→</span>
-          </motion.button>
+          <span style={{ fontFamily:"monospace", fontSize:11, color:isDark?"rgba(255,255,255,0.55)":"rgba(0,0,0,0.55)" }}>{project.year}</span>
+          {primaryLink && (
+            <motion.a href={primaryLink.href} target="_blank" rel="noopener noreferrer"
+              style={{ display:"flex", alignItems:"center", gap:8, fontSize:10, textTransform:"uppercase", letterSpacing:".15em", padding:"10px 20px", borderRadius:20, border:isDark?"0.5px solid rgba(255,255,255,0.35)":"0.5px solid rgba(0,0,0,0.30)", color:isDark?"rgba(255,255,255,0.95)":"rgba(0,0,0,0.90)", background:"transparent", cursor:"pointer", textDecoration:"none" }}
+              whileHover={{ scale:1.02 }} whileTap={{ scale:0.97 }}>
+              {primaryLink.label} <span>↗</span>
+            </motion.a>
+          )}
         </div>
       </div>
       <div style={{ flex:"1 1 0", position:"relative", overflow:"hidden", minHeight:isDesktop?"auto":220 }} className="group">
@@ -359,19 +351,19 @@ export default function Home() {
               <span className="animate-ping" style={{ position:"absolute", display:"inline-flex", width:"100%", height:"100%", borderRadius:"50%", background:"rgb(52,211,153)", opacity:.75 }}/>
               <span style={{ position:"relative", display:"inline-flex", width:6, height:6, borderRadius:"50%", background:"rgb(16,185,129)" }}/>
             </span>
-            <span style={{ fontSize:9, letterSpacing:".25em", textTransform:"uppercase", color:isDark?"rgba(255,255,255,0.25)":"rgba(0,0,0,0.30)" }}>Disponible</span>
+            <span style={{ fontSize:9, letterSpacing:".25em", textTransform:"uppercase", color:isDark?"rgba(255,255,255,0.80)":"rgba(0,0,0,0.75)" }}>Disponible</span>
           </div>
           <div style={{ position:"absolute", bottom:32, right:32, display:"flex", flexDirection:"column", alignItems:"center", gap:8, pointerEvents:"none" }}>
             <div style={{ width:.5, height:40, background:isDark?"rgba(255,255,255,0.15)":"rgba(0,0,0,0.15)" }}/>
-            <span style={{ fontSize:8, letterSpacing:".3em", textTransform:"uppercase", color:isDark?"rgba(255,255,255,0.20)":"rgba(0,0,0,0.20)" }}>Scroll</span>
+            <span style={{ fontSize:8, letterSpacing:".3em", textTransform:"uppercase", color:isDark?"rgba(255,255,255,0.60)":"rgba(0,0,0,0.55)" }}>Scroll</span>
           </div>
           <HeroText/>
         </div>
       </section>
 
       <div style={{ position:"relative", zIndex:20, margin:"0 48px", display:"flex", alignItems:"center", justifyContent:"space-between", padding:"16px 0", borderTop:borderC }}>
-        <span style={{ fontSize:9, letterSpacing:".35em", textTransform:"uppercase", color:isDark?"rgba(255,255,255,0.15)":"rgba(0,0,0,0.15)" }}>Selected Works</span>
-        <span style={{ fontFamily:"monospace", fontSize:9, color:isDark?"rgba(255,255,255,0.10)":"rgba(0,0,0,0.10)" }}>2024 — 2026</span>
+        <span style={{ fontSize:9, letterSpacing:".35em", textTransform:"uppercase", color:isDark?"rgba(255,255,255,0.65)":"rgba(0,0,0,0.60)" }}>Selected Works</span>
+        <span style={{ fontFamily:"monospace", fontSize:9, color:isDark?"rgba(255,255,255,0.50)":"rgba(0,0,0,0.45)" }}>2024 — 2026</span>
       </div>
 
       {/* ══════════════════════════════════════════════════════════════════════
@@ -433,7 +425,7 @@ export default function Home() {
       {/* CTA */}
       <section style={{ position:"relative", zIndex:20, padding:"112px 48px", maxWidth:1280, margin:"0 auto", display:"flex", flexDirection:isDesktop?"row":"column", alignItems:isDesktop?"flex-end":"flex-start", justifyContent:"space-between", gap:48, borderTop:borderC }}>
         <motion.div initial={{ opacity:0, y:24 }} whileInView={{ opacity:1, y:0 }} transition={{ duration:0.7 }} viewport={{ once:true }}>
-          <span style={{ fontSize:9, letterSpacing:".35em", textTransform:"uppercase", display:"block", marginBottom:16, color:isDark?"rgba(255,255,255,0.20)":"rgba(0,0,0,0.25)" }}>Próximo proyecto</span>
+          <span style={{ fontSize:9, letterSpacing:".35em", textTransform:"uppercase", display:"block", marginBottom:16, color:isDark?"rgba(255,255,255,0.65)":"rgba(0,0,0,0.60)" }}>Próximo proyecto</span>
           <h2 style={{ fontSize:"clamp(2.8rem,7vw,5rem)", fontWeight:900, textTransform:"uppercase", letterSpacing:"-.04em", lineHeight:.86, color:isDark?"#fff":"#111" }}>
             Hablemos<br/>
             <span style={{ WebkitTextStroke:isDark?"1.5px rgba(255,255,255,0.20)":"1.5px rgba(0,0,0,0.18)", color:"transparent" }}>de tu idea</span>
@@ -446,7 +438,7 @@ export default function Home() {
             { label:"Instagram", href:"https://instagram.com/tu_usuario" },
           ].map(({ label, href }, i) => (
             <motion.a key={label} href={href} target={href.startsWith("http")?"_blank":undefined} rel="noopener noreferrer"
-              style={{ display:"flex", alignItems:"center", gap:16, fontSize:13, textTransform:"uppercase", letterSpacing:".2em", textDecoration:"none", color:isDark?"rgba(255,255,255,0.40)":"rgba(0,0,0,0.35)" }}
+              style={{ display:"flex", alignItems:"center", gap:16, fontSize:13, textTransform:"uppercase", letterSpacing:".2em", textDecoration:"none", color:isDark?"rgba(255,255,255,0.90)":"rgba(0,0,0,0.85)" }}
               initial={{ opacity:0, x:12 }} whileInView={{ opacity:1, x:0 }}
               transition={{ duration:0.5, delay:i*0.08 }} viewport={{ once:true }}
               whileHover={{ x:4 }}>
@@ -459,9 +451,9 @@ export default function Home() {
 
       {/* Footer */}
       <footer style={{ position:"relative", zIndex:20, padding:"32px 48px", display:"flex", alignItems:"center", justifyContent:"space-between", background:pageBg, borderTop:borderC }}>
-        <span style={{ fontSize:9, letterSpacing:".4em", textTransform:"uppercase", color:isDark?"rgba(255,255,255,0.12)":"rgba(0,0,0,0.15)" }}>Andres Prada</span>
-        <span style={{ fontFamily:"monospace", fontSize:9, color:isDark?"rgba(255,255,255,0.10)":"rgba(0,0,0,0.12)" }}>© 2026</span>
-        <span style={{ fontSize:9, letterSpacing:".4em", textTransform:"uppercase", color:isDark?"rgba(255,255,255,0.12)":"rgba(0,0,0,0.15)" }}>Bogotá, CO</span>
+        <span style={{ fontSize:9, letterSpacing:".4em", textTransform:"uppercase", color:isDark?"rgba(255,255,255,0.55)":"rgba(0,0,0,0.55)" }}>Andres Prada</span>
+        <span style={{ fontFamily:"monospace", fontSize:9, color:isDark?"rgba(255,255,255,0.45)":"rgba(0,0,0,0.45)" }}>© 2026</span>
+        <span style={{ fontSize:9, letterSpacing:".4em", textTransform:"uppercase", color:isDark?"rgba(255,255,255,0.55)":"rgba(0,0,0,0.55)" }}>Bogotá, CO</span>
       </footer>
     </div>
   )

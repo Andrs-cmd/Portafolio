@@ -79,6 +79,11 @@
 
 .logo {
   height: 28px;
+  transition: filter 0.35s ease;
+}
+
+[data-theme="dark"] .logo {
+  filter: invert(1) brightness(1.05);
 }
 
 .card-nav-cta-button {
