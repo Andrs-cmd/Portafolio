@@ -1,13 +1,124 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/faviconAP.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#060606" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f5f1e9" media="(prefers-color-scheme: light)" />
+
+    <!-- Primary Meta -->
+    <title>Andres Prada · Desarrollador y Diseñador Web · Bogotá</title>
+    <meta name="description" content="Andres Prada — desarrollador frontend, diseñador web y director visual en Bogotá, Colombia. Sitios web, e-commerce, fotografía editorial y motion graphics para marcas que quieren diferenciarse." />
+    <meta name="keywords" content="desarrollador web bogotá, diseñador web colombia, frontend developer, react developer, laravel developer, ui ux design, portafolio web, e-commerce shopify, páginas web colombia, fotografía editorial, motion graphics, dirección creativa, andres prada" />
+    <meta name="author" content="Andres Prada" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow" />
+    <link rel="canonical" href="https://andresprada.com/" />
+
+    <!-- Icons -->
+    <link rel="icon" type="image/x-icon" href="/faviconAP.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/faviconAP.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/faviconAP.png" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_CO" />
+    <meta property="og:url" content="https://andresprada.com/" />
+    <meta property="og:site_name" content="Andres Prada" />
+    <meta property="og:title" content="Andres Prada · Desarrollador y Diseñador Web · Bogotá" />
+    <meta property="og:description" content="Desarrollo web, diseño y dirección visual. Sitios web, e-commerce, fotografía editorial y motion graphics para marcas con criterio." />
+    <meta property="og:image" content="https://res.cloudinary.com/dq5tsivzq/image/upload/f_auto,q_auto,w_1200/v1779425407/GUA_4718_gwpah8.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Portafolio de Andres Prada — Visual Editorial" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Andres Prada · Desarrollador y Diseñador Web" />
+    <meta name="twitter:description" content="Frontend, e-commerce, fotografía editorial y motion graphics. Bogotá, Colombia." />
+    <meta name="twitter:image" content="https://res.cloudinary.com/dq5tsivzq/image/upload/f_auto,q_auto,w_1200/v1779425407/GUA_4718_gwpah8.jpg" />
+
+    <!-- Preconnect to Cloudinary CDN -->
+    <link rel="preconnect" href="https://res.cloudinary.com" crossorigin />
+    <link rel="dns-prefetch" href="https://res.cloudinary.com" />
+
+    <!-- JSON-LD Person + ProfessionalService -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Person",
+          "@id": "https://andresprada.com/#person",
+          "name": "Andres Prada",
+          "givenName": "Andres",
+          "familyName": "Prada",
+          "url": "https://andresprada.com/",
+          "image": "https://res.cloudinary.com/dq5tsivzq/image/upload/f_auto,q_auto,w_800/v1779425407/GUA_4718_gwpah8.jpg",
+          "jobTitle": "Desarrollador Frontend & Diseñador Web",
+          "email": "mailto:aprada.web@gmail.com",
+          "telephone": "+57-319-576-8097",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Bogotá",
+            "addressCountry": "CO"
+          },
+          "knowsAbout": [
+            "Desarrollo Frontend",
+            "React",
+            "Laravel",
+            "Diseño Web",
+            "E-commerce",
+            "UI UX Design",
+            "Fotografía Editorial",
+            "Motion Graphics",
+            "Dirección Creativa"
+          ],
+          "sameAs": [
+            "https://github.com/Andrs-cmd",
+            "https://instagram.com/"
+          ]
+        },
+        {
+          "@type": "ProfessionalService",
+          "@id": "https://andresprada.com/#service",
+          "name": "Andres Prada — Estudio de Diseño y Desarrollo",
+          "url": "https://andresprada.com/",
+          "image": "https://res.cloudinary.com/dq5tsivzq/image/upload/f_auto,q_auto,w_1200/v1779425407/GUA_4718_gwpah8.jpg",
+          "founder": { "@id": "https://andresprada.com/#person" },
+          "areaServed": { "@type": "Country", "name": "Colombia" },
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Bogotá",
+            "addressCountry": "CO"
+          },
+          "telephone": "+57-319-576-8097",
+          "email": "mailto:aprada.web@gmail.com",
+          "priceRange": "$$",
+          "serviceType": [
+            "Desarrollo Web",
+            "Diseño Web",
+            "E-commerce",
+            "Fotografía Editorial",
+            "Motion Graphics"
+          ]
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://andresprada.com/#website",
+          "url": "https://andresprada.com/",
+          "name": "Andres Prada",
+          "description": "Portafolio de Andres Prada — desarrollo web, diseño y dirección visual.",
+          "publisher": { "@id": "https://andresprada.com/#person" },
+          "inLanguage": "es-CO"
+        }
+      ]
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>
+    <noscript>Este sitio requiere JavaScript. Activa JavaScript en tu navegador para verlo correctamente.</noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

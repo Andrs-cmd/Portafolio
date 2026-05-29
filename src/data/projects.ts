@@ -74,6 +74,42 @@ export const projects: Project[] = [
     lightBg: "rgba(240,238,228,0.96)",
     featured: true,
   },
+  {
+    id: "agent-lead",
+    index: "004",
+    title: "Lead Agent",
+    client: "Automatización propia",
+    category: "Agente IA · n8n",
+    year: "2026",
+    description:
+      "Agente conversacional que responde mensajes entrantes por WhatsApp y formularios, califica el lead en tiempo real (intención, presupuesto, urgencia, ciudad) y lo guarda en Notion/Sheets con un resumen ejecutivo. Reduce el tiempo de respuesta de horas a segundos y nunca deja un mensaje sin contestar.",
+    stack: ["n8n", "OpenAI GPT-4", "WhatsApp Cloud API", "Notion", "Google Sheets", "Webhooks"],
+    links: [
+      { label: "Ver caso", href: "/automation#lead-agent" },
+    ],
+    img: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=1200",
+    darkBg: "rgba(10,18,20,0.93)",
+    lightBg: "rgba(232,240,242,0.96)",
+    featured: true,
+  },
+  {
+    id: "agent-handoff",
+    index: "005",
+    title: "Handoff Reader",
+    client: "Automatización propia",
+    category: "Agente IA · n8n",
+    year: "2026",
+    description:
+      "Agente que ingiere archivos de handoff (Figma JSON, PDFs, briefs en Markdown), extrae componentes, tokens de diseño y copy, y genera una landing estática lista para producción: HTML semántico, variables CSS, meta SEO. De handoff a deploy sin tocar código manualmente.",
+    stack: ["n8n", "OpenAI", "Figma API", "GPT-4 Vision", "PDF Parse", "Vercel API"],
+    links: [
+      { label: "Ver caso", href: "/automation#handoff-reader" },
+    ],
+    img: "https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&q=80&w=1200",
+    darkBg: "rgba(18,12,22,0.93)",
+    lightBg: "rgba(242,236,246,0.96)",
+    featured: true,
+  },
 ]
 
 export const featuredProjects = projects.filter(p => p.featured)

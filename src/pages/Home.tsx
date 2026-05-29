@@ -2,7 +2,7 @@ import { motion, AnimatePresence, useScroll, useTransform, useMotionValue, useSp
 import { useState, useEffect, useRef } from "react"
 import { createPortal } from "react-dom"
 import { useTheme } from "../context/ThemeContext"
-import LiquidEther from "../components/LiquidEther"
+import LiquidEther from "../components/OptionalLiquidEther"
 import CardNav from "../components/CardNav"
 import ScrollStack, { ScrollStackItem, MobileStickyStack } from "../components/ScrollStack"
 import "../components/CardNav.css"
@@ -10,6 +10,7 @@ import "../components/ScrollStack.css"
 import { featuredProjects, type Project } from "../data/projects"
 import { photosCaptures, photosStudio, photosEditorial, motionPieces } from "../data/gallery"
 import { WhatsAppFAB, WhatsAppPill, WhatsAppBanner } from "../components/WhatsAppCTA"
+import { useSEO } from "../lib/useSEO"
 
 const LIQUID_DARK  = ['#0a0014', '#7b00cc', '#c026d3', '#60a5fa', '#ffffff']
 const LIQUID_LIGHT = ['#f4f1f1', '#747272', '#000000']
@@ -276,6 +277,12 @@ function ProjectCard({ project, isDesktop, isDark }: { project: Project; isDeskt
 }
 
 export default function Home() {
+  useSEO({
+    title: "Andres Prada · Desarrollador y Diseñador Web · Bogotá",
+    description: "Desarrollo web, diseño y dirección visual desde Bogotá. Sitios, e-commerce, fotografía editorial y motion graphics para marcas con criterio.",
+    path: "/",
+    keywords: "desarrollador web bogotá, diseñador web colombia, frontend react, laravel, ui ux, portafolio andres prada, fotografía editorial, motion graphics",
+  })
   const { isDark } = useTheme()
   const isDesktop  = useIsDesktop()
   const isMobile   = !isDesktop
@@ -288,7 +295,7 @@ export default function Home() {
 
   const menuItems = [
     { label:"Servicios", bgColor:isDark?"#111111":"#f0ece4", textColor:isDark?"#fff":"#000",
-      links:[{ label:"Desarrollo Web", href:"/lab#svc-software", ariaLabel:"Software" },{ label:"Ecommerce", href:"/lab#svc-web", ariaLabel:"Web" }] },
+      links:[{ label:"Desarrollo Web", href:"/lab", ariaLabel:"Lab" },{ label:"Automation · n8n", href:"/automation", ariaLabel:"Automation" }] },
     { label:"Proyectos", bgColor:isDark?"#1a1a1a":"#e8e4dc", textColor:isDark?"#fff":"#000",
       links:[{ label:"Archive", href:"/archive", ariaLabel:"Archive" },{ label:"Visual Editorial", href:"/visual", ariaLabel:"Visual" }] },
     { label:"Contacto", bgColor:isDark?"#dde4e6":"#1a1a1a", textColor:isDark?"#000":"#fff",
@@ -486,6 +493,91 @@ export default function Home() {
             <div style={{ display:"flex", alignItems:"center", gap:12, marginTop:8, fontSize:11, textTransform:"uppercase", letterSpacing:".22em", color:isDark?"#fff":"#111" }}>
               <span style={{ display:"inline-flex", alignItems:"center", justifyContent:"center", width:36, height:36, borderRadius:"50%", border:isDark?"1px solid rgba(255,255,255,0.30)":"1px solid rgba(0,0,0,0.25)", fontSize:14 }}>→</span>
               <span>Abrir portafolio visual</span>
+            </div>
+          </div>
+        </motion.a>
+      </section>
+
+      {/* CTA AUTOMATION */}
+      <section style={{ position:"relative", zIndex:20, padding: isDesktop ? "0 48px 96px" : "0 20px 48px", maxWidth:1280, margin:"0 auto" }}>
+        <motion.a href="/automation"
+          initial={{ opacity:0, y:32 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.8, ease:[.16,1,.3,1] }}
+          whileHover={{ y:-4 }}
+          style={{
+            display:"grid",
+            gridTemplateColumns: isDesktop ? "1fr 1.1fr" : "1fr",
+            gap: isDesktop ? 0 : 12,
+            position:"relative",
+            overflow:"hidden",
+            borderRadius:24,
+            background: isDark ? "rgba(10,16,26,0.65)" : "rgba(248,250,255,0.78)",
+            border: isDark ? "0.5px solid rgba(96,165,250,0.20)" : "0.5px solid rgba(37,99,235,0.18)",
+            backdropFilter:"blur(8px)",
+            textDecoration:"none",
+            cursor:"pointer",
+            minHeight: isDesktop ? 320 : "auto",
+          }}>
+          {/* TEXT side LEFT */}
+          <div style={{ display:"flex", flexDirection:"column", justifyContent:"center", padding: isDesktop ? "48px 56px" : "32px 24px 0", gap:14 }}>
+            <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+              <div style={{ width:18, height:.5, background: isDark ? "rgba(96,165,250,.60)" : "rgba(37,99,235,.55)" }}/>
+              <span style={{ fontFamily:"monospace", fontSize:10, letterSpacing:".22em", textTransform:"uppercase", color: isDark ? "#60a5fa" : "#2563eb" }}>n8n + IA · Agentes</span>
+            </div>
+            <h3 style={{ fontSize:"clamp(2rem,4.5vw,3.6rem)", fontWeight:900, textTransform:"uppercase", letterSpacing:"-.04em", lineHeight:.88, color: isDark ? "#fff" : "#000" }}>
+              Automation<br/>
+              <span style={{ WebkitTextStroke: isDark ? "1.5px rgba(96,165,250,.45)" : "1.5px rgba(37,99,235,.35)", color:"transparent" }}>Studio</span>
+            </h3>
+            <p style={{ fontSize:13, fontWeight:300, lineHeight:1.7, maxWidth:380, color: isDark ? "#fff" : "#000" }}>
+              Workflows con n8n + GPT-4 que responden, califican y ejecutan. Lead Agent y Handoff Reader en producción.
+            </p>
+            <div style={{ display:"flex", alignItems:"center", gap:12, marginTop:8, fontSize:11, textTransform:"uppercase", letterSpacing:".22em", color: isDark ? "#fff" : "#000" }}>
+              <span style={{ display:"inline-flex", alignItems:"center", justifyContent:"center", width:36, height:36, borderRadius:"50%", border: isDark ? "1px solid rgba(96,165,250,.45)" : "1px solid rgba(37,99,235,.40)", fontSize:14 }}>→</span>
+              <span>Ver casos de automatización</span>
+            </div>
+          </div>
+
+          {/* DIAGRAM side RIGHT — mini flow */}
+          <div style={{ position:"relative", padding: isDesktop ? "32px" : "24px", display:"flex", alignItems:"center", justifyContent:"center", minHeight: isDesktop ? "auto" : 220 }}>
+            {/* grid backdrop */}
+            <svg aria-hidden="true" style={{ position:"absolute", inset:0, width:"100%", height:"100%", pointerEvents:"none" }}>
+              <defs>
+                <pattern id="auto-cta-grid" width="32" height="32" patternUnits="userSpaceOnUse">
+                  <path d="M 32 0 L 0 0 0 32" fill="none" stroke={isDark ? "rgba(255,255,255,.04)" : "rgba(0,0,0,.05)"} strokeWidth=".5"/>
+                </pattern>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#auto-cta-grid)"/>
+            </svg>
+
+            {/* mini flow */}
+            <div style={{ position:"relative", display:"flex", flexDirection:"column", gap:12, padding:"8px 0", width:"100%", maxWidth:280 }}>
+              {[
+                { l: "WhatsApp", k: "in"  },
+                { l: "GPT-4 · Intent", k: "ai"  },
+                { l: "Notion CRM", k: "out" },
+              ].map((n, i, arr) => {
+                const c = n.k === "in"
+                  ? { border: isDark ? "rgba(96,165,250,.55)" : "rgba(37,99,235,.50)", text: isDark ? "#60a5fa" : "#2563eb" }
+                  : n.k === "ai"
+                  ? { border: isDark ? "rgba(192,38,211,.65)" : "rgba(168,28,189,.45)", text: isDark ? "#c026d3" : "#a81cbd" }
+                  : { border: isDark ? "rgba(34,197,94,.55)" : "rgba(22,163,74,.50)", text: isDark ? "#22c55e" : "#16a34a" }
+                return (
+                  <div key={n.l} style={{ display:"flex", flexDirection:"column", alignItems:"stretch", gap:8 }}>
+                    <motion.div
+                      initial={{ opacity:0, scale:.95 }} whileInView={{ opacity:1, scale:1 }} viewport={{ once:true }}
+                      transition={{ duration:.45, delay:i*.12 }}
+                      style={{ padding:"10px 14px", border:`1px solid ${c.border}`, borderRadius:8, background: isDark ? "rgba(255,255,255,.025)" : "rgba(255,255,255,.7)", display:"flex", alignItems:"center", justifyContent:"space-between", gap:10 }}>
+                      <span style={{ fontFamily:"monospace", fontSize:9, letterSpacing:".22em", color: c.text }}>{n.k.toUpperCase()}</span>
+                      <span style={{ fontSize:12, fontWeight:600, color: isDark ? "#fff" : "#000" }}>{n.l}</span>
+                    </motion.div>
+                    {i < arr.length - 1 && (
+                      <motion.div
+                        initial={{ height:0, opacity:0 }} whileInView={{ height:16, opacity:1 }} viewport={{ once:true }}
+                        transition={{ duration:.3, delay:i*.12+.2 }}
+                        style={{ width:1, alignSelf:"center", background: isDark ? "rgba(255,255,255,.22)" : "rgba(0,0,0,.20)" }}/>
+                    )}
+                  </div>
+                )
+              })}
             </div>
           </div>
         </motion.a>

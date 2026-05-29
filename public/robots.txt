@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+# Crawlers
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+Sitemap: https://andresprada.com/sitemap.xml

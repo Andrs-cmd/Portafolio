@@ -2,7 +2,7 @@ import { motion, AnimatePresence, useScroll, useTransform, useMotionValue, useSp
 import { useState, useEffect, useRef, useCallback } from "react"
 import { createPortal } from "react-dom"
 import { useTheme } from "../context/ThemeContext"
-import LiquidEther from "../components/LiquidEther"
+import LiquidEther from "../components/OptionalLiquidEther"
 import CardNav from "../components/CardNav"
 import "../components/CardNav.css"
 import {
@@ -15,6 +15,7 @@ import {
   type GalleryPhoto,
 } from "../data/gallery"
 import { WhatsAppFAB, WhatsAppPill, WhatsAppBanner } from "../components/WhatsAppCTA"
+import { useSEO } from "../lib/useSEO"
 
 const LIQUID_DARK = ["#0a0014", "#7b00cc", "#c026d3", "#60a5fa", "#ffffff"]
 const LIQUID_LIGHT = ["#f4f1f1", "#747272", "#000000"]
@@ -667,6 +668,13 @@ function MotionPiece({ piece, idx, isDark, isDesktop }: {
    MAIN
 ───────────────────────────────────────────────────────── */
 export default function Visual() {
+  useSEO({
+    title: "Visual Editorial · Fotografía y Motion",
+    description: "Portafolio visual de Andres Prada: fotografía editorial, dirección de arte y motion graphics. 34 piezas curadas como una revista en cuatro capítulos.",
+    path: "/visual",
+    image: "https://res.cloudinary.com/dq5tsivzq/image/upload/f_auto,q_auto,w_1200/v1779425407/GUA_4718_gwpah8.jpg",
+    keywords: "fotografía editorial bogotá, motion graphics colombia, dirección creativa, portafolio visual, reels, after effects, editorial",
+  })
   const { isDark } = useTheme()
   const isDesktop = useIsDesktop()
   const [lbIndex, setLbIndex] = useState<number | null>(null)
@@ -689,7 +697,7 @@ export default function Visual() {
 
   const menuItems = [
     { label: "Servicios", bgColor: isDark ? "#111111" : "#f0ece4", textColor: isDark ? "#fff" : "#000",
-      links: [{ label: "Lab / Servicios", href: "/lab", ariaLabel: "Lab" }, { label: "Home", href: "/", ariaLabel: "Home" }] },
+      links: [{ label: "Lab / Servicios", href: "/lab", ariaLabel: "Lab" }, { label: "Automation · n8n", href: "/automation", ariaLabel: "Automation" }] },
     { label: "Proyectos", bgColor: isDark ? "#1a1a1a" : "#e8e4dc", textColor: isDark ? "#fff" : "#000",
       links: [{ label: "Archive", href: "/archive", ariaLabel: "Archive" }, { label: "Visual Editorial", href: "/visual", ariaLabel: "Visual" }] },
     { label: "Contacto", bgColor: isDark ? "#dde4e6" : "#1a1a1a", textColor: isDark ? "#000" : "#fff",

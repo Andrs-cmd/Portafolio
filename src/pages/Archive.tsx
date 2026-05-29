@@ -2,12 +2,13 @@ import { motion, useScroll, useTransform } from "framer-motion"
 import { useState, useEffect } from "react"
 import { createPortal } from "react-dom"
 import { useTheme } from "../context/ThemeContext"
-import LiquidEther from "../components/LiquidEther"
+import LiquidEther from "../components/OptionalLiquidEther"
 import CardNav from "../components/CardNav"
 import "../components/CardNav.css"
 import { projects } from "../data/projects"
 import { photosEditorial, motionPieces } from "../data/gallery"
 import { WhatsAppFAB, WhatsAppPill, WhatsAppBanner } from "../components/WhatsAppCTA"
+import { useSEO } from "../lib/useSEO"
 
 const LIQUID_DARK  = ['#0a0014', '#7b00cc', '#c026d3', '#60a5fa', '#ffffff']
 const LIQUID_LIGHT = ['#f4f1f1', '#747272', '#000000']
@@ -142,6 +143,12 @@ function ProjectRow({ project, isDark, isDesktop }: { project: typeof projects[0
 }
 
 export default function Archive() {
+  useSEO({
+    title: "Archive · Proyectos web y e-commerce",
+    description: "Selección completa de proyectos: e-commerce, sitios institucionales, plataformas y aplicaciones web. Be Well CEN, Sellu, Convergente y más.",
+    path: "/archive",
+    keywords: "proyectos web, e-commerce colombia, casos de éxito, portafolio desarrollo, sellu, convergente, be well",
+  })
   const { isDark } = useTheme()
   const isDesktop = useIsDesktop()
   const WA_URL = `https://wa.me/${WA_NUMBER}?text=Hola%20Andres%2C%20me%20interesa%20trabajar%20contigo`
@@ -151,7 +158,7 @@ export default function Archive() {
 
   const menuItems = [
     { label: "Servicios", bgColor: isDark ? "#111111" : "#f0ece4", textColor: isDark ? "#fff" : "#000",
-      links: [{ label: "Desarrollo Web", href: "/lab", ariaLabel: "Web" }, { label: "Ecommerce", href: "/lab", ariaLabel: "Ecommerce" }] },
+      links: [{ label: "Desarrollo Web", href: "/lab", ariaLabel: "Web" }, { label: "Automation · n8n", href: "/automation", ariaLabel: "Automation" }] },
     { label: "Proyectos", bgColor: isDark ? "#1a1a1a" : "#e8e4dc", textColor: isDark ? "#fff" : "#000",
       links: [{ label: "Visual Editorial", href: "/visual", ariaLabel: "Visual" }, { label: "Home", href: "/", ariaLabel: "Home" }] },
     { label: "Contacto", bgColor: isDark ? "#dde4e6" : "#1a1a1a", textColor: isDark ? "#000" : "#fff",

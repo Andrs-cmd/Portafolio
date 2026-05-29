@@ -2,11 +2,12 @@ import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion"
 import { useState, useEffect } from "react"
 import { createPortal } from "react-dom"
 import { useTheme } from "../context/ThemeContext"
-import LiquidEther from "../components/LiquidEther"
+import LiquidEther from "../components/OptionalLiquidEther"
 import CardNav from "../components/CardNav"
 import "../components/CardNav.css"
 import { photosStudio, motionPieces } from "../data/gallery"
 import { WhatsAppFAB, WhatsAppPill, WhatsAppBanner } from "../components/WhatsAppCTA"
+import { useSEO } from "../lib/useSEO"
 
 const WA_NUMBER = "573195768097"
 const WA_BASE   = `https://wa.me/${WA_NUMBER}?text=`
@@ -276,6 +277,12 @@ function DetailPanel({ service, isDark }: { service: typeof services[0]; isDark:
 ───────────────────────────────────────────────────────────────────────────── */
 
 export default function Lab() {
+  useSEO({
+    title: "Lab · Servicios de desarrollo y diseño",
+    description: "Servicios de desarrollo web, diseño UI/UX, e-commerce, fotografía editorial y motion graphics. Trabajos a medida desde Bogotá, Colombia.",
+    path: "/lab",
+    keywords: "servicios desarrollo web, diseño ui ux, e-commerce shopify, laravel, react, motion graphics, fotografía bogotá",
+  })
   const { isDark } = useTheme()
   const isDesktop = useIsDesktop()
   const [active, setActive]     = useState(0)
@@ -295,7 +302,7 @@ export default function Lab() {
 
   const menuItems = [
     { label: "Servicios", bgColor: isDark ? "#111111" : "#f0ece4", textColor: isDark ? "#fff" : "#000",
-      links: [{ label: "Software", href: "/lab", ariaLabel: "Software" }, { label: "Páginas Web", href: "/lab", ariaLabel: "Web" }] },
+      links: [{ label: "Software & Web", href: "/lab", ariaLabel: "Web" }, { label: "Automation · n8n", href: "/automation", ariaLabel: "Automation" }] },
     { label: "Proyectos", bgColor: isDark ? "#1a1a1a" : "#e8e4dc", textColor: isDark ? "#fff" : "#000",
       links: [{ label: "Archive", href: "/archive", ariaLabel: "Archive" }, { label: "Visual Editorial", href: "/visual", ariaLabel: "Visual" }] },
     { label: "Contacto", bgColor: isDark ? "#dde4e6" : "#1a1a1a", textColor: isDark ? "#000" : "#fff",
