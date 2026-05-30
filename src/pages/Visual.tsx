@@ -12,7 +12,9 @@ import {
   motionPieces,
   heroPhotos,
   allPhotos,
+  sculptures,
   type GalleryPhoto,
+  type Sculpture,
 } from "../data/gallery"
 import { WhatsAppFAB, WhatsAppPill, WhatsAppBanner } from "../components/WhatsAppCTA"
 import { useSEO } from "../lib/useSEO"
@@ -326,6 +328,7 @@ function HeroCover({ isDark, isDesktop }: { isDark: boolean; isDesktop: boolean 
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: .6 }}
           style={{ display: "flex", flexDirection: "column", gap: 4, fontFamily: "monospace", fontSize: 10, letterSpacing: ".22em", color: isDark ? "#fff" : "#000" }}>
           <span>· {photosCaptures.length + photosStudio.length + photosEditorial.length} fotografías</span>
+          <span>· {sculptures.length} esculturas · físicas + digitales</span>
           <span>· {motionPieces.length} piezas en movimiento</span>
           <span>· Dirección + cámara + edición</span>
         </motion.div>
@@ -342,7 +345,8 @@ function TableOfContents({ isDark }: { isDark: boolean }) {
     { num: "01", title: "Captures", desc: "Diario", count: photosCaptures.length, target: "#capt" },
     { num: "02", title: "Studio Sessions", desc: "DSLR · Retrato", count: photosStudio.length, target: "#studio" },
     { num: "03", title: "GUA Series", desc: "Editorial", count: photosEditorial.length, target: "#gua" },
-    { num: "04", title: "Motion", desc: "Animación", count: motionPieces.length, target: "#motion" },
+    { num: "04", title: "Sculpture", desc: "Obra física + digital", count: sculptures.length, target: "#sculpture" },
+    { num: "05", title: "Motion", desc: "Animación", count: motionPieces.length, target: "#motion" },
   ]
   return (
     <section style={{ position: "relative", zIndex: 20, padding: "clamp(48px, 10vw, 96px) clamp(20px, 4vw, 48px)", maxWidth: 1280, margin: "0 auto" }}>
@@ -572,6 +576,138 @@ function StudioBlock({ photos, isDark, isDesktop, onOpen, onHover, baseIdx }: {
 }
 
 /* ─────────────────────────────────────────────────────────
+   SCULPTURE PIECE — museum catalogue card
+   Layout: hero (image/video) + ficha técnica side-by-side
+   Alterna left/right para ritmo visual
+───────────────────────────────────────────────────────── */
+function SculpturePiece({ piece, idx, isDark, isDesktop }: {
+  piece: Sculpture
+  idx: number
+  isDark: boolean
+  isDesktop: boolean
+}) {
+  const flip = idx % 2 === 1
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 32 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: .8, ease: [.16, 1, .3, 1] }}
+      style={{
+        padding: isDesktop ? "0 48px" : "0 20px",
+        maxWidth: 1280,
+        margin: "0 auto 80px",
+      }}
+    >
+      <div style={{
+        display: "flex",
+        flexDirection: isDesktop ? (flip ? "row-reverse" : "row") : "column",
+        gap: isDesktop ? 48 : 16,
+        alignItems: "stretch",
+      }}>
+        {/* Hero del objeto */}
+        <div style={{
+          flex: isDesktop ? "1.4 1 0" : "none",
+          position: "relative",
+          aspectRatio: isDesktop ? "4/5" : "1/1",
+          overflow: "hidden",
+          background: isDark ? "#0a0a0a" : "#1a1a1a",
+        }}>
+          {piece.videoSrc ? (
+            <video
+              src={piece.videoSrc}
+              autoPlay loop muted playsInline
+              poster={piece.src}
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            />
+          ) : (
+            <img
+              src={piece.src}
+              srcSet={piece.srcSet}
+              sizes={isDesktop ? "(min-width: 1024px) 700px, 100vw" : "100vw"}
+              alt={piece.alt}
+              loading="lazy"
+              decoding="async"
+              style={{ width: "100%", height: "100%", objectFit: "cover", filter: isDark ? "grayscale(15%) brightness(.95)" : "grayscale(8%)" }}
+            />
+          )}
+
+          {/* corner brackets */}
+          <div style={{ position: "absolute", top: 14, left: 14, width: 18, height: 18, borderLeft: "1px solid rgba(255,255,255,.4)", borderTop: "1px solid rgba(255,255,255,.4)" }}/>
+          <div style={{ position: "absolute", bottom: 14, right: 14, width: 18, height: 18, borderRight: "1px solid rgba(255,255,255,.4)", borderBottom: "1px solid rgba(255,255,255,.4)" }}/>
+
+          {/* index + medium chip */}
+          <div style={{ position: "absolute", top: 14, right: 14, display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6 }}>
+            <span style={{ padding: "4px 10px", borderRadius: 99, background: "rgba(0,0,0,.55)", border: "1px solid rgba(255,255,255,.20)", color: "#fff", fontFamily: "monospace", fontSize: 9, letterSpacing: ".22em", textTransform: "uppercase", backdropFilter: "blur(6px)" }}>
+              {piece.medium === "digital" ? "Digital · 3D" : "Físico"}
+            </span>
+            <span style={{ fontFamily: "monospace", fontSize: 9, letterSpacing: ".22em", color: "rgba(255,255,255,.65)" }}>
+              {String(idx + 1).padStart(2, "0")} / {String(sculptures.length).padStart(2, "0")}
+            </span>
+          </div>
+        </div>
+
+        {/* Ficha técnica */}
+        <div style={{
+          flex: isDesktop ? "1 1 0" : "none",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          paddingTop: isDesktop ? 0 : 16,
+          gap: 14,
+        }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <div style={{ width: 18, height: .5, background: isDark ? "rgba(255,255,255,.40)" : "rgba(0,0,0,.30)" }}/>
+            <span style={{ fontFamily: "monospace", fontSize: 10, letterSpacing: ".25em", textTransform: "uppercase", color: isDark ? "rgba(255,255,255,.65)" : "rgba(0,0,0,.60)" }}>
+              Pieza {String(idx + 1).padStart(2, "0")}
+            </span>
+          </div>
+
+          <h3 style={{
+            fontSize: "clamp(1.8rem, 4vw, 3rem)",
+            fontWeight: 900,
+            textTransform: "uppercase",
+            letterSpacing: "-.03em",
+            lineHeight: .9,
+            color: isDark ? "#fff" : "#000",
+          }}>
+            {piece.title}
+          </h3>
+
+          {/* Ficha técnica grid */}
+          <div style={{ marginTop: 12, display: "grid", gridTemplateColumns: "auto 1fr", gap: "10px 16px", maxWidth: 420 }}>
+            <span style={{ fontFamily: "monospace", fontSize: 10, letterSpacing: ".2em", textTransform: "uppercase", color: isDark ? "rgba(255,255,255,.50)" : "rgba(0,0,0,.50)" }}>Material</span>
+            <span style={{ fontSize: 12, color: isDark ? "rgba(255,255,255,.90)" : "rgba(0,0,0,.85)" }}>{piece.material}</span>
+
+            <span style={{ fontFamily: "monospace", fontSize: 10, letterSpacing: ".2em", textTransform: "uppercase", color: isDark ? "rgba(255,255,255,.50)" : "rgba(0,0,0,.50)" }}>Año</span>
+            <span style={{ fontSize: 12, color: isDark ? "rgba(255,255,255,.90)" : "rgba(0,0,0,.85)" }}>{piece.year}</span>
+
+            <span style={{ fontFamily: "monospace", fontSize: 10, letterSpacing: ".2em", textTransform: "uppercase", color: isDark ? "rgba(255,255,255,.50)" : "rgba(0,0,0,.50)" }}>Medium</span>
+            <span style={{ fontSize: 12, color: isDark ? "rgba(255,255,255,.90)" : "rgba(0,0,0,.85)" }}>
+              {piece.medium === "digital" ? "Render · pieza digital" : "Obra física"}
+            </span>
+          </div>
+
+          {piece.description && (
+            <p style={{
+              fontSize: 13,
+              fontWeight: 300,
+              lineHeight: 1.75,
+              marginTop: 14,
+              color: isDark ? "rgba(255,255,255,.82)" : "rgba(0,0,0,.78)",
+              maxWidth: 460,
+            }}>
+              {piece.description}
+            </p>
+          )}
+        </div>
+      </div>
+    </motion.div>
+  )
+}
+
+/* ─────────────────────────────────────────────────────────
    MOTION REEL — autoplay videos with editorial captions
 ───────────────────────────────────────────────────────── */
 function MotionPiece({ piece, idx, isDark, isDesktop }: {
@@ -697,7 +833,7 @@ export default function Visual() {
 
   const menuItems = [
     { label: "Servicios", bgColor: isDark ? "#111111" : "#f0ece4", textColor: isDark ? "#fff" : "#000",
-      links: [{ label: "Lab / Servicios", href: "/lab", ariaLabel: "Lab" }, { label: "Automation · n8n", href: "/automation", ariaLabel: "Automation" }] },
+      links: [{ label: "Lab / Servicios", href: "/lab", ariaLabel: "Lab" }, { label: "Automation · n8n", href: "/automation", ariaLabel: "Automation" }, { label: "Manifiesto", href: "/manifesto", ariaLabel: "Manifiesto" }] },
     { label: "Proyectos", bgColor: isDark ? "#1a1a1a" : "#e8e4dc", textColor: isDark ? "#fff" : "#000",
       links: [{ label: "Archive", href: "/archive", ariaLabel: "Archive" }, { label: "Visual Editorial", href: "/visual", ariaLabel: "Visual" }] },
     { label: "Contacto", bgColor: isDark ? "#dde4e6" : "#1a1a1a", textColor: isDark ? "#000" : "#fff",
@@ -752,9 +888,17 @@ export default function Visual() {
         <EditorialSpreads photos={photosEditorial} isDark={isDark} isDesktop={isDesktop} onOpen={openLb} onHover={handleHover} baseIdx={photosCaptures.length + photosStudio.length}/>
       </div>
 
-      {/* CHAPTER 04 — MOTION */}
+      {/* CHAPTER 04 — SCULPTURE */}
+      <div id="sculpture" style={{ marginTop: 32 }}>
+        <ChapterHeader num="04" title="Sculpture" kicker="Obra física + digital" isDark={isDark}/>
+        {sculptures.map((piece, i) => (
+          <SculpturePiece key={piece.id} piece={piece} idx={i} isDark={isDark} isDesktop={isDesktop}/>
+        ))}
+      </div>
+
+      {/* CHAPTER 05 — MOTION */}
       <div id="motion">
-        <ChapterHeader num="04" title="Motion" kicker="Animación · Loops" isDark={isDark}/>
+        <ChapterHeader num="05" title="Motion" kicker="Animación · Loops" isDark={isDark}/>
         {motionPieces.map((p, i) => (
           <MotionPiece key={p.id} piece={p} idx={i} isDark={isDark} isDesktop={isDesktop}/>
         ))}

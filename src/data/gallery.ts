@@ -99,6 +99,100 @@ export const motionPieces: GalleryVideo[] = [
   video("v1779425918", "movieout.2_fkfwiv.mov", "Movie Out"),
 ]
 
+/* ──────────────────────────────────────────────────────────
+   SCULPTURE — obra física + digital
+   TODO: reemplazar URLs placeholder con tus piezas reales
+   ────────────────────────────────────────────────────────── */
+export type Sculpture = {
+  id: string
+  title: string
+  year: string
+  material: string
+  medium: "physical" | "digital"
+  description?: string
+  src: string
+  srcSet?: string
+  thumb?: string
+  videoSrc?: string  // para piezas digitales con turntable / loop
+  alt: string
+}
+
+// Helper: imagen Unsplash con srcSet responsive
+function placeholder(unsplashId: string): Pick<Sculpture, "src" | "srcSet" | "thumb"> {
+  const base = `https://images.unsplash.com/photo-${unsplashId}?auto=format&fit=crop&q=80`
+  return {
+    src: `${base}&w=1200`,
+    srcSet: `${base}&w=480 480w, ${base}&w=800 800w, ${base}&w=1200 1200w, ${base}&w=1800 1800w`,
+    thumb: `${base}&w=400`,
+  }
+}
+
+export const sculptures: Sculpture[] = [
+  {
+    id: "sc-01",
+    title: "Vértebra",
+    year: "2025",
+    material: "Gres negro · cerámica",
+    medium: "physical",
+    description: "Serie de módulos cerámicos articulados. Inspirada en columna vertebral, juega con la fragilidad del barro cocido y la idea de estructura.",
+    alt: "Escultura cerámica negra",
+    ...placeholder("1558618666-fcd25c85cd64"),
+  },
+  {
+    id: "sc-02",
+    title: "Bisagra",
+    year: "2024",
+    material: "Bronce + madera quemada",
+    medium: "physical",
+    description: "Objeto-mecanismo. La bisagra como metáfora de articulación entre lo orgánico (madera) y lo industrial (bronce).",
+    alt: "Escultura de bronce y madera",
+    ...placeholder("1531403009284-440f080d1e12"),
+  },
+  {
+    id: "sc-03",
+    title: "Sin título 03",
+    year: "2025",
+    material: "Piedra caliza tallada",
+    medium: "physical",
+    description: "Talla directa en bloque de piedra caliza. Estudio de superficies pulidas vs rugosas.",
+    alt: "Escultura en piedra caliza",
+    ...placeholder("1605723517503-3cadb5818a0c"),
+  },
+  {
+    id: "sc-04",
+    title: "Mass",
+    year: "2026",
+    material: "Blender · render PBR",
+    medium: "digital",
+    description: "Estudio de masa y peso visual en geometría procedural. Renderizada con luz volumétrica y subsurface scattering.",
+    alt: "Renderizado 3D de masa volumétrica",
+    ...placeholder("1633613286848-e6f43bbafb8d"),
+  },
+  {
+    id: "sc-05",
+    title: "Echo",
+    year: "2025",
+    material: "Cinema 4D · Octane",
+    medium: "digital",
+    description: "Loop de turntable. Geometría inspirada en eco y reverberación — superficies que repiten un mismo gesto.",
+    alt: "Pieza 3D digital",
+    ...placeholder("1635776063043-fbdcd1c61894"),
+  },
+  {
+    id: "sc-06",
+    title: "Hueso",
+    year: "2024",
+    material: "Houdini · simulación",
+    medium: "digital",
+    description: "Simulación generativa basada en estructura ósea. Cada frame muestra una iteración distinta del algoritmo.",
+    alt: "Escultura digital de estructura ósea",
+    ...placeholder("1578926375605-eaf7559b1458"),
+  },
+]
+
+export const sculpturesPhysical = sculptures.filter(s => s.medium === "physical")
+export const sculpturesDigital = sculptures.filter(s => s.medium === "digital")
+
 export const heroPhotos: GalleryPhoto[] = [
   photosStudio[3],
   photosEditorial[5],

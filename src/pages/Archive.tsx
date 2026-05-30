@@ -158,7 +158,7 @@ export default function Archive() {
 
   const menuItems = [
     { label: "Servicios", bgColor: isDark ? "#111111" : "#f0ece4", textColor: isDark ? "#fff" : "#000",
-      links: [{ label: "Desarrollo Web", href: "/lab", ariaLabel: "Web" }, { label: "Automation · n8n", href: "/automation", ariaLabel: "Automation" }] },
+      links: [{ label: "Desarrollo Web", href: "/lab", ariaLabel: "Web" }, { label: "Automation · n8n", href: "/automation", ariaLabel: "Automation" }, { label: "Manifiesto", href: "/manifesto", ariaLabel: "Manifiesto" }] },
     { label: "Proyectos", bgColor: isDark ? "#1a1a1a" : "#e8e4dc", textColor: isDark ? "#fff" : "#000",
       links: [{ label: "Visual Editorial", href: "/visual", ariaLabel: "Visual" }, { label: "Home", href: "/", ariaLabel: "Home" }] },
     { label: "Contacto", bgColor: isDark ? "#dde4e6" : "#1a1a1a", textColor: isDark ? "#000" : "#fff",
