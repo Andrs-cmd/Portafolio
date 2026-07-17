@@ -7,7 +7,7 @@ html, body, #root {
   min-height: 100vh;
   background-color: #000;
   color: #fff;
-  /* Importante: El scroll debe ser auto para que el JS de ScrollStack no tiemble */
+  /* Scroll nativo: el índice de proyectos ya no mueve el scroll por JS */
   scroll-behavior: auto !important;
 }
 
