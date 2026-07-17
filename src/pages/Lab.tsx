@@ -182,7 +182,6 @@ function ScrollBar() {
 ───────────────────────────────────────────────────────────────────────────── */
 
 function DetailPanel({ service, isDark }: { service: typeof services[0]; isDark: boolean }) {
-  const border = isDark ? "1px solid rgba(255,255,255,.06)" : "1px solid rgba(0,0,0,.06)"
   return (
     <motion.div
       key={service.slug}

@@ -1,5 +1,5 @@
 import { motion, AnimatePresence, useScroll, useTransform, useMotionValue, useSpring } from "framer-motion"
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect } from "react"
 import { createPortal } from "react-dom"
 import { useTheme } from "../context/ThemeContext"
 import LiquidEther from "../components/OptionalLiquidEther"
@@ -266,7 +266,7 @@ function ProjectCard({ project, isDesktop, isDark }: { project: Project; isDeskt
         </div>
       </div>
       <div style={{ flex:"1 1 0", position:"relative", overflow:"hidden", minHeight:isDesktop?"auto":220 }} className="group">
-        <img src={project.img} alt={project.title} className="group-hover:scale-100 transition-all duration-700"
+        <img src={project.img} alt={project.title} loading="lazy" decoding="async" className="group-hover:scale-100 transition-all duration-700"
           style={{ width:"100%", height:"100%", objectFit:"cover", transform:"scale(1.05)", filter:isDark?"grayscale(40%) brightness(0.75)":"grayscale(10%) brightness(0.95)" }}/>
         <div className={`absolute inset-0 group-hover:opacity-0 transition-opacity duration-500 ${isDark?"bg-black/20":"bg-white/15"}`}/>
         <div style={{ position:"absolute", top:16, right:16, width:20, height:20, borderRight:isDark?"0.5px solid rgba(255,255,255,0.20)":"0.5px solid rgba(0,0,0,0.15)", borderTop:isDark?"0.5px solid rgba(255,255,255,0.20)":"0.5px solid rgba(0,0,0,0.15)" }}/>
@@ -384,7 +384,7 @@ export default function Home() {
       ══════════════════════════════════════════════════════════════════════ */}
       <section style={{ position:"relative", zIndex:20, paddingTop:96, paddingBottom:96 }}>
         <div style={{ padding:"0 clamp(16px, 4vw, 48px)", maxWidth:1280, margin:"0 auto" }}>
-          <SectionHeader label="Proyectos seleccionados" title="Selected" accent="Works" right={`01 — 0${projectsData.length}`} isDark={isDark}/>
+          <SectionHeader label="Proyectos seleccionados" title="Selected" accent="Works" right={`01 — ${String(projectsData.length).padStart(2, "0")}`} isDark={isDark}/>
         </div>
         <div style={{ padding:"0 clamp(12px, 3vw, 24px)" }}>
 

@@ -1,7 +1,5 @@
 import { motion } from "framer-motion"
 
-const links = ["Home", "Projects", "About", "Contact"]
-
 const Navbar = () => {
   return (
     <motion.nav

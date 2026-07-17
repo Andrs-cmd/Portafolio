@@ -64,6 +64,9 @@ const CardNav: React.FC<CardNavProps> = ({
         contentEl.style.position = 'static';
         contentEl.style.height = 'auto';
 
+        // Reflow forzado a propósito: obliga al navegador a recalcular el layout
+        // con la altura ya en 'auto', si no el scrollHeight de abajo sale viejo.
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         contentEl.offsetHeight;
 
         const topBar = 60;

@@ -217,12 +217,12 @@ export default function Archive() {
           </div>
           <motion.p style={{ fontSize: 14, fontWeight: 300, lineHeight: 1.7, maxWidth: 320, paddingBottom: 4, color: isDark ? "#fff" : "#000" }}
             initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .7, delay: .3 }}>
-            Selección completa de proyectos publicados: ecommerce, plataformas y propuestas de diseño. Click en cada uno para ver el sitio real.
+            Selección completa: ecommerce, plataformas, agentes y productos propios. Los que están publicados enlazan al sitio real.
           </motion.p>
         </div>
 
         <div style={{ marginTop: 32, display: "flex", alignItems: "center", justifyContent: "space-between", borderTop: borderC, paddingTop: 12 }}>
-          <span style={{ fontSize: 9, letterSpacing: ".3em", textTransform: "uppercase", color: isDark ? "#fff" : "#000" }}>Proyectos publicados</span>
+          <span style={{ fontSize: 9, letterSpacing: ".3em", textTransform: "uppercase", color: isDark ? "#fff" : "#000" }}>Proyectos</span>
           <span style={{ fontFamily: "monospace", fontSize: 9, color: isDark ? "#fff" : "#000" }}>01 — {String(projects.length).padStart(2, "0")}</span>
         </div>
       </section>

@@ -16,7 +16,7 @@ function setMeta(selector: string, attr: string, value: string) {
   let el = document.querySelector(selector) as HTMLMetaElement | null
   if (!el) {
     el = document.createElement("meta")
-    const [name, key] = selector.replace(/[\[\]"']/g, "").split("=")
+    const [name, key] = selector.replace(/[[\]"']/g, "").split("=")
     if (selector.startsWith('meta[property=')) el.setAttribute("property", key || name)
     else if (selector.startsWith('meta[name=')) el.setAttribute("name", key || name)
     document.head.appendChild(el)

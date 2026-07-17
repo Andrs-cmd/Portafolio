@@ -56,12 +56,9 @@ interface ScrollStackProps {
   itemScale?: number;
   itemStackDistance?: number;
   stackPosition?: string;
-  scaleEndPosition?: string;
   baseScale?: number;
-  rotationAmount?: number;
   blurAmount?: number;
   useWindowScroll?: boolean;
-  onStackComplete?: () => void;
 }
 
 const ScrollStack: React.FC<ScrollStackProps> = ({
@@ -71,15 +68,11 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
   itemScale = 0.03,
   itemStackDistance = 30,
   stackPosition = '15%',
-  scaleEndPosition = '5%',
   baseScale = 0.85,
-  rotationAmount = 0,
   blurAmount = 0,
   useWindowScroll = true,
-  onStackComplete
 }) => {
   const scrollerRef = useRef<HTMLDivElement>(null);
-  const stackCompletedRef = useRef(false);
   const animationFrameRef = useRef<number | null>(null);
   const lenisRef = useRef<Lenis | null>(null);
   const cardsRef = useRef<HTMLElement[]>([]);
@@ -106,7 +99,6 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
     const { scrollTop, containerHeight } = getScrollData();
     
     const stackPos = (parseFloat(stackPosition) / 100) * containerHeight;
-    const scaleEndPos = (parseFloat(scaleEndPosition) / 100) * containerHeight;
 
     const endElement = document.querySelector('.scroll-stack-end') as HTMLElement;
     const endElementTop = endElement ? (endElement.getBoundingClientRect().top + window.scrollY) : 0;
@@ -152,7 +144,7 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
 
       lastTransformsRef.current.set(i, { translateY, scale });
     });
-  }, [baseScale, blurAmount, getScrollData, itemScale, itemStackDistance, scaleEndPosition, stackPosition]);
+  }, [baseScale, blurAmount, getScrollData, itemScale, itemStackDistance, stackPosition]);
 
   useLayoutEffect(() => {
     const cards = Array.from(document.querySelectorAll('.scroll-stack-card')) as HTMLElement[];

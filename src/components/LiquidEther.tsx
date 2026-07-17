@@ -133,9 +133,13 @@ export default function LiquidEther({
       clock: THREE.Clock | null = null;
       init(container: HTMLElement) {
         this.container = container;
-        this.pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+        // El fluido es difuso por naturaleza: renderizarlo por encima de 1.5x
+        // no se nota y cuadruplica el trabajo de fragmentos en pantallas retina.
+        this.pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
         this.resize();
-        this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        // Sin antialias: la escena es un quad a pantalla completa, no hay bordes
+        // geométricos que suavizar, así que el MSAA solo costaría ancho de banda.
+        this.renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true });
         // Always transparent
         this.renderer.autoClear = false;
         this.renderer.setClearColor(new THREE.Color(0x000000), 0);
