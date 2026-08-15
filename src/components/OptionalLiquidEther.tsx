@@ -43,17 +43,19 @@ function supportsWebGL() {
 }
 
 /**
- * Renders LiquidEther only when:
- * - viewport is desktop (≥ 1024px wide)
- * - device has enough memory / CPU
+ * Renders LiquidEther when:
  * - the browser can actually create a WebGL context
+ * - device has enough memory / CPU and a decent connection
  * - user has not opted into prefers-reduced-motion
  *
- * On mobile, low-power, or reduced-motion, returns null and the page's
- * background color shows through. Saves ~250KB of three.js + WebGL work.
+ * Runs on mobile too, but in a lighter mode: el costo del fluido es
+ * resolución × pixel ratio, así que en pantallas pequeñas se baja la resolución
+ * para conservar el efecto sin freír batería. En equipos con poca RAM, conexión
+ * lenta o 'reduce movimiento' devuelve null y se ve el fondo de color liso.
  */
 export default function OptionalLiquidEther(props: LiquidEtherProps) {
   const [enabled, setEnabled] = useState(false)
+  const [isSmall, setIsSmall] = useState(false)
 
   useEffect(() => {
     // WebGL se consulta una sola vez: crear contextos de prueba en cada resize
@@ -61,14 +63,15 @@ export default function OptionalLiquidEther(props: LiquidEtherProps) {
     const hasWebGL = supportsWebGL()
 
     const check = () => {
-      const isDesktop = window.innerWidth >= 1024
+      const small = window.innerWidth < 1024
       const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
       // @ts-expect-error — navigator.deviceMemory is non-standard but supported in Chromium
       const lowMem = typeof navigator !== "undefined" && navigator.deviceMemory && navigator.deviceMemory < 4
       // @ts-expect-error — navigator.connection is non-standard
       const conn = typeof navigator !== "undefined" ? navigator.connection : undefined
       const slow = conn && (conn.saveData === true || /(2g|slow-2g)/i.test(conn.effectiveType ?? ""))
-      setEnabled(hasWebGL && isDesktop && !reducedMotion && !lowMem && !slow)
+      setIsSmall(small)
+      setEnabled(hasWebGL && !reducedMotion && !lowMem && !slow)
     }
     check()
     window.addEventListener("resize", check)
@@ -77,10 +80,16 @@ export default function OptionalLiquidEther(props: LiquidEtherProps) {
 
   if (!enabled) return null
 
+  // Modo ligero en móvil: menos resolución de simulación y cursor más pequeño.
+  // Solo pisa lo que haga falta; el resto de props de desktop se respetan.
+  const tuned: LiquidEtherProps = isSmall
+    ? { ...props, resolution: Math.min(props.resolution ?? 0.5, 0.5), cursorSize: 80 }
+    : props
+
   return (
     <WebGLBoundary>
       <Suspense fallback={null}>
-        <LiquidEther {...props} />
+        <LiquidEther {...tuned} />
       </Suspense>
     </WebGLBoundary>
   )
