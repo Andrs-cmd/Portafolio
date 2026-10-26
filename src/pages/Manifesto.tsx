@@ -5,7 +5,7 @@ import { useTheme } from "../context/ThemeContext"
 import LiquidEther from "../components/OptionalLiquidEther"
 import CardNav from "../components/CardNav"
 import "../components/CardNav.css"
-import CatMascot from "../components/CatMascot"
+import SculptureMascot from "../components/SculptureMascot"
 import { WhatsAppFAB } from "../components/WhatsAppCTA"
 import { useSEO } from "../lib/useSEO"
 
@@ -105,6 +105,8 @@ const DECK: Scene[] = [
   { key: "cta", label: "Contacto", giant: "HABLEMOS", chip: "Si llegaste hasta acá", kind: "cta" },
 ]
 const SCENES = DECK.map(d => d.key)
+// acento por escena (coincide con SculptureMascot): tiñe chip y título gigante
+const ACCENTS = ["#c3c4f2", "#8fb7ff", "#7fe3c0", "#c3c4f2", "#f2c28f", "#e79ad0", "#7fe3c0", "#c3c4f2", "#8fb7ff", "#c3c4f2"]
 
 const container: Variants = { hidden: {}, show: { transition: { staggerChildren: 0.08, delayChildren: 0.05 } } }
 const rise: Variants = { hidden: { opacity: 0, y: 22 }, show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] } } }
@@ -170,14 +172,15 @@ function DeckNav({ isDark, isDesktop, active }: { isDark: boolean; isDesktop: bo
 }
 
 /* una escena del deck, con el layout de bigotes */
-function BigScene({ s, isDesktop, isDark }: { s: Scene; isDesktop: boolean; isDark: boolean }) {
+function BigScene({ s, i, isDesktop, isDark }: { s: Scene; i: number; isDesktop: boolean; isDark: boolean }) {
   const fg = isDark ? "#eef0f3" : "#141211"
   const muted = isDark ? "rgba(240,240,245,.72)" : "rgba(20,20,20,.66)"
   const chipBorder = isDark ? "rgba(255,255,255,.18)" : "rgba(0,0,0,.16)"
+  const accent = ACCENTS[i] ?? LAV
 
   const Chip = (
     <motion.div variants={rise} style={{ display: "inline-flex", alignItems: "center", gap: 9, padding: "7px 14px", borderRadius: 999, border: `1px solid ${chipBorder}`, background: isDark ? "rgba(255,255,255,.04)" : "rgba(0,0,0,.03)", backdropFilter: "blur(6px)", fontSize: 11, letterSpacing: ".04em", color: fg, whiteSpace: "nowrap" }}>
-      <span style={{ width: 7, height: 7, borderRadius: "50%", background: LAV }} />
+      <span style={{ width: 7, height: 7, borderRadius: "50%", background: accent, boxShadow: `0 0 10px ${accent}` }} />
       {s.chip}
     </motion.div>
   )
@@ -258,7 +261,7 @@ function BigScene({ s, isDesktop, isDark }: { s: Scene; isDesktop: boolean; isDa
       <div style={{ position: "absolute", inset: 0, display: "grid", placeItems: "center", zIndex: 12, overflow: "hidden", pointerEvents: "none" }}>
         <motion.span
           initial={{ opacity: 0, scale: 1.04 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ amount: 0.5 }} transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-          style={{ fontSize: "clamp(4rem, 24vw, 22rem)", fontWeight: 900, textTransform: "uppercase", letterSpacing: "-.05em", lineHeight: 1, whiteSpace: "nowrap", color: isDark ? "rgba(255,255,255,.055)" : "rgba(0,0,0,.05)" }}>
+          style={{ fontSize: "clamp(4rem, 24vw, 22rem)", fontWeight: 900, textTransform: "uppercase", letterSpacing: "-.05em", lineHeight: 1, whiteSpace: "nowrap", color: isDark ? `${accent}1c` : `${accent}16` }}>
           {s.giant}
         </motion.span>
       </div>
@@ -318,9 +321,9 @@ export default function Manifesto() {
       <WhatsAppFAB />
       <DeckNav isDark={isDark} isDesktop={isDesktop} active={active} />
 
-      {/* Gato persistente CENTRADO: cambia de raza/pose con cada escena (como bigotes).
+      {/* Escultura 3D persistente CENTRADA: cambia de forma/acento con cada escena.
           Queda entre el título gigante (detrás) y el texto frontal. */}
-      <CatMascot
+      <SculptureMascot
         sceneIndex={active}
         style={{
           position: "fixed", zIndex: 15, pointerEvents: isDesktop ? "auto" : "none",
@@ -338,7 +341,7 @@ export default function Manifesto() {
       </div>
 
       <div>
-        {DECK.map((s) => <BigScene key={s.key} s={s} isDesktop={isDesktop} isDark={isDark} />)}
+        {DECK.map((s, i) => <BigScene key={s.key} s={s} i={i} isDesktop={isDesktop} isDark={isDark} />)}
       </div>
     </div>
   )
