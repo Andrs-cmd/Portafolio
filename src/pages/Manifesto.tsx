@@ -189,13 +189,13 @@ function BigScene({ s, i, isDesktop, isDark }: { s: Scene; i: number; isDesktop:
   let front: ReactNode
   if (s.kind === "quote") {
     front = (
-      <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100%", alignItems: "center", textAlign: "center" }}>
+      <div style={{ display: "flex", flexDirection: "column", justifyContent: isDesktop ? "space-between" : "flex-start", gap: isDesktop ? 0 : 26, height: isDesktop ? "100%" : "auto", alignItems: "center", textAlign: "center" }}>
         <div>{Chip}</div>
         <motion.blockquote variants={rise} style={{ margin: 0, fontSize: "clamp(1.5rem, 4.6vw, 3.2rem)", fontWeight: 900, textTransform: "uppercase", letterSpacing: "-.035em", lineHeight: 1.05, color: fg, maxWidth: 820 }}>
           <span style={{ display: "block", marginBottom: 10 }}>{s.quote?.[0]}</span>
           <span style={{ display: "block", color: LAV }}>{s.quote?.[1]}</span>
         </motion.blockquote>
-        <span />
+        {isDesktop && <span />}
       </div>
     )
   } else if (s.kind === "match") {
@@ -213,7 +213,7 @@ function BigScene({ s, i, isDesktop, isDark }: { s: Scene; i: number; isDesktop:
       </div>
     )
     front = (
-      <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100%" }}>
+      <div style={{ display: "flex", flexDirection: "column", justifyContent: isDesktop ? "space-between" : "flex-start", gap: isDesktop ? 0 : 26, height: isDesktop ? "100%" : "auto" }}>
         <div>{Chip}</div>
         <div style={{ display: "flex", flexDirection: isDesktop ? "row" : "column", justifyContent: "space-between", gap: isDesktop ? 24 : 24, alignItems: isDesktop ? "flex-end" : "flex-start" }}>
           <List title="Trabajo con" items={workWith} color={isDark ? "#60a5fa" : "#2563eb"} />
@@ -223,7 +223,7 @@ function BigScene({ s, i, isDesktop, isDark }: { s: Scene; i: number; isDesktop:
     )
   } else if (s.kind === "cta") {
     front = (
-      <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100%" }}>
+      <div style={{ display: "flex", flexDirection: "column", justifyContent: isDesktop ? "space-between" : "flex-start", gap: isDesktop ? 0 : 26, height: isDesktop ? "100%" : "auto" }}>
         <div>{Chip}</div>
         <div style={{ display: "flex", flexDirection: isDesktop ? "row" : "column", justifyContent: "space-between", alignItems: isDesktop ? "flex-end" : "flex-start", gap: 24, pointerEvents: "auto" }}>
           <motion.a variants={rise} href={WA_URL} target="_blank" rel="noopener noreferrer"
@@ -244,7 +244,7 @@ function BigScene({ s, i, isDesktop, isDark }: { s: Scene; i: number; isDesktop:
   } else {
     // caption: chip arriba, capL (izq) y capR (der) flanqueando al gato
     front = (
-      <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100%" }}>
+      <div style={{ display: "flex", flexDirection: "column", justifyContent: isDesktop ? "space-between" : "flex-start", gap: isDesktop ? 0 : 26, height: isDesktop ? "100%" : "auto" }}>
         <div>{Chip}</div>
         <div style={{ display: "flex", flexDirection: isDesktop ? "row" : "column", justifyContent: "space-between", alignItems: isDesktop ? "flex-end" : "flex-start", gap: isDesktop ? 24 : 16 }}>
           <motion.p variants={rise} style={{ margin: 0, maxWidth: 280, fontSize: "clamp(1.1rem,2.2vw,1.7rem)", fontStyle: "italic", fontWeight: 300, lineHeight: 1.3, color: fg }}>{s.capL}</motion.p>
@@ -268,7 +268,7 @@ function BigScene({ s, i, isDesktop, isDark }: { s: Scene; i: number; isDesktop:
       {/* texto frontal (z20), por delante del gato */}
       <motion.div variants={container} initial="hidden" whileInView="show" viewport={{ amount: 0.5 }}
         style={{ position: "relative", zIndex: 20, width: "100%", maxWidth: 1280, margin: "0 auto",
-          padding: isDesktop ? "104px clamp(40px,6vw,80px) clamp(40px,8vh,88px)" : "46svh 22px 12svh",
+          padding: isDesktop ? "104px clamp(40px,6vw,80px) clamp(40px,8vh,88px)" : "38svh 20px 12svh",
           display: "flex", flexDirection: "column", pointerEvents: "none" }}>
         {front}
       </motion.div>
@@ -328,9 +328,9 @@ export default function Manifesto() {
         style={{
           position: "fixed", zIndex: 15, pointerEvents: isDesktop ? "auto" : "none",
           left: "50%", transform: "translateX(-50%)",
-          top: isDesktop ? 0 : 54,
-          width: isDesktop ? "min(620px, 54vw)" : "100%",
-          height: isDesktop ? "100svh" : "44svh",
+          top: isDesktop ? 0 : 58,
+          width: isDesktop ? "min(620px, 54vw)" : "92%",
+          height: isDesktop ? "100svh" : "34svh",
         }}
       />
 
