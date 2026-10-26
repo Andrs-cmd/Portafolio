@@ -27,7 +27,6 @@ export function getNavItems(isDark: boolean): CardNavItem[] {
       links: [
         { label: "Desarrollo & Web", href: "/lab", ariaLabel: "Servicios de desarrollo y web" },
         { label: "Automatización n8n", href: "/automation", ariaLabel: "Automatización con n8n" },
-        { label: "Manifiesto", href: "/manifesto", ariaLabel: "Manifiesto: cómo y con quién trabajo" },
       ],
     },
     {
