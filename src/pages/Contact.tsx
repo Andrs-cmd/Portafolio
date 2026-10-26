@@ -8,6 +8,7 @@ import "../components/CardNav.css"
 import { WhatsAppFAB } from "../components/WhatsAppCTA"
 import { useSEO } from "../lib/useSEO"
 import { getNavItems, NAV_CTA, INSTAGRAM, INSTAGRAM_HANDLE } from "../data/nav"
+import OptInForm from "../components/OptInForm"
 
 const LIQUID_DARK = ["#0a0014", "#7b00cc", "#c026d3", "#60a5fa", "#ffffff"]
 const LIQUID_LIGHT = ["#f4f1f1", "#747272", "#000000"]
@@ -357,7 +358,7 @@ function DirectMethods({ isDark, isDesktop }: { isDark: boolean; isDesktop: bool
 const faqs = [
   { q: "¿Cuánto tarda un proyecto típico?", a: "Una landing pulida: 1-2 semanas. Un sitio mediano: 3-6 semanas. Ecommerce: 6-10 semanas. Automation con n8n: 1-3 semanas. Si tu plazo es más corto, hablemos y vemos qué se puede hacer." },
   { q: "¿Trabajás solo o con equipo?", a: "Solo, pero con red. Yo me encargo del diseño y código. Si el proyecto pide motion grande o ilustración específica, sumo gente puntual de mi círculo de confianza." },
-  { q: "¿Atendés clientes fuera de Colombia?", a: "Sí, trabajo con marcas en LATAM (Colombia, México, Argentina, Chile) y USA. Cobro en USD y respondo en inglés o español." },
+  { q: "¿Atendés clientes fuera de Colombia?", a: "Sí, trabajo con marcas en LATAM (Colombia, México, Argentina, Chile) y USA. Mis precios están en pesos colombianos (COP); para clientes fuera de Colombia puedo cotizar en USD a pedido. Respondo en inglés o español." },
   { q: "¿Cómo cobrás?", a: "50% al arrancar, 50% al entregar. Transferencia local, Wise o crypto. Para proyectos largos partimos en milestones." },
   { q: "¿Aceptás revisiones ilimitadas?", a: "No. Cada fase tiene un set de revisiones acotado (usualmente 2 por entrega). Lo aclaramos en la propuesta. Esto evita el ciclo infinito que no le sirve a nadie." },
 ]
@@ -500,6 +501,27 @@ export default function Contact() {
           </span>
         </motion.div>
         <DirectMethods isDark={isDark} isDesktop={isDesktop} />
+      </section>
+
+      {/* Recursos gratis — captación opt-in (curso + mini-auditoría) */}
+      <section style={{ position: "relative", zIndex: 20, padding: isDesktop ? "32px 48px 96px" : "16px 20px 64px", maxWidth: 1280, margin: "0 auto" }}>
+        <motion.div initial={{ opacity: 0, x: -10 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: .7 }}
+          style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 28 }}>
+          <div style={{ width: 22, height: .5, background: isDark ? "rgba(255,255,255,.45)" : "rgba(0,0,0,.35)" }} />
+          <span style={{ fontSize: 9, letterSpacing: ".35em", textTransform: "uppercase", color: isDark ? "rgba(255,255,255,.80)" : "rgba(0,0,0,.75)" }}>
+            Recursos gratis
+          </span>
+        </motion.div>
+        <div style={{ display: "grid", gridTemplateColumns: isDesktop ? "1fr 1fr" : "1fr", gap: 18 }}>
+          <OptInForm source="curso"
+            title="Curso gratis de automatizaciones"
+            subtitle="Aprende a crear automatizaciones con n8n, WhatsApp e IA. Te lo envío a tu correo."
+            cta="Quiero el curso gratis" />
+          <OptInForm source="auditoria"
+            title="Mini-auditoría gratis de tu sitio"
+            subtitle="Déjame tu correo y reviso tu web: mejoras concretas de diseño, velocidad y conversión."
+            cta="Quiero mi auditoría" />
+        </div>
       </section>
 
       {/* FAQ */}
