@@ -11,6 +11,7 @@ const Visual    = lazy(() => import("./pages/Visual"))
 const Automation = lazy(() => import("./pages/Automation"))
 const Contact   = lazy(() => import("./pages/Contact"))
 const Legal     = lazy(() => import("./pages/Legal"))
+const Aqua      = lazy(() => import("./pages/Aqua"))
 
 function PageFallback() {
   return (
@@ -35,6 +36,7 @@ function App() {
               <Route path="/automation" element={<Automation />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/legal" element={<Legal />} />
+              <Route path="/aqua" element={<Aqua />} />
             </Route>
           </Routes>
         </Suspense>
