@@ -76,8 +76,7 @@ export const onRequestPost = async (context: { request: Request; env: Env }): Pr
     const reply = (out?.response || "").trim() ||
       "Perdón, no pude responder eso. Si quieres, escríbele a Andres por WhatsApp: https://wa.me/573195768097"
     return json({ reply })
-  } catch (e) {
-    const detail = e instanceof Error ? e.message : String(e)
-    return json({ error: "No pude procesar la pregunta en este momento.", detail }, 500)
+  } catch {
+    return json({ error: "No pude procesar la pregunta en este momento." }, 500)
   }
 }
