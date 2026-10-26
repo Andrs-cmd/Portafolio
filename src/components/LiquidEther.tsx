@@ -22,6 +22,10 @@ export interface LiquidEtherProps {
   takeoverDuration?: number;
   autoResumeDelay?: number;
   autoRampDuration?: number;
+  /** Tope de cuadros por segundo. 0 = sin tope (desktop). En móvil se limita
+   *  para no desperdiciar GPU en pantallas de 90/120 Hz y para que el
+   *  movimiento se sienta estable aunque el equipo no llegue a 60. */
+  maxFps?: number;
 }
 
 interface SimOptions {
@@ -74,7 +78,8 @@ export default function LiquidEther({
   autoIntensity = 2.2,
   takeoverDuration = 0.25,
   autoResumeDelay = 1000,
-  autoRampDuration = 0.6
+  autoRampDuration = 0.6,
+  maxFps = 0
 }: LiquidEtherProps): React.ReactElement {
   const mountRef = useRef<HTMLDivElement | null>(null);
   const webglRef = useRef<LiquidEtherWebGL | null>(null);
@@ -135,7 +140,10 @@ export default function LiquidEther({
         this.container = container;
         // El fluido es difuso por naturaleza: renderizarlo por encima de 1.5x
         // no se nota y cuadruplica el trabajo de fragmentos en pantallas retina.
-        this.pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
+        // En móvil (DPR de 2.5–3.5 habitual) se baja a 1.0: la GPU del teléfono
+        // es el cuello de botella y el fondo difuso no pierde nada visible.
+        const prCap = window.innerWidth < 1024 ? 1 : 1.5;
+        this.pixelRatio = Math.min(window.devicePixelRatio || 1, prCap);
         this.resize();
         // Sin antialias: la escena es un quad a pantalla completa, no hay bordes
         // geométricos que suavizar, así que el MSAA solo costaría ancho de banda.
@@ -1021,11 +1029,14 @@ export default function LiquidEther({
       autoDriver?: AutoDriver;
       lastUserInteraction = performance.now();
       running = false;
+      minFrameMs = 0;
+      private _lastFrameTime = 0;
       private _loop = this.loop.bind(this);
       private _resize = this.resize.bind(this);
       private _onVisibility?: () => void;
       constructor(props: any) {
         this.props = props;
+        this.minFrameMs = props.maxFps && props.maxFps > 0 ? 1000 / props.maxFps : 0;
         Common.init(props.$wrapper);
         Mouse.init(props.$wrapper);
         Mouse.autoIntensity = props.autoIntensity;
@@ -1067,10 +1078,18 @@ export default function LiquidEther({
         Common.update();
         this.output.update();
       }
-      loop() {
+      loop(now?: number) {
         if (!this.running) return;
-        this.render();
         rafRef.current = requestAnimationFrame(this._loop);
+        // Tope de FPS: si aún no pasó el intervalo mínimo, se agenda el
+        // siguiente cuadro pero no se renderiza. Así en pantallas de 120 Hz no
+        // se gasta GPU de más y el ritmo queda parejo.
+        if (this.minFrameMs > 0) {
+          const t = now ?? performance.now();
+          if (t - this._lastFrameTime < this.minFrameMs) return;
+          this._lastFrameTime = t;
+        }
+        this.render();
       }
       start() {
         if (this.running) return;
@@ -1111,7 +1130,8 @@ export default function LiquidEther({
       autoIntensity,
       takeoverDuration,
       autoResumeDelay,
-      autoRampDuration
+      autoRampDuration,
+      maxFps
     });
     webglRef.current = webgl;
 
@@ -1203,7 +1223,8 @@ export default function LiquidEther({
     autoIntensity,
     takeoverDuration,
     autoResumeDelay,
-    autoRampDuration
+    autoRampDuration,
+    maxFps
   ]);
 
   useEffect(() => {

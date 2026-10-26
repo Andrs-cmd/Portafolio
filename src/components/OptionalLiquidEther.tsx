@@ -82,10 +82,19 @@ export default function OptionalLiquidEther(props: LiquidEtherProps) {
 
   if (!enabled) return null
 
-  // Modo ligero en móvil: menos resolución de simulación y cursor más pequeño.
-  // Solo pisa lo que haga falta; el resto de props de desktop se respetan.
+  // Modo ligero en móvil. El costo por cuadro lo dominan la resolución de la
+  // simulación y, sobre todo, las iteraciones de Poisson (una pasada a pantalla
+  // completa cada una). En celular se recortan sin que el fondo difuso lo note,
+  // y se topan los FPS para que las pantallas de 90/120 Hz no frían la GPU y el
+  // ritmo quede parejo. Solo pisa lo necesario; el resto de props se respetan.
   const tuned: LiquidEtherProps = isSmall
-    ? { ...props, resolution: Math.min(props.resolution ?? 0.5, 0.5), cursorSize: 80 }
+    ? {
+        ...props,
+        resolution: Math.min(props.resolution ?? 0.5, 0.5),
+        cursorSize: 80,
+        iterationsPoisson: Math.min(props.iterationsPoisson ?? 20, 12),
+        maxFps: 48,
+      }
     : props
 
   return (
