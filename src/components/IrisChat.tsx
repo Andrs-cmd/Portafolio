@@ -12,35 +12,51 @@ const LAV = "#c3c4f2"
 type Msg = { role: "user" | "assistant"; content: string }
 const GREETING: Msg = { role: "assistant", content: "¡Hola! Soy Iris, la asistente de Andres. Pregúntame por sus servicios, precios, proyectos o cómo contactarlo." }
 
-// Convierte las URLs del texto (incluidos los wa.me) en enlaces cliqueables que
-// abren en una pestaña nueva — así el WhatsApp que menciona Iris lleva al chat.
-const URL_RE = /(https?:\/\/[^\s]+|wa\.me\/[^\s]+)/g
+// Convierte en enlaces cliqueables lo contactable que mencione Iris, sin
+// depender de cómo lo escriba el modelo: URLs y wa.me, emails (→ mailto) y el
+// número de WhatsApp de Andres escrito como teléfono (+57 319 576 8097 → wa.me).
+const WA_HREF = "https://wa.me/573195768097"
+// url | wa.me | email | teléfono (dígito, luego 7+ de dígito/espacio/()./- , y dígito)
+const TOKEN_RE =
+  /(https?:\/\/[^\s]+|wa\.me\/[^\s]+|[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}|\+?\d[\d\s().-]{7,}\d)/g
+
 function renderWithLinks(text: string, linkColor: string): ReactNode[] {
   const out: ReactNode[] = []
   let last = 0
   let key = 0
   let m: RegExpExecArray | null
-  URL_RE.lastIndex = 0
-  while ((m = URL_RE.exec(text))) {
+  TOKEN_RE.lastIndex = 0
+  const anchor = (href: string, label: string) => (
+    <a key={key++} href={href} target="_blank" rel="noopener noreferrer"
+      style={{ color: linkColor, textDecoration: "underline", fontWeight: 600, wordBreak: "break-all" }}>
+      {label}
+    </a>
+  )
+  while ((m = TOKEN_RE.exec(text))) {
     if (m.index > last) out.push(text.slice(last, m.index))
-    let url = m[0]
-    // Recorta la puntuación final (un punto o paréntesis de cierre de frase no
-    // es parte del enlace).
+    const raw = m[0]
+    let href: string | null = null
+    let label = raw
     let trail = ""
-    const tm = url.match(/[.,;:!?)]+$/)
-    if (tm) {
-      trail = tm[0]
-      url = url.slice(0, -trail.length)
+    if (/^https?:\/\//.test(raw) || /^wa\.me\//.test(raw)) {
+      // Recorta la puntuación final (no es parte del enlace).
+      const tm = raw.match(/[.,;:!?)]+$/)
+      if (tm) { trail = tm[0]; label = raw.slice(0, -trail.length) }
+      href = label.startsWith("http") ? label : `https://${label}`
+    } else if (raw.includes("@")) {
+      href = `mailto:${raw}`
+    } else {
+      // Teléfono: sólo se enlaza si son los dígitos del WhatsApp de Andres; otro
+      // número (una fecha, un precio) se deja como texto tal cual.
+      if (raw.replace(/\D/g, "").includes("3195768097")) href = WA_HREF
     }
-    const href = url.startsWith("http") ? url : `https://${url}`
-    out.push(
-      <a key={key++} href={href} target="_blank" rel="noopener noreferrer"
-        style={{ color: linkColor, textDecoration: "underline", fontWeight: 600, wordBreak: "break-all" }}>
-        {url}
-      </a>
-    )
-    if (trail) out.push(trail)
-    last = URL_RE.lastIndex
+    if (href) {
+      out.push(anchor(href, label))
+      if (trail) out.push(trail)
+    } else {
+      out.push(raw)
+    }
+    last = TOKEN_RE.lastIndex
   }
   if (last < text.length) out.push(text.slice(last))
   return out

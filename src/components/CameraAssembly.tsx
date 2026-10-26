@@ -51,10 +51,13 @@ export default function CameraAssembly({ isDark = true }: { isDark?: boolean }) 
   const [failed, setFailed] = useState(false)
   const [loaded, setLoaded] = useState(false)
 
-  // Se muestra siempre que el navegador pueda crear WebGL. (No se apaga por
-  // prefers-reduced-motion: el usuario quiere la pieza 3D visible; el movimiento
-  // fuerte depende del scroll, que es acción del propio usuario.)
+  // Se muestra en desktop siempre que el navegador pueda crear WebGL. En móvil
+  // NO se monta: la Home ya corre el fondo Liquid Ether (otro contexto WebGL) y
+  // dos motores 3D a la vez trababan el scroll en el teléfono. Es la sección más
+  // pesada, así que en pantallas pequeñas la escena 3D se omite por completo (la
+  // sección entera devuelve null y la página fluye sin ese bloque).
   useEffect(() => {
+    if (window.innerWidth < 768) { setEnabled(false); return }
     let webgl = false
     try {
       const c = document.createElement("canvas")
