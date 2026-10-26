@@ -8,6 +8,7 @@ import "../components/CardNav.css"
 import SculptureMascot from "../components/SculptureMascot"
 import { WhatsAppFAB } from "../components/WhatsAppCTA"
 import { useSEO } from "../lib/useSEO"
+import { getNavItems, NAV_CTA } from "../data/nav"
 
 const LIQUID_DARK = ["#0a0014", "#7b00cc", "#c026d3", "#60a5fa", "#ffffff"]
 const LIQUID_LIGHT = ["#f4f1f1", "#747272", "#000000"]
@@ -314,14 +315,7 @@ export default function Manifesto() {
     return () => { html.style.scrollSnapType = prev }
   }, [isDesktop])
 
-  const menuItems = [
-    { label: "Servicios", bgColor: isDark ? "#111111" : "#f0ece4", textColor: isDark ? "#fff" : "#000",
-      links: [{ label: "Desarrollo Web", href: "/lab", ariaLabel: "Lab" }, { label: "Automation · n8n", href: "/automation", ariaLabel: "Automation" }] },
-    { label: "Proyectos", bgColor: isDark ? "#1a1a1a" : "#e8e4dc", textColor: isDark ? "#fff" : "#000",
-      links: [{ label: "Archive", href: "/archive", ariaLabel: "Archive" }, { label: "Visual Editorial", href: "/visual", ariaLabel: "Visual" }] },
-    { label: "Contacto", bgColor: isDark ? "#dde4e6" : "#1a1a1a", textColor: isDark ? "#000" : "#fff",
-      links: [{ label: "WhatsApp", href: WA_URL, ariaLabel: "WhatsApp" }, { label: "Email", href: "mailto:aprada.web@gmail.com", ariaLabel: "Email" }] },
-  ]
+  const menuItems = getNavItems(isDark)
 
   return (
     <div style={{ minHeight: "100svh", overflowX: "clip", background: pageBg, color: fg, position: "relative" }}>
@@ -353,7 +347,7 @@ export default function Manifesto() {
       )}
 
       <div style={{ position: "relative", zIndex: 50 }}>
-        <CardNav logo="/faviconAP.ico" items={menuItems}
+        <CardNav logo="/faviconAP.ico" items={menuItems} ctaLabel={NAV_CTA.label} ctaHref={NAV_CTA.href}
           baseColor={isDark ? "rgba(6,6,6,.95)" : "rgba(245,241,233,.95)"}
           menuColor={isDark ? "#fff" : "#000"} buttonBgColor={isDark ? "#dde4e6" : "#000"} buttonTextColor={isDark ? "#000" : "#fff"} />
       </div>

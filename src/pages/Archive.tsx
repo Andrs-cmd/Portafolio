@@ -9,11 +9,10 @@ import { projects } from "../data/projects"
 import { photosEditorial, motionPieces } from "../data/gallery"
 import { WhatsAppFAB, WhatsAppPill, WhatsAppBanner } from "../components/WhatsAppCTA"
 import { useSEO } from "../lib/useSEO"
+import { getNavItems, NAV_CTA, EMAIL_HREF, INSTAGRAM } from "../data/nav"
 
 const LIQUID_DARK  = ['#0a0014', '#7b00cc', '#c026d3', '#60a5fa', '#ffffff']
 const LIQUID_LIGHT = ['#f4f1f1', '#747272', '#000000']
-
-const WA_NUMBER = "573195768097"
 
 function useIsDesktop() {
   const [isDesktop, setIsDesktop] = useState(false)
@@ -151,19 +150,11 @@ export default function Archive() {
   })
   const { isDark } = useTheme()
   const isDesktop = useIsDesktop()
-  const WA_URL = `https://wa.me/${WA_NUMBER}?text=Hola%20Andres%2C%20me%20interesa%20trabajar%20contigo`
 
   const pageBg = isDark ? "#060606" : "#f5f1e9"
   const borderC = isDark ? "0.5px solid rgba(255,255,255,0.07)" : "0.5px solid rgba(0,0,0,0.07)"
 
-  const menuItems = [
-    { label: "Servicios", bgColor: isDark ? "#111111" : "#f0ece4", textColor: isDark ? "#fff" : "#000",
-      links: [{ label: "Desarrollo Web", href: "/lab", ariaLabel: "Web" }, { label: "Automation · n8n", href: "/automation", ariaLabel: "Automation" }, { label: "Manifiesto", href: "/manifesto", ariaLabel: "Manifiesto" }] },
-    { label: "Proyectos", bgColor: isDark ? "#1a1a1a" : "#e8e4dc", textColor: isDark ? "#fff" : "#000",
-      links: [{ label: "Visual Editorial", href: "/visual", ariaLabel: "Visual" }, { label: "Home", href: "/", ariaLabel: "Home" }] },
-    { label: "Contacto", bgColor: isDark ? "#dde4e6" : "#1a1a1a", textColor: isDark ? "#000" : "#fff",
-      links: [{ label: "WhatsApp", href: WA_URL, ariaLabel: "WhatsApp" }, { label: "Email", href: "mailto:aprada.web@gmail.com", ariaLabel: "Email" }] },
-  ]
+  const menuItems = getNavItems(isDark)
 
   return (
     <div style={{ minHeight: "100vh", overflowX: "hidden", background: pageBg, color: isDark ? "#fff" : "#111", position: "relative" }}>
@@ -187,7 +178,7 @@ export default function Archive() {
       <ThemeToggle/>
 
       <div style={{ position: "relative", zIndex: 50 }}>
-        <CardNav logo="/faviconAP.ico" items={menuItems}
+        <CardNav logo="/faviconAP.ico" items={menuItems} ctaLabel={NAV_CTA.label} ctaHref={NAV_CTA.href}
           baseColor={isDark ? "rgba(6,6,6,.95)" : "rgba(245,241,233,.95)"}
           menuColor={isDark ? "#fff" : "#111"} buttonBgColor={isDark ? "#dde4e6" : "#111"} buttonTextColor={isDark ? "#000" : "#fff"}/>
       </div>
@@ -297,8 +288,8 @@ export default function Archive() {
             <WhatsAppPill isDark={isDark} size="lg" label="Escribir por WhatsApp"/>
           </motion.div>
           {[
-            { label: "Email", href: "mailto:aprada.web@gmail.com" },
-            { label: "Instagram", href: "https://instagram.com/tu_usuario" },
+            { label: "Email", href: EMAIL_HREF },
+            { label: "Instagram", href: INSTAGRAM },
           ].map(({ label, href }, i) => (
             <motion.a key={label} href={href} target={href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer"
               style={{ display: "flex", alignItems: "center", gap: 16, textDecoration: "none", fontSize: 13, textTransform: "uppercase", letterSpacing: ".2em", color: isDark ? "#fff" : "#000" }}
@@ -314,6 +305,7 @@ export default function Archive() {
 
       <footer style={{ position: "relative", zIndex: 20, padding: "24px clamp(16px, 4vw, 48px)", display: "flex", alignItems: "center", justifyContent: "space-between", background: pageBg, borderTop: borderC }}>
         <span style={{ fontSize: 9, letterSpacing: ".4em", textTransform: "uppercase", color: isDark ? "#fff" : "#000" }}>Andres Prada</span>
+        <a href="/legal" style={{ fontSize: 9, letterSpacing: ".3em", textTransform: "uppercase", textDecoration: "none", color: isDark ? "#fff" : "#000", opacity: .75 }}>Aviso legal · Privacidad</a>
         <span style={{ fontFamily: "monospace", fontSize: 9, color: isDark ? "#fff" : "#000" }}>© 2026</span>
         <span style={{ fontSize: 9, letterSpacing: ".4em", textTransform: "uppercase", color: isDark ? "#fff" : "#000" }}>Bogotá, CO</span>
       </footer>

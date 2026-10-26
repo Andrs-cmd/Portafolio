@@ -10,6 +10,7 @@ const Archive   = lazy(() => import("./pages/Archive"))
 const Visual    = lazy(() => import("./pages/Visual"))
 const Automation = lazy(() => import("./pages/Automation"))
 const Contact   = lazy(() => import("./pages/Contact"))
+const Legal     = lazy(() => import("./pages/Legal"))
 
 function PageFallback() {
   return (
@@ -33,6 +34,7 @@ function App() {
               <Route path="/visual" element={<Visual />} />
               <Route path="/automation" element={<Automation />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/legal" element={<Legal />} />
             </Route>
           </Routes>
         </Suspense>

@@ -18,6 +18,7 @@ import {
 } from "../data/gallery"
 import { WhatsAppFAB, WhatsAppPill, WhatsAppBanner } from "../components/WhatsAppCTA"
 import { useSEO } from "../lib/useSEO"
+import { getNavItems, NAV_CTA } from "../data/nav"
 
 const LIQUID_DARK = ["#0a0014", "#7b00cc", "#c026d3", "#60a5fa", "#ffffff"]
 const LIQUID_LIGHT = ["#f4f1f1", "#747272", "#000000"]
@@ -542,6 +543,9 @@ export default function Visual() {
       desc: "Long editorial",
       items: photosEditorial.map(p => ({ ...p, kind: "photo" as const, tabId: "gua" })),
     },
+    // Fauna Urbana y Callejera: pendientes de subir las fotos a Cloudinary.
+    // Los datos están en gallery.ts (photosFauna / photosCallejera); al subirlas
+    // se reactivan estas dos pestañas.
     {
       id: "sculpture",
       label: "Sculpture",
@@ -574,14 +578,7 @@ export default function Visual() {
     setLbIndex(null)
   }
 
-  const menuItems = [
-    { label: "Servicios", bgColor: isDark ? "#111111" : "#f0ece4", textColor: isDark ? "#fff" : "#000",
-      links: [{ label: "Lab / Servicios", href: "/lab", ariaLabel: "Lab" }, { label: "Automation · n8n", href: "/automation", ariaLabel: "Automation" }, { label: "Manifiesto", href: "/manifesto", ariaLabel: "Manifiesto" }] },
-    { label: "Proyectos", bgColor: isDark ? "#1a1a1a" : "#e8e4dc", textColor: isDark ? "#fff" : "#000",
-      links: [{ label: "Archive", href: "/archive", ariaLabel: "Archive" }, { label: "Visual Editorial", href: "/visual", ariaLabel: "Visual" }] },
-    { label: "Contacto", bgColor: isDark ? "#dde4e6" : "#1a1a1a", textColor: isDark ? "#000" : "#fff",
-      links: [{ label: "WhatsApp", href: WA_URL, ariaLabel: "WhatsApp" }, { label: "Email", href: "mailto:aprada.web@gmail.com", ariaLabel: "Email" }] },
-  ]
+  const menuItems = getNavItems(isDark)
 
   return (
     <div style={{ minHeight: "100vh", overflowX: "hidden", background: pageBg, color: isDark ? "#fff" : "#000", position: "relative" }}>
@@ -600,7 +597,7 @@ export default function Visual() {
       <WhatsAppFAB />
 
       <div style={{ position: "relative", zIndex: 50 }}>
-        <CardNav logo="/faviconAP.ico" items={menuItems}
+        <CardNav logo="/faviconAP.ico" items={menuItems} ctaLabel={NAV_CTA.label} ctaHref={NAV_CTA.href}
           baseColor={isDark ? "rgba(6,6,6,.95)" : "rgba(245,241,233,.95)"}
           menuColor={isDark ? "#fff" : "#000"} buttonBgColor={isDark ? "#dde4e6" : "#000"} buttonTextColor={isDark ? "#000" : "#fff"} />
       </div>
@@ -683,6 +680,7 @@ export default function Visual() {
 
       <footer style={{ position: "relative", zIndex: 20, padding: "32px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", background: pageBg, borderTop: borderC, gap: 12, flexWrap: "wrap" }}>
         <span style={{ fontSize: 9, letterSpacing: ".4em", textTransform: "uppercase", color: isDark ? "rgba(255,255,255,.55)" : "rgba(0,0,0,.55)" }}>Andres Prada</span>
+        <a href="/legal" style={{ fontSize: 9, letterSpacing: ".3em", textTransform: "uppercase", textDecoration: "none", color: isDark ? "#fff" : "#000", opacity: .75 }}>Aviso legal · Privacidad</a>
         <span style={{ fontFamily: "monospace", fontSize: 9, color: isDark ? "rgba(255,255,255,.45)" : "rgba(0,0,0,.45)" }}>© 2026 · Issue 01</span>
         <span style={{ fontSize: 9, letterSpacing: ".4em", textTransform: "uppercase", color: isDark ? "rgba(255,255,255,.55)" : "rgba(0,0,0,.55)" }}>Bogotá, CO</span>
       </footer>

@@ -1,8 +1,11 @@
 import React, { useLayoutEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { gsap } from 'gsap';
 // use your own icon import if react-icons is not available
 import { GoArrowUpRight } from 'react-icons/go';
 import './CardNav.css';
+
+const isInternal = (href: string) => href.startsWith('/') && !href.startsWith('//');
 
 type CardNavLink = {
   label: string;
@@ -28,6 +31,8 @@ export interface CardNavProps {
   menuColor?: string;
   buttonBgColor?: string;
   buttonTextColor?: string;
+  ctaLabel?: string;
+  ctaHref?: string;
 }
 
 const CardNav: React.FC<CardNavProps> = ({
@@ -40,7 +45,9 @@ const CardNav: React.FC<CardNavProps> = ({
   baseColor = '#fff',
   menuColor,
   buttonBgColor,
-  buttonTextColor
+  buttonTextColor,
+  ctaLabel = 'Hablemos',
+  ctaHref = '/contact'
 }) => {
   const [isHamburgerOpen, setIsHamburgerOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -157,9 +164,44 @@ const CardNav: React.FC<CardNavProps> = ({
     }
   };
 
+  const closeMenu = () => {
+    const tl = tlRef.current;
+    if (!tl || !isExpanded) return;
+    setIsHamburgerOpen(false);
+    tl.eventCallback('onReverseComplete', () => setIsExpanded(false));
+    tl.reverse();
+  };
+
   const setCardRef = (i: number) => (el: HTMLDivElement | null) => {
     if (el) cardsRef.current[i] = el;
   };
+
+  // Enlaces internos usan React Router (navegación SPA, sin recargar el sitio ni
+  // reiniciar el WebGL); los externos/mailto usan <a>. Ambos cierran el menú.
+  const renderLink = (
+    href: string,
+    className: string,
+    ariaLabel: string | undefined,
+    children: React.ReactNode,
+    key?: string
+  ) =>
+    isInternal(href) ? (
+      <Link key={key} to={href} className={className} aria-label={ariaLabel} onClick={closeMenu}>
+        {children}
+      </Link>
+    ) : (
+      <a
+        key={key}
+        href={href}
+        className={className}
+        aria-label={ariaLabel}
+        onClick={closeMenu}
+        target={href.startsWith('mailto:') || href.startsWith('tel:') ? undefined : '_blank'}
+        rel="noopener noreferrer"
+      >
+        {children}
+      </a>
+    );
 
   return (
     <div className={`card-nav-container ${className}`}>
@@ -177,17 +219,15 @@ const CardNav: React.FC<CardNavProps> = ({
             <div className="hamburger-line" />
           </div>
 
-          <a className="logo-container" href={logoHref} aria-label="Ir al inicio">
-            <img src={logo} alt={logoAlt} className="logo" />
-          </a>
+          {renderLink(logoHref, 'logo-container', 'Ir al inicio', <img src={logo} alt={logoAlt} className="logo" />)}
 
-          <button
-            type="button"
-            className="card-nav-cta-button"
-            style={{ backgroundColor: buttonBgColor, color: buttonTextColor }}
-          >
-            Get Started
-          </button>
+          {renderLink(
+            ctaHref,
+            'card-nav-cta-button',
+            ctaLabel,
+            ctaLabel,
+            'cta'
+          )}
         </div>
 
         <div className="card-nav-content" aria-hidden={!isExpanded}>
@@ -200,12 +240,18 @@ const CardNav: React.FC<CardNavProps> = ({
             >
               <div className="nav-card-label">{item.label}</div>
               <div className="nav-card-links">
-                {item.links?.map((lnk, i) => (
-                  <a key={`${lnk.label}-${i}`} className="nav-card-link" href={lnk.href} aria-label={lnk.ariaLabel}>
-                    <GoArrowUpRight className="nav-card-link-icon" aria-hidden="true" />
-                    {lnk.label}
-                  </a>
-                ))}
+                {item.links?.map((lnk, i) =>
+                  renderLink(
+                    lnk.href,
+                    'nav-card-link',
+                    lnk.ariaLabel,
+                    <>
+                      <GoArrowUpRight className="nav-card-link-icon" aria-hidden="true" />
+                      {lnk.label}
+                    </>,
+                    `${lnk.label}-${i}`
+                  )
+                )}
               </div>
             </div>
           ))}

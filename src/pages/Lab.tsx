@@ -8,6 +8,7 @@ import "../components/CardNav.css"
 import { photosStudio, motionPieces } from "../data/gallery"
 import { WhatsAppFAB, WhatsAppPill, WhatsAppBanner } from "../components/WhatsAppCTA"
 import { useSEO } from "../lib/useSEO"
+import { getNavItems, NAV_CTA, EMAIL_HREF, INSTAGRAM } from "../data/nav"
 
 const WA_NUMBER = "573195768097"
 const WA_BASE   = `https://wa.me/${WA_NUMBER}?text=`
@@ -299,14 +300,7 @@ export default function Lab() {
   const colBg  = isDark ? "#0d0d10" : "#e8e4db"
   const borderC = isDark ? "1px solid rgba(255,255,255,.06)" : "1px solid rgba(0,0,0,.07)"
 
-  const menuItems = [
-    { label: "Servicios", bgColor: isDark ? "#111111" : "#f0ece4", textColor: isDark ? "#fff" : "#000",
-      links: [{ label: "Software & Web", href: "/lab", ariaLabel: "Web" }, { label: "Automation · n8n", href: "/automation", ariaLabel: "Automation" }, { label: "Manifiesto", href: "/manifesto", ariaLabel: "Manifiesto" }] },
-    { label: "Proyectos", bgColor: isDark ? "#1a1a1a" : "#e8e4dc", textColor: isDark ? "#fff" : "#000",
-      links: [{ label: "Archive", href: "/archive", ariaLabel: "Archive" }, { label: "Visual Editorial", href: "/visual", ariaLabel: "Visual" }] },
-    { label: "Contacto", bgColor: isDark ? "#dde4e6" : "#1a1a1a", textColor: isDark ? "#000" : "#fff",
-      links: [{ label: "WhatsApp", href: `https://wa.me/${WA_NUMBER}?text=Hola%20Andres`, ariaLabel: "WA" }, { label: "Email", href: "mailto:andres@tudominio.com", ariaLabel: "Email" }] },
-  ]
+  const menuItems = getNavItems(isDark)
 
   return (
     <div style={{ minHeight: "100vh", overflowX: "hidden", background: pageBg, color: isDark ? "#fff" : "#111", position: "relative" }}>
@@ -331,7 +325,7 @@ export default function Lab() {
 
       {/* ── Nav — z-index 50 ── */}
       <div style={{ position: "relative", zIndex: 50 }}>
-        <CardNav logo="/faviconAP.ico" items={menuItems}
+        <CardNav logo="/faviconAP.ico" items={menuItems} ctaLabel={NAV_CTA.label} ctaHref={NAV_CTA.href}
           baseColor={isDark ? "rgba(6,6,6,.97)" : "rgba(245,241,233,.97)"}
           menuColor={isDark ? "#fff" : "#111"} buttonBgColor={isDark ? "#dde4e6" : "#111"} buttonTextColor={isDark ? "#000" : "#fff"}/>
       </div>
@@ -649,7 +643,7 @@ export default function Lab() {
           <motion.div initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: .5 }} viewport={{ once: true }}>
             <WhatsAppPill isDark={isDark} size="lg" label="Escribir por WhatsApp"/>
           </motion.div>
-          {[{ label: "Email", href: "mailto:aprada.web@gmail.com" }, { label: "Instagram", href: "https://instagram.com/tu_usuario" }].map(({ label, href }, i) => (
+          {[{ label: "Email", href: EMAIL_HREF }, { label: "Instagram", href: INSTAGRAM }].map(({ label, href }, i) => (
             <motion.a key={label} href={href} target={href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer"
               style={{ display: "flex", alignItems: "center", gap: 16, textDecoration: "none", fontSize: 13, textTransform: "uppercase", letterSpacing: ".2em", color: isDark ? "#fff" : "#000" }}
               initial={{ opacity: 0, x: 12 }} whileInView={{ opacity: 1, x: 0 }}
@@ -665,6 +659,7 @@ export default function Lab() {
       {/* Footer */}
       <footer style={{ position: "relative", zIndex: 20, padding: "24px clamp(16px, 4vw, 48px)", display: "flex", alignItems: "center", justifyContent: "space-between", background: pageBg, borderTop: isDark ? "1px solid rgba(255,255,255,.04)" : "1px solid rgba(0,0,0,.05)" }}>
         <span style={{ fontSize: 9, letterSpacing: ".4em", textTransform: "uppercase", color: isDark ? "#fff" : "#000" }}>Andres Prada</span>
+        <a href="/legal" style={{ fontSize: 9, letterSpacing: ".3em", textTransform: "uppercase", textDecoration: "none", color: isDark ? "#fff" : "#000", opacity: .75 }}>Aviso legal · Privacidad</a>
         <span style={{ fontFamily: "monospace", fontSize: 9, color: isDark ? "#fff" : "#000" }}>© 2026</span>
         <span style={{ fontSize: 9, letterSpacing: ".4em", textTransform: "uppercase", color: isDark ? "#fff" : "#000" }}>Bogotá, CO</span>
       </footer>

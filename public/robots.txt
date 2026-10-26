@@ -8,4 +8,4 @@ Allow: /
 User-agent: Bingbot
 Allow: /
 
-Sitemap: https://andresprada.com/sitemap.xml
+Sitemap: https://andresprada.online/sitemap.xml

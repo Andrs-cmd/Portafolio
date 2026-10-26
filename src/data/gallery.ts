@@ -76,10 +76,68 @@ export const photosEditorial: GalleryPhoto[] = [
   img("v1779426379", "15_2026-02-22_12_52_48.307_10288296280691_GUA_1863.jpg_afvpdh.jpg"),
 ]
 
+/* ──────────────────────────────────────────────────────────
+   SERIES 2026 — Fauna urbana + Callejera
+   Subidas al Media Library de Cloudinary en la carpeta `portafolio/`.
+   Se sirven sin número de versión (Cloudinary lo resuelve igual) con el
+   mismo pipeline f_auto,q_auto + srcSet responsivo. Si subiste las fotos a
+   otra carpeta, cambia NEW_FOLDER y listo.
+   ────────────────────────────────────────────────────────── */
+const NEW_FOLDER = "portafolio"
+
+function imgP(slug: string, alt: string, ratio: GalleryPhoto["ratio"] = "landscape"): GalleryPhoto {
+  const pid = `${NEW_FOLDER}/${slug}`
+  const url = (w: number) => `${CLD_BASE}/f_auto,q_auto,w_${w}/${pid}`
+  return {
+    id: slug,
+    alt,
+    ratio,
+    src: url(1200),
+    srcSet: `${url(480)} 480w, ${url(800)} 800w, ${url(1200)} 1200w, ${url(1800)} 1800w`,
+    thumb: url(400),
+  }
+}
+
+/* FAUNA URBANA — retratos de animales (18) */
+export const photosFauna: GalleryPhoto[] = [
+  imgP("terrier-cresta-rostro",        "Retrato en primer plano de un terrier callejero de mirada ámbar"),
+  imgP("terrier-cresta-perfil",        "Perfil de un terrier con cresta teñida y chaqueta de cuero"),
+  imgP("terrier-saludo-pata",          "Terrier callejero dando la pata a una persona en la calle"),
+  imgP("dachshund-cafe-retrato",       "Perro salchicha café en primer plano sobre el pasto"),
+  imgP("dachshund-arlequin",           "Dachshund arlequín de pelaje moteado posando en el asfalto"),
+  imgP("terrier-bandana-roja",         "Terrier pequeño con bandana roja sentado en el césped"),
+  imgP("chihuahua-gorra-amarilla",     "Chihuahua con gorra amarilla y bandana azul en la calle"),
+  imgP("gran-danes-arlequin-retrato",  "Retrato de un gran danés arlequín en blanco y negro"),
+  imgP("gran-danes-leonado-perfil",    "Perfil de un gran danés leonado con collar azul"),
+  imgP("gran-danes-disfraz-flores",    "Gran danés disfrazado con flores rojas en brazos de su dueña"),
+  imgP("san-bernardos-pareja",         "Pareja de San Bernardos con bandanas rojas y la lengua afuera"),
+  imgP("bearded-collie",               "Bearded collie peinado en una exposición canina"),
+  imgP("corgi-expo",                   "Corgi sonriente sobre césped sintético en una expo canina"),
+  imgP("spitz-blanco-silla",           "Spitz blanco con la lengua afuera en una silla de ruedas para perros"),
+  imgP("samoyedo-pasto",               "Samoyedo blanco de pie sobre un prado verde"),
+  imgP("gato-persa-blanco",            "Gato persa blanco en brazos de una mujer pelirroja"),
+  imgP("gato-negro-jaula-joyas",       "Gato negro tras una reja adornada con joyas colgantes"),
+  imgP("gatos-blanco-negro",           "Un gato negro y uno atigrado descansando juntos sobre una manta"),
+]
+
+/* CALLEJERA / EDITORIAL — urbano, retrato ambiental y paisaje (8) */
+export const photosCallejera: GalleryPhoto[] = [
+  imgP("hombres-muro-amarillo",   "Dos hombres caminando frente a un muro amarillo intenso"),
+  imgP("saxofonista-bn",          "Saxofonista tocando junto a esculturas, en blanco y negro"),
+  imgP("vitrina-multitud-bn",     "Multitud frente a una vitrina comercial, en blanco y negro"),
+  imgP("obrero-andamio",          "Obrero saludando desde un andamio en una obra de concreto"),
+  imgP("kayaks-lago-bogota",      "Kayaks en un lago con la ciudad de Bogotá al fondo"),
+  imgP("botes-pedal-lago",        "Botes de pedal rojos en un lago frente a los cerros"),
+  imgP("avenida-arboles",         "Avenida arbolada con autos y señal de límite de velocidad"),
+  imgP("pecera-oranda-roja",      "Pez dorado oranda rojo y blanco nadando en una pecera azul"),
+]
+
 export const allPhotos: GalleryPhoto[] = [
   ...photosCaptures,
   ...photosStudio,
   ...photosEditorial,
+  ...photosFauna,
+  ...photosCallejera,
 ]
 
 const CLD_VIDEO = "https://res.cloudinary.com/dq5tsivzq/video/upload"

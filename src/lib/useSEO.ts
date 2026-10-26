@@ -9,7 +9,7 @@ type SEOProps = {
   type?: "website" | "article" | "profile"
 }
 
-const SITE_URL = "https://andresprada.com"
+const SITE_URL = "https://andresprada.online"
 const DEFAULT_IMAGE = "https://res.cloudinary.com/dq5tsivzq/image/upload/f_auto,q_auto,w_1200/v1779425407/GUA_4718_gwpah8.jpg"
 
 function setMeta(selector: string, attr: string, value: string) {
