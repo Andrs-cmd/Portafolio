@@ -5,12 +5,13 @@ import { useTheme } from "../context/ThemeContext"
 import LiquidEther from "../components/OptionalLiquidEther"
 import CardNav from "../components/CardNav"
 import "../components/CardNav.css"
-import ArtObject from "../components/ArtObject"
+import CatMascot from "../components/CatMascot"
 import { WhatsAppFAB } from "../components/WhatsAppCTA"
 import { useSEO } from "../lib/useSEO"
 
 const LIQUID_DARK = ["#0a0014", "#7b00cc", "#c026d3", "#60a5fa", "#ffffff"]
 const LIQUID_LIGHT = ["#f4f1f1", "#747272", "#000000"]
+const LAV = "#c3c4f2"
 
 const WA_NUMBER = "573195768097"
 const WA_URL = `https://wa.me/${WA_NUMBER}?text=Hola%20Andres%2C%20le%C3%AD%20tu%20manifiesto%20y%20me%20identifico`
@@ -51,32 +52,13 @@ function ScrollBar() {
   const { scrollYProgress } = useScroll()
   const width = useTransform(scrollYProgress, [0, 1], ["0%", "100%"])
   const { isDark } = useTheme()
-  return (
-    <motion.div style={{ position: "fixed", top: 0, left: 0, height: 1.5, zIndex: 300, pointerEvents: "none", width, background: isDark ? "rgba(255,255,255,.3)" : "rgba(0,0,0,.25)" }} />
-  )
+  return <motion.div style={{ position: "fixed", top: 0, left: 0, height: 1.5, zIndex: 300, pointerEvents: "none", width, background: isDark ? "rgba(255,255,255,.3)" : "rgba(0,0,0,.25)" }} />
 }
 
 /* ──────────────────────────────────────────────────────────
-   PRINCIPIOS — el corazón del manifiesto
-   Edita el title, lead y body para ajustar tu voz.
+   CONTENIDO DEL DECK — organizado como bigotes:
+   título gigante detrás del gato, chip, captions a los lados, CTA abajo.
    ────────────────────────────────────────────────────────── */
-type Principle = { num: string; title: string; lead: string; body: string }
-
-const principles: Principle[] = [
-  { num: "01", title: "Diseño es decisión", lead: "No es decoración. Es elegir qué dejar afuera.",
-    body: "Cada elemento de pantalla justifica su lugar o se va. La estética minimal no es tendencia, es disciplina: lo que queda tiene que sostener la mirada. Cuando todo grita, nada se escucha." },
-  { num: "02", title: "El código es el medio", lead: "No el fin.",
-    body: "Los frameworks cambian cada seis meses. Lo que perdura es el producto: que la persona del otro lado entienda, confíe y avance. Si el código es bonito pero el flujo es feo, el código sobra." },
-  { num: "03", title: "Criterio sobre tendencia", lead: "Tendencia caduca. Criterio no.",
-    body: "Construyo cosas que envejezcan bien. Las modas de UI duran un año. Los principios de tipografía editorial, contraste, ritmo y silencio llevan décadas funcionando. Apuesto por eso." },
-  { num: "04", title: "Lo lento se hace bien", lead: "Velocidad es resultado, no método.",
-    body: "Construir rápido para luego rehacer todo no es eficiencia. Es deuda. Prefiero dos semanas pensando que dos meses arreglando. Y cuando hay claridad de propósito, lo bueno también sale rápido." },
-  { num: "05", title: "Marca es proceso", lead: "Lo que hacés cuando nadie mira.",
-    body: "Una marca no son los colores ni el logo. Es la coherencia entre lo que prometés, lo que entregás y cómo respondés cuando algo falla. Construyo lo segundo y lo tercero. El primero es fácil." },
-  { num: "06", title: "LATAM con criterio", lead: "Local sí, pero sin perder altura.",
-    body: "Trabajo desde Bogotá para marcas que no quieren parecer agencias gringas con acento. Hablo castellano, pienso en pesos, entiendo el WhatsApp, pero el nivel de diseño compite globalmente. Esa es la mezcla." },
-]
-
 const workWith = [
   "Quien tiene tiempo para hacer las cosas bien",
   "Quien valora el proceso, no solo el output",
@@ -84,7 +66,6 @@ const workWith = [
   "Quien busca socio, no proveedor",
   "Quien tiene una idea con criterio detrás",
 ]
-
 const dontWorkWith = [
   "Quien dice 'es urgente' antes de explicar qué necesita",
   "Quien copia referencias sin entenderlas",
@@ -93,85 +74,43 @@ const dontWorkWith = [
   "Quien busca el más barato del mercado",
 ]
 
-/* ──────────────────────────────────────────────────────────
-   DECK — escenas a pantalla completa con scroll-snap
-   ────────────────────────────────────────────────────────── */
-const SCENES = ["intro", ...principles.map(p => p.num), "quote", "match", "cta"]
-
-// reveal: los hijos suben y aparecen en cascada al entrar la escena
-const container: Variants = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.08, delayChildren: 0.05 } },
+type Scene = {
+  key: string
+  label: string
+  giant: string
+  chip: string
+  kind?: "cap" | "quote" | "match" | "cta"
+  capL?: string
+  capR?: string
+  quote?: [string, string]
 }
-const rise: Variants = {
-  hidden: { opacity: 0, y: 22 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] } },
-}
-// trazo que se "dibuja" solo cuando la escena entra
-const draw: Variants = {
-  hidden: { pathLength: 0, opacity: 0 },
-  show: { pathLength: 1, opacity: 1, transition: { pathLength: { duration: 1.2, ease: "easeInOut" }, opacity: { duration: 0.3 } } },
-}
+const DECK: Scene[] = [
+  { key: "intro", label: "Intro", giant: "CÓMO", chip: "Manifiesto · 02",
+    capL: "Seis principios que filtran qué proyectos acepto.", capR: "Si te identificás, hablemos. Si te chocan, también está bien — no somos buen match." },
+  { key: "01", label: "01 · Diseño", giant: "DISEÑO", chip: "01 · Diseño es decisión",
+    capL: "No es decoración. Es elegir qué dejar afuera.", capR: "Cada elemento justifica su lugar o se va. Cuando todo grita, nada se escucha." },
+  { key: "02", label: "02 · Código", giant: "CÓDIGO", chip: "02 · El código es el medio",
+    capL: "No el fin.", capR: "Los frameworks cambian cada seis meses. Lo que perdura es que la persona entienda, confíe y avance." },
+  { key: "03", label: "03 · Criterio", giant: "CRITERIO", chip: "03 · Criterio sobre tendencia",
+    capL: "Tendencia caduca. Criterio no.", capR: "Construyo cosas que envejezcan bien. Tipografía, contraste, ritmo y silencio llevan décadas funcionando." },
+  { key: "04", label: "04 · Tiempo", giant: "TIEMPO", chip: "04 · Lo lento se hace bien",
+    capL: "Velocidad es resultado, no método.", capR: "Prefiero dos semanas pensando que dos meses arreglando. Con claridad de propósito, lo bueno también sale rápido." },
+  { key: "05", label: "05 · Marca", giant: "MARCA", chip: "05 · Marca es proceso",
+    capL: "Lo que hacés cuando nadie mira.", capR: "No son los colores ni el logo: es la coherencia entre lo que prometés, lo que entregás y cómo respondés cuando algo falla." },
+  { key: "06", label: "06 · LATAM", giant: "LATAM", chip: "06 · LATAM con criterio",
+    capL: "Local sí, pero sin perder altura.", capR: "Desde Bogotá, en castellano y pensando en pesos — con un nivel de diseño que compite globalmente." },
+  { key: "quote", label: "Cita", giant: "CITA", chip: "Entre líneas", kind: "quote",
+    quote: ["“No busco más clientes.", "busco mejores conversaciones.”"] },
+  { key: "match", label: "Con quién", giant: "MATCH", chip: "Con quién trabajo", kind: "match" },
+  { key: "cta", label: "Contacto", giant: "HABLEMOS", chip: "Si llegaste hasta acá", kind: "cta" },
+]
+const SCENES = DECK.map(d => d.key)
 
-// un ícono de línea por principio, dibujado con la variante `draw`
-const ICON_PATHS: Record<string, string[]> = {
-  "01": ["M10 18 V10 H18", "M38 30 V38 H30"],                                   // decisión: encuadre / crop marks
-  "02": ["M19 16 L11 24 L19 32", "M29 16 L37 24 L29 32", "M26 14 L22 34"],      // código: </>
-  "03": ["M24 8 a16 16 0 1 0 0.1 0 Z", "M24 24 L31 16"],                        // criterio: brújula
-  "04": ["M15 9 H33", "M15 39 H33", "M16 9 L32 39", "M32 9 L16 39"],            // lo lento: reloj de arena
-  "05": ["M24 12 L38 19 L24 26 L10 19 Z", "M10 27 L24 34 L38 27"],             // proceso: capas
-  "06": ["M24 8 C17 8 12 13 12 20 C12 29 24 40 24 40 C24 40 36 29 36 20 C36 13 31 8 24 8 Z", "M24 20 m-4 0 a4 4 0 1 0 8 0 a4 4 0 1 0 -8 0"], // LATAM: pin
-}
+const container: Variants = { hidden: {}, show: { transition: { staggerChildren: 0.08, delayChildren: 0.05 } } }
+const rise: Variants = { hidden: { opacity: 0, y: 22 }, show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] } } }
 
-const LAV = "#c3c4f2" // acento lavanda (noctiflora)
-
-function PrincipleIcon({ kind, size = 72 }: { kind: string; size?: number }) {
-  const paths = ICON_PATHS[kind]
-  if (!paths) return null
-  return (
-    <motion.svg variants={rise} width={size} height={size} viewBox="0 0 48 48" fill="none" aria-hidden="true" style={{ display: "block", marginBottom: 22 }}>
-      {paths.map((d, i) => (
-        <motion.path key={i} d={d} variants={draw} stroke={LAV} strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" fill="none" />
-      ))}
-    </motion.svg>
-  )
-}
-
-function Scene({ id, children, isDesktop }: { id: string; children: ReactNode; isDesktop: boolean }) {
-  return (
-    <section
-      id={`scene-${id}`}
-      data-scene={id}
-      style={{
-        minHeight: "100svh",
-        scrollSnapAlign: "start",
-        scrollSnapStop: "always",
-        position: "relative",
-        zIndex: 20,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: isDesktop ? "120px clamp(32px,6vw,80px)" : "96px 22px 88px",
-        boxSizing: "border-box",
-      }}
-    >
-      <motion.div
-        variants={container}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ amount: 0.55, margin: "-8% 0px" }}
-        style={{ width: "100%", maxWidth: 1080, margin: "0 auto" }}
-      >
-        {children}
-      </motion.div>
-    </section>
-  )
-}
-
-const SCENE_LABELS = ["Intro", "01 · Diseño", "02 · Código", "03 · Criterio", "04 · Tiempo", "05 · Marca", "06 · LATAM", "Cita", "Con quién", "Contacto"]
-
-/* Navegación noctiflora: puntos (derecha), crumb vertical (izq) y flechas circulares */
-function DeckNav({ isDark, isDesktop }: { isDark: boolean; isDesktop: boolean }) {
+/* escena activa según el scroll (compartida por el gato y la navegación) */
+function useActiveScene() {
   const [active, setActive] = useState(0)
   useEffect(() => {
     const secs = Array.from(document.querySelectorAll("[data-scene]"))
@@ -184,51 +123,153 @@ function DeckNav({ isDark, isDesktop }: { isDark: boolean; isDesktop: boolean })
     secs.forEach((s) => io.observe(s))
     return () => io.disconnect()
   }, [])
+  return active
+}
 
+/* Navegación: puntos (derecha), crumb vertical (izq) y flechas circulares */
+function DeckNav({ isDark, isDesktop, active }: { isDark: boolean; isDesktop: boolean; active: number }) {
   const go = (i: number) => {
     const j = Math.min(SCENES.length - 1, Math.max(0, i))
     document.getElementById(`scene-${SCENES[j]}`)?.scrollIntoView({ behavior: "smooth" })
   }
-
   const dot = isDark ? "rgba(255,255,255,.28)" : "rgba(0,0,0,.26)"
   const fg = isDark ? "#eef0f3" : "#141211"
   const ring = isDark ? "rgba(255,255,255,.22)" : "rgba(0,0,0,.20)"
 
   return (
     <>
-      {/* puntos (centro-derecha) */}
       <div style={{ position: "fixed", right: "clamp(12px,1.6vw,22px)", top: "50%", transform: "translateY(-50%)", zIndex: 90, display: "flex", flexDirection: "column", gap: 11, alignItems: "center" }}>
-        {SCENES.map((s, i) => (
-          <button key={s} onClick={() => go(i)} aria-label={`Ir a ${SCENE_LABELS[i]}`} style={{ width: 10, height: 10, padding: 0, border: "none", background: "transparent", cursor: "pointer", display: "grid", placeItems: "center" }}>
+        {DECK.map((s, i) => (
+          <button key={s.key} onClick={() => go(i)} aria-label={`Ir a ${s.label}`} style={{ width: 10, height: 10, padding: 0, border: "none", background: "transparent", cursor: "pointer", display: "grid", placeItems: "center" }}>
             <span style={{ display: "block", width: active === i ? 9 : 6, height: active === i ? 9 : 6, borderRadius: "50%", background: active === i ? LAV : dot, transition: "all .3s ease" }} />
           </button>
         ))}
       </div>
 
-      {/* crumb vertical (izquierda) */}
       {isDesktop && (
         <div style={{ position: "fixed", left: "clamp(14px,2vw,30px)", top: "50%", transform: "translateY(-50%) rotate(180deg)", writingMode: "vertical-rl", zIndex: 90, display: "flex", alignItems: "center", gap: 14, pointerEvents: "none" }}>
-          <span style={{ fontFamily: "monospace", fontSize: 10, letterSpacing: ".3em", textTransform: "uppercase", color: LAV }}>{SCENE_LABELS[active]}</span>
+          <span style={{ fontFamily: "monospace", fontSize: 10, letterSpacing: ".3em", textTransform: "uppercase", color: LAV }}>{DECK[active].label}</span>
           <span style={{ width: 40, height: .5, background: ring }} />
           <span style={{ fontFamily: "monospace", fontSize: 10, letterSpacing: ".2em", color: isDark ? "rgba(255,255,255,.5)" : "rgba(0,0,0,.45)" }}>{String(active + 1).padStart(2, "0")} / {String(SCENES.length).padStart(2, "0")}</span>
         </div>
       )}
 
-      {/* flechas circulares (abajo-izquierda; la derecha la ocupa el FAB de WhatsApp) */}
       <div style={{ position: "fixed", left: "clamp(16px,3vw,40px)", bottom: "clamp(24px,5vh,48px)", zIndex: 90, display: "flex", gap: 10 }}>
         {[["↑", active - 1], ["↓", active + 1]].map(([label, target], k) => {
           const disabled = k === 0 ? active === 0 : active === SCENES.length - 1
           return (
             <button key={k} onClick={() => go(target as number)} aria-label={k === 0 ? "Escena anterior" : "Escena siguiente"} disabled={disabled}
-              style={{ width: 42, height: 42, borderRadius: "50%", border: `1px solid ${ring}`, background: isDark ? "rgba(255,255,255,.04)" : "rgba(0,0,0,.03)", color: fg, cursor: disabled ? "default" : "pointer", opacity: disabled ? 0.3 : 1, display: "grid", placeItems: "center", fontSize: 16, lineHeight: 1, backdropFilter: "blur(6px)", transition: "opacity .25s, border-color .25s" }}
-              onMouseEnter={(e) => { if (!disabled) e.currentTarget.style.borderColor = LAV }}
-              onMouseLeave={(e) => { e.currentTarget.style.borderColor = ring }}>
+              style={{ width: 42, height: 42, borderRadius: "50%", border: `1px solid ${ring}`, background: isDark ? "rgba(255,255,255,.04)" : "rgba(0,0,0,.03)", color: fg, cursor: disabled ? "default" : "pointer", opacity: disabled ? 0.3 : 1, display: "grid", placeItems: "center", fontSize: 16, lineHeight: 1, backdropFilter: "blur(6px)" }}>
               {label as string}
             </button>
           )
         })}
       </div>
     </>
+  )
+}
+
+/* una escena del deck, con el layout de bigotes */
+function BigScene({ s, isDesktop, isDark }: { s: Scene; isDesktop: boolean; isDark: boolean }) {
+  const fg = isDark ? "#eef0f3" : "#141211"
+  const muted = isDark ? "rgba(240,240,245,.72)" : "rgba(20,20,20,.66)"
+  const chipBorder = isDark ? "rgba(255,255,255,.18)" : "rgba(0,0,0,.16)"
+
+  const Chip = (
+    <motion.div variants={rise} style={{ display: "inline-flex", alignItems: "center", gap: 9, padding: "7px 14px", borderRadius: 999, border: `1px solid ${chipBorder}`, background: isDark ? "rgba(255,255,255,.04)" : "rgba(0,0,0,.03)", backdropFilter: "blur(6px)", fontSize: 11, letterSpacing: ".04em", color: fg, whiteSpace: "nowrap" }}>
+      <span style={{ width: 7, height: 7, borderRadius: "50%", background: LAV }} />
+      {s.chip}
+    </motion.div>
+  )
+
+  // texto frontal (z20) — distinto por tipo de escena
+  let front: ReactNode
+  if (s.kind === "quote") {
+    front = (
+      <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100%", alignItems: "center", textAlign: "center" }}>
+        <div>{Chip}</div>
+        <motion.blockquote variants={rise} style={{ margin: 0, fontSize: "clamp(1.5rem, 4.6vw, 3.2rem)", fontWeight: 900, textTransform: "uppercase", letterSpacing: "-.035em", lineHeight: 1.05, color: fg, maxWidth: 820 }}>
+          <span style={{ display: "block", marginBottom: 10 }}>{s.quote?.[0]}</span>
+          <span style={{ display: "block", color: LAV }}>{s.quote?.[1]}</span>
+        </motion.blockquote>
+        <span />
+      </div>
+    )
+  } else if (s.kind === "match") {
+    const List = ({ title, items, color }: { title: string; items: string[]; color: string }) => (
+      <div style={{ maxWidth: 300 }}>
+        <motion.div variants={rise} style={{ display: "flex", alignItems: "center", gap: 9, marginBottom: 16 }}>
+          <span style={{ width: 16, height: .5, background: color }} />
+          <span style={{ fontFamily: "monospace", fontSize: 10, letterSpacing: ".25em", textTransform: "uppercase", color }}>{title}</span>
+        </motion.div>
+        <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 12 }}>
+          {items.map((l, i) => (
+            <motion.li key={i} variants={rise} style={{ fontSize: "clamp(13px,1.4vw,15px)", lineHeight: 1.5, color: muted }}>{l}</motion.li>
+          ))}
+        </ul>
+      </div>
+    )
+    front = (
+      <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100%" }}>
+        <div>{Chip}</div>
+        <div style={{ display: "flex", flexDirection: isDesktop ? "row" : "column", justifyContent: "space-between", gap: isDesktop ? 24 : 24, alignItems: isDesktop ? "flex-end" : "flex-start" }}>
+          <List title="Trabajo con" items={workWith} color={isDark ? "#60a5fa" : "#2563eb"} />
+          <List title="No trabajo con" items={dontWorkWith} color={isDark ? "#ef4444" : "#dc2626"} />
+        </div>
+      </div>
+    )
+  } else if (s.kind === "cta") {
+    front = (
+      <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100%" }}>
+        <div>{Chip}</div>
+        <div style={{ display: "flex", flexDirection: isDesktop ? "row" : "column", justifyContent: "space-between", alignItems: isDesktop ? "flex-end" : "flex-start", gap: 24, pointerEvents: "auto" }}>
+          <motion.a variants={rise} href={WA_URL} target="_blank" rel="noopener noreferrer"
+            style={{ display: "inline-flex", alignItems: "center", gap: 10, padding: "14px 26px", borderRadius: 999, background: LAV, color: "#141211", fontWeight: 700, fontSize: 13, letterSpacing: ".04em", textDecoration: "none" }}>
+            Hablemos por WhatsApp →
+          </motion.a>
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            {[{ l: "Email", h: "mailto:aprada.web@gmail.com" }, { l: "Ver proyectos", h: "/archive" }, { l: "Portafolio visual", h: "/visual" }].map(({ l, h }) => (
+              <motion.a key={l} variants={rise} href={h} target={h.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer" whileHover={{ x: 4 }}
+                style={{ display: "flex", alignItems: "center", gap: 14, textDecoration: "none", fontSize: 12, textTransform: "uppercase", letterSpacing: ".2em", color: fg }}>
+                <span style={{ width: 18, height: .5, background: isDark ? "rgba(255,255,255,.4)" : "rgba(0,0,0,.35)" }} />{l}
+              </motion.a>
+            ))}
+          </div>
+        </div>
+      </div>
+    )
+  } else {
+    // caption: chip arriba, capL (izq) y capR (der) flanqueando al gato
+    front = (
+      <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100%" }}>
+        <div>{Chip}</div>
+        <div style={{ display: "flex", flexDirection: isDesktop ? "row" : "column", justifyContent: "space-between", alignItems: isDesktop ? "flex-end" : "flex-start", gap: isDesktop ? 24 : 16 }}>
+          <motion.p variants={rise} style={{ margin: 0, maxWidth: 280, fontSize: "clamp(1.1rem,2.2vw,1.7rem)", fontStyle: "italic", fontWeight: 300, lineHeight: 1.3, color: fg }}>{s.capL}</motion.p>
+          <motion.p variants={rise} style={{ margin: 0, maxWidth: 320, fontSize: "clamp(13px,1.4vw,15px)", fontWeight: 300, lineHeight: 1.75, color: muted, textAlign: isDesktop ? "right" : "left" }}>{s.capR}</motion.p>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <section id={`scene-${s.key}`} data-scene={s.key} aria-label={s.label}
+      style={{ position: "relative", minHeight: "100svh", scrollSnapAlign: "start", scrollSnapStop: "always", display: "flex", pointerEvents: "none" }}>
+      {/* título gigante DETRÁS del gato */}
+      <div style={{ position: "absolute", inset: 0, display: "grid", placeItems: "center", zIndex: 12, overflow: "hidden", pointerEvents: "none" }}>
+        <motion.span
+          initial={{ opacity: 0, scale: 1.04 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ amount: 0.5 }} transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+          style={{ fontSize: "clamp(4rem, 24vw, 22rem)", fontWeight: 900, textTransform: "uppercase", letterSpacing: "-.05em", lineHeight: 1, whiteSpace: "nowrap", color: isDark ? "rgba(255,255,255,.055)" : "rgba(0,0,0,.05)" }}>
+          {s.giant}
+        </motion.span>
+      </div>
+      {/* texto frontal (z20), por delante del gato */}
+      <motion.div variants={container} initial="hidden" whileInView="show" viewport={{ amount: 0.5 }}
+        style={{ position: "relative", zIndex: 20, width: "100%", maxWidth: 1280, margin: "0 auto",
+          padding: isDesktop ? "104px clamp(40px,6vw,80px) clamp(40px,8vh,88px)" : "46svh 22px 12svh",
+          display: "flex", flexDirection: "column", pointerEvents: "none" }}>
+        {front}
+      </motion.div>
+    </section>
   )
 }
 
@@ -244,13 +285,11 @@ export default function Manifesto() {
   })
   const { isDark } = useTheme()
   const isDesktop = useIsDesktop()
+  const active = useActiveScene()
   const pageBg = isDark ? "#060606" : "#f5f1e9"
   const fg = isDark ? "#fff" : "#000"
-  const muted = isDark ? "rgba(255,255,255,.72)" : "rgba(0,0,0,.68)"
-  // scroll-snap tipo "deck" SÓLO mientras Manifesto está montado: va en el <html>
-  // (el elemento que hace scroll) y se restaura al salir, sin afectar otras páginas.
-  // 'proximity' (no 'mandatory') para no atrapar el scroll: engancha cada escena
-  // pero deja recorrer libremente las que tienen más contenido o en móvil.
+
+  // scroll-snap tipo "deck" SÓLO mientras Manifesto está montado (en el <html>).
   useEffect(() => {
     const html = document.documentElement
     const prev = html.style.scrollSnapType
@@ -267,29 +306,30 @@ export default function Manifesto() {
       links: [{ label: "WhatsApp", href: WA_URL, ariaLabel: "WhatsApp" }, { label: "Email", href: "mailto:aprada.web@gmail.com", ariaLabel: "Email" }] },
   ]
 
-  const eyebrow = (text: string, color?: string) => (
-    <motion.div variants={rise} style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 26 }}>
-      <div style={{ width: 22, height: .5, background: color || (isDark ? "rgba(255,255,255,.45)" : "rgba(0,0,0,.35)") }} />
-      <span style={{ fontFamily: "monospace", fontSize: 10, letterSpacing: ".3em", textTransform: "uppercase", color: color || muted }}>{text}</span>
-    </motion.div>
-  )
-
   return (
     <div style={{ minHeight: "100svh", overflowX: "clip", background: pageBg, color: fg, position: "relative" }}>
       <div style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none" }}>
-        <LiquidEther
-          mouseForce={18} cursorSize={120} resolution={0.7}
-          dt={0.016} viscous={15} isViscous={false}
-          autoIntensity={isDark ? 2 : 1}
-          colors={isDark ? LIQUID_DARK : LIQUID_LIGHT}
-        />
+        <LiquidEther mouseForce={18} cursorSize={120} resolution={0.7} dt={0.016} viscous={15} isViscous={false} autoIntensity={isDark ? 2 : 1} colors={isDark ? LIQUID_DARK : LIQUID_LIGHT} />
         <div style={{ position: "absolute", inset: 0, zIndex: 1, pointerEvents: "none", background: isDark ? "rgba(0,0,0,.90)" : "rgba(245,241,233,.90)" }} />
       </div>
 
       <ScrollBar />
       <ThemeToggle />
       <WhatsAppFAB />
-      <DeckNav isDark={isDark} isDesktop={isDesktop} />
+      <DeckNav isDark={isDark} isDesktop={isDesktop} active={active} />
+
+      {/* Gato persistente CENTRADO: cambia de raza/pose con cada escena (como bigotes).
+          Queda entre el título gigante (detrás) y el texto frontal. */}
+      <CatMascot
+        sceneIndex={active}
+        style={{
+          position: "fixed", zIndex: 15, pointerEvents: isDesktop ? "auto" : "none",
+          left: "50%", transform: "translateX(-50%)",
+          top: isDesktop ? 0 : 54,
+          width: isDesktop ? "min(620px, 54vw)" : "100%",
+          height: isDesktop ? "100svh" : "44svh",
+        }}
+      />
 
       <div style={{ position: "relative", zIndex: 50 }}>
         <CardNav logo="/faviconAP.ico" items={menuItems}
@@ -297,113 +337,8 @@ export default function Manifesto() {
           menuColor={isDark ? "#fff" : "#000"} buttonBgColor={isDark ? "#dde4e6" : "#000"} buttonTextColor={isDark ? "#000" : "#fff"} />
       </div>
 
-      {/* DECK: escenas a pantalla completa (el snap vive en <html>, ver arriba) */}
       <div>
-
-        {/* INTRO */}
-        <Scene id="intro" isDesktop={isDesktop}>
-          <div style={{ display: "grid", gridTemplateColumns: isDesktop ? "1fr 0.85fr" : "1fr", gap: isDesktop ? 40 : 20, alignItems: "center" }}>
-            <div style={{ order: isDesktop ? 0 : 1 }}>
-              {eyebrow("Section 02 · Manifiesto")}
-              <div style={{ overflow: "hidden" }}>
-                <motion.h1 variants={rise} style={{ fontSize: "clamp(2.8rem, 10vw, 8rem)", fontWeight: 900, textTransform: "uppercase", letterSpacing: "-.045em", lineHeight: .82, color: fg }}>Cómo</motion.h1>
-              </div>
-              <div style={{ overflow: "hidden", marginBottom: 28 }}>
-                <motion.h1 variants={rise} style={{ fontSize: "clamp(2.8rem, 10vw, 8rem)", fontWeight: 900, textTransform: "uppercase", letterSpacing: "-.045em", lineHeight: .82, WebkitTextStroke: isDark ? "1.5px rgba(255,255,255,.28)" : "1.5px rgba(0,0,0,.22)", color: "transparent" }}>trabajo</motion.h1>
-              </div>
-              <motion.p variants={rise} style={{ fontSize: "clamp(15px, 2vw, 18px)", fontWeight: 300, lineHeight: 1.7, maxWidth: 560, color: isDark ? "#fff" : "#000" }}>
-                Seis principios que filtran qué proyectos acepto y qué resultado entrego. Si los leés y te identificás, hablemos. Si te chocan, también está bien — no somos buen match.
-              </motion.p>
-              <motion.div variants={rise} style={{ marginTop: 34, display: "flex", alignItems: "center", gap: 10, color: muted }}>
-                <motion.span animate={{ y: [0, 6, 0] }} transition={{ repeat: Infinity, duration: 1.8, ease: "easeInOut" }} style={{ fontSize: 18 }}>↓</motion.span>
-                <span style={{ fontSize: 10, letterSpacing: ".3em", textTransform: "uppercase" }}>Scroll · arrastra la pieza</span>
-              </motion.div>
-            </div>
-            <ArtObject style={{ order: isDesktop ? 0 : 0, width: "100%", height: isDesktop ? "min(54vh, 520px)" : "54vw", minHeight: isDesktop ? 340 : 220 }} />
-          </div>
-        </Scene>
-
-        {/* PRINCIPIOS — una escena cada uno */}
-        {principles.map((p) => (
-          <Scene id={p.num} key={p.num} isDesktop={isDesktop}>
-            <PrincipleIcon kind={p.num} />
-            <motion.span variants={rise} aria-hidden="true" style={{ display: "block", fontFamily: "monospace", fontSize: "clamp(3rem, 9vw, 7rem)", fontWeight: 900, lineHeight: 1, letterSpacing: "-.04em", color: isDark ? "rgba(255,255,255,.07)" : "rgba(0,0,0,.06)", marginBottom: -12 }}>{p.num}</motion.span>
-            <motion.h2 variants={rise} style={{ fontSize: "clamp(2.2rem, 7vw, 5rem)", fontWeight: 900, textTransform: "uppercase", letterSpacing: "-.04em", lineHeight: .9, color: fg, marginBottom: 18, maxWidth: 900 }}>{p.title}</motion.h2>
-            <motion.p variants={rise} style={{ fontSize: "clamp(1.1rem, 2.6vw, 1.8rem)", fontStyle: "italic", fontWeight: 300, lineHeight: 1.3, color: isDark ? "rgba(255,255,255,.82)" : "rgba(0,0,0,.76)", marginBottom: 22, maxWidth: 560 }}>{p.lead}</motion.p>
-            <motion.p variants={rise} style={{ fontSize: "clamp(14px, 1.6vw, 16px)", fontWeight: 300, lineHeight: 1.8, color: isDark ? "rgba(255,255,255,.88)" : "rgba(0,0,0,.82)", maxWidth: 580 }}>{p.body}</motion.p>
-          </Scene>
-        ))}
-
-        {/* PULL QUOTE */}
-        <Scene id="quote" isDesktop={isDesktop}>
-          <motion.blockquote variants={rise} style={{ margin: 0, textAlign: "center", fontSize: "clamp(1.9rem, 6vw, 4.2rem)", fontWeight: 900, textTransform: "uppercase", letterSpacing: "-.035em", lineHeight: 1, color: fg }}>
-            <span style={{ display: "block", marginBottom: 14 }}>“No busco más clientes.</span>
-            <span style={{ display: "block", WebkitTextStroke: isDark ? "1.5px rgba(255,255,255,.24)" : "1.5px rgba(0,0,0,.20)", color: "transparent" }}>busco mejores conversaciones.”</span>
-          </motion.blockquote>
-        </Scene>
-
-        {/* TRABAJO CON / NO TRABAJO CON */}
-        <Scene id="match" isDesktop={isDesktop}>
-          <div style={{ display: "grid", gridTemplateColumns: isDesktop ? "1fr 1fr" : "1fr", gap: isDesktop ? 56 : 36 }}>
-            <div>
-              {eyebrow("Trabajo con", isDark ? "#60a5fa" : "#2563eb")}
-              <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 16 }}>
-                {workWith.map((line, i) => (
-                  <motion.li key={i} variants={rise} style={{ display: "flex", alignItems: "flex-start", gap: 14, fontSize: "clamp(14px, 1.7vw, 18px)", lineHeight: 1.5, color: isDark ? "rgba(255,255,255,.92)" : "rgba(0,0,0,.85)" }}>
-                    <span style={{ display: "inline-block", width: 16, height: 16, flexShrink: 0, marginTop: 3, position: "relative" }}>
-                      <span style={{ position: "absolute", inset: 0, border: isDark ? "1px solid rgba(96,165,250,.6)" : "1px solid rgba(37,99,235,.55)", borderRadius: 2 }} />
-                      <span style={{ position: "absolute", inset: 4, background: isDark ? "rgba(96,165,250,.7)" : "rgba(37,99,235,.6)", borderRadius: 1 }} />
-                    </span>
-                    {line}
-                  </motion.li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              {eyebrow("No trabajo con", isDark ? "#ef4444" : "#dc2626")}
-              <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 16 }}>
-                {dontWorkWith.map((line, i) => (
-                  <motion.li key={i} variants={rise} style={{ display: "flex", alignItems: "flex-start", gap: 14, fontSize: "clamp(14px, 1.7vw, 18px)", lineHeight: 1.5, color: isDark ? "rgba(255,255,255,.78)" : "rgba(0,0,0,.72)", textDecoration: "line-through", textDecorationColor: isDark ? "rgba(239,68,68,.45)" : "rgba(220,38,38,.4)", textDecorationThickness: "1px" }}>
-                    <span style={{ display: "inline-block", width: 16, height: 16, flexShrink: 0, marginTop: 3, position: "relative" }}>
-                      <span style={{ position: "absolute", inset: 0, border: isDark ? "1px solid rgba(239,68,68,.50)" : "1px solid rgba(220,38,38,.40)", borderRadius: 2 }} />
-                    </span>
-                    {line}
-                  </motion.li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </Scene>
-
-        {/* CTA FINAL */}
-        <Scene id="cta" isDesktop={isDesktop}>
-          <motion.div variants={rise}>
-            {eyebrow("Si llegaste hasta acá")}
-            <h2 style={{ fontSize: "clamp(2.8rem,8vw,5.5rem)", fontWeight: 900, textTransform: "uppercase", letterSpacing: "-.04em", lineHeight: .86, color: fg, marginBottom: 36 }}>
-              Hablemos<br />
-              <span style={{ WebkitTextStroke: isDark ? "1.5px rgba(255,255,255,.22)" : "1.5px rgba(0,0,0,.20)", color: "transparent" }}>en serio</span>
-            </h2>
-          </motion.div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-            {[
-              { label: "WhatsApp directo", href: WA_URL },
-              { label: "Email", href: "mailto:aprada.web@gmail.com" },
-              { label: "Ver proyectos", href: "/archive" },
-              { label: "Portafolio visual", href: "/visual" },
-            ].map(({ label, href }) => (
-              <motion.a key={label} variants={rise} href={href} target={href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer"
-                whileHover={{ x: 4 }}
-                style={{ display: "flex", alignItems: "center", gap: 16, textDecoration: "none", fontSize: 13, textTransform: "uppercase", letterSpacing: ".2em", color: fg }}>
-                <span style={{ display: "inline-block", width: 20, height: .5, background: isDark ? "rgba(255,255,255,.4)" : "rgba(0,0,0,.35)" }} />
-                {label}
-              </motion.a>
-            ))}
-          </div>
-          <motion.div variants={rise} style={{ marginTop: 56, display: "flex", gap: 18, flexWrap: "wrap", fontSize: 9, letterSpacing: ".4em", textTransform: "uppercase", color: muted }}>
-            <span>Andres Prada</span><span style={{ fontFamily: "monospace", letterSpacing: 0 }}>© 2026 · Manifiesto v2</span><span>Bogotá, CO</span>
-          </motion.div>
-        </Scene>
-
+        {DECK.map((s) => <BigScene key={s.key} s={s} isDesktop={isDesktop} isDark={isDark} />)}
       </div>
     </div>
   )
