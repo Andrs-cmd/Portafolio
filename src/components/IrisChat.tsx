@@ -62,6 +62,17 @@ function renderWithLinks(text: string, linkColor: string): ReactNode[] {
   return out
 }
 
+// Captación de leads: Iris termina su respuesta con [[LEAD]]<mensaje>[[/LEAD]]
+// cuando el visitante quiere contratar. Aquí se separa ese mensaje del texto
+// visible; el frontend arma el enlace de WhatsApp (así la codificación nunca
+// se rompe) y muestra un botón para enviárselo a Andres con el contexto listo.
+const LEAD_RE = /\[\[LEAD\]\]([\s\S]*?)\[\[\/LEAD\]\]/i
+function extractLead(content: string): { text: string; lead: string | null } {
+  const m = content.match(LEAD_RE)
+  if (!m) return { text: content, lead: null }
+  return { text: content.replace(LEAD_RE, "").trim(), lead: m[1].trim() || null }
+}
+
 // Logo de Iris: un nudo toroidal (trefoil / torus knot), la misma familia de
 // formas que las esculturas 3D del Manifiesto — coherencia de marca. Se traza
 // con las ecuaciones paramétricas del trefoil para que quede limpio y simétrico.
@@ -165,11 +176,23 @@ export default function IrisChat() {
           </div>
 
           <div ref={scrollRef} style={{ flex: 1, overflowY: "auto", padding: 14, display: "flex", flexDirection: "column", gap: 10 }}>
-            {msgs.map((m, i) => (
-              <div key={i} style={{ alignSelf: m.role === "user" ? "flex-end" : "flex-start", maxWidth: "86%", padding: "9px 12px", borderRadius: 14, fontSize: 13, lineHeight: 1.5, background: m.role === "user" ? bubbleUser : bubbleIris, border: m.role === "user" ? `1px solid ${isDark ? "rgba(195,196,242,.25)" : "rgba(99,91,255,.2)"}` : `1px solid ${line}`, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
-                {renderWithLinks(m.content, isDark ? LAV : "#635bff")}
-              </div>
-            ))}
+            {msgs.map((m, i) => {
+              const { text, lead } = m.role === "assistant" ? extractLead(m.content) : { text: m.content, lead: null }
+              return (
+                <div key={i} style={{ alignSelf: m.role === "user" ? "flex-end" : "flex-start", maxWidth: "86%", display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 8 }}>
+                  <div style={{ padding: "9px 12px", borderRadius: 14, fontSize: 13, lineHeight: 1.5, background: m.role === "user" ? bubbleUser : bubbleIris, border: m.role === "user" ? `1px solid ${isDark ? "rgba(195,196,242,.25)" : "rgba(99,91,255,.2)"}` : `1px solid ${line}`, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+                    {renderWithLinks(text, isDark ? LAV : "#635bff")}
+                  </div>
+                  {lead && (
+                    <a href={`https://wa.me/573195768097?text=${encodeURIComponent(lead)}`} target="_blank" rel="noopener noreferrer"
+                      style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "10px 14px", borderRadius: 12, background: "#25D366", color: "#fff", fontSize: 12.5, fontWeight: 700, textDecoration: "none", boxShadow: "0 4px 14px rgba(37,211,102,.35)" }}>
+                      <svg width="15" height="15" viewBox="0 0 32 32" fill="#fff" aria-hidden="true"><path d="M16.001 0C7.165 0 0 7.163 0 15.998a15.94 15.94 0 0 0 2.255 8.166L0 32l8.045-2.106A15.99 15.99 0 0 0 16 32C24.836 32 32 24.836 32 16S24.836 0 16.001 0zm0 29.336a13.27 13.27 0 0 1-6.78-1.862l-.487-.29-5.014 1.312 1.337-4.882-.318-.503a13.297 13.297 0 0 1-2.04-7.113c0-7.351 5.98-13.331 13.336-13.331 7.357 0 13.336 5.98 13.336 13.336s-5.98 13.333-13.37 13.333z"/></svg>
+                      Enviar a Andres por WhatsApp →
+                    </a>
+                  )}
+                </div>
+              )
+            })}
             {loading && (
               <div style={{ alignSelf: "flex-start", padding: "9px 12px", borderRadius: 14, fontSize: 13, background: bubbleIris, border: `1px solid ${line}`, opacity: .7 }}>Iris está escribiendo…</div>
             )}
