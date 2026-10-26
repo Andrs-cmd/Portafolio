@@ -199,15 +199,22 @@ function BigScene({ s, i, isDesktop, isDark }: { s: Scene; i: number; isDesktop:
       </div>
     )
   } else if (s.kind === "match") {
+    // Cada ítem observa su propia entrada en pantalla (once). Antes dependía de
+    // que la animación del contenedor se heredara hasta aquí, pero al estar dentro
+    // de este subcomponente la propagación se cortaba y las listas quedaban
+    // invisibles (opacity 0). Así es a prueba de fallos.
+    const inView = { once: true, amount: 0.35 } as const
     const List = ({ title, items, color }: { title: string; items: string[]; color: string }) => (
       <div style={{ maxWidth: 300 }}>
-        <motion.div variants={rise} style={{ display: "flex", alignItems: "center", gap: 9, marginBottom: 16 }}>
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={inView} transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          style={{ display: "flex", alignItems: "center", gap: 9, marginBottom: 16 }}>
           <span style={{ width: 16, height: .5, background: color }} />
           <span style={{ fontFamily: "monospace", fontSize: 10, letterSpacing: ".25em", textTransform: "uppercase", color }}>{title}</span>
         </motion.div>
         <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 12 }}>
           {items.map((l, i) => (
-            <motion.li key={i} variants={rise} style={{ fontSize: "clamp(13px,1.4vw,15px)", lineHeight: 1.5, color: muted }}>{l}</motion.li>
+            <motion.li key={i} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={inView} transition={{ duration: 0.55, delay: i * 0.06, ease: [0.16, 1, 0.3, 1] }}
+              style={{ fontSize: "clamp(13px,1.4vw,15px)", lineHeight: 1.5, color: muted }}>{l}</motion.li>
           ))}
         </ul>
       </div>
@@ -256,7 +263,10 @@ function BigScene({ s, i, isDesktop, isDark }: { s: Scene; i: number; isDesktop:
 
   return (
     <section id={`scene-${s.key}`} data-scene={s.key} aria-label={s.label}
-      style={{ position: "relative", minHeight: "100svh", scrollSnapAlign: "start", scrollSnapStop: "always", display: "flex", pointerEvents: "none" }}>
+      style={{ position: "relative", minHeight: "100svh", display: "flex", alignItems: isDesktop ? "stretch" : "center", pointerEvents: "none",
+        // scroll-snap sólo en desktop: en móvil pelea con el scroll por inercia
+        // y se siente trabado, así que ahí se deja scroll libre.
+        ...(isDesktop ? { scrollSnapAlign: "start", scrollSnapStop: "always" } : {}) }}>
       {/* título gigante DETRÁS del gato */}
       <div style={{ position: "absolute", inset: 0, display: "grid", placeItems: "center", zIndex: 12, overflow: "hidden", pointerEvents: "none" }}>
         <motion.span
@@ -268,7 +278,9 @@ function BigScene({ s, i, isDesktop, isDark }: { s: Scene; i: number; isDesktop:
       {/* texto frontal (z20), por delante del gato */}
       <motion.div variants={container} initial="hidden" whileInView="show" viewport={{ amount: 0.5 }}
         style={{ position: "relative", zIndex: 20, width: "100%", maxWidth: 1280, margin: "0 auto",
-          padding: isDesktop ? "104px clamp(40px,6vw,80px) clamp(40px,8vh,88px)" : "38svh 20px 12svh",
+          // Móvil: sin la escultura fija ya no hace falta reservar 38svh arriba;
+          // el contenido se centra sobre el título gigante con aire para el nav.
+          padding: isDesktop ? "104px clamp(40px,6vw,80px) clamp(40px,8vh,88px)" : "104px 22px 80px",
           display: "flex", flexDirection: "column", pointerEvents: "none" }}>
         {front}
       </motion.div>
@@ -292,13 +304,15 @@ export default function Manifesto() {
   const pageBg = isDark ? "#060606" : "#f5f1e9"
   const fg = isDark ? "#fff" : "#000"
 
-  // scroll-snap tipo "deck" SÓLO mientras Manifesto está montado (en el <html>).
+  // scroll-snap tipo "deck" SÓLO en desktop y mientras Manifesto está montado.
+  // En móvil se deja scroll libre (el snap agresivo se sentía trabado).
   useEffect(() => {
+    if (!isDesktop) return
     const html = document.documentElement
     const prev = html.style.scrollSnapType
     html.style.scrollSnapType = "y proximity"
     return () => { html.style.scrollSnapType = prev }
-  }, [])
+  }, [isDesktop])
 
   const menuItems = [
     { label: "Servicios", bgColor: isDark ? "#111111" : "#f0ece4", textColor: isDark ? "#fff" : "#000",
@@ -322,17 +336,21 @@ export default function Manifesto() {
       <DeckNav isDark={isDark} isDesktop={isDesktop} active={active} />
 
       {/* Escultura 3D persistente CENTRADA: cambia de forma/acento con cada escena.
-          Queda entre el título gigante (detrás) y el texto frontal. */}
-      <SculptureMascot
-        sceneIndex={active}
-        style={{
-          position: "fixed", zIndex: 15, pointerEvents: isDesktop ? "auto" : "none",
-          left: "50%", transform: "translateX(-50%)",
-          top: isDesktop ? 0 : 58,
-          width: isDesktop ? "min(620px, 54vw)" : "92%",
-          height: isDesktop ? "100svh" : "34svh",
-        }}
-      />
+          Queda entre el título gigante (detrás) y el texto frontal. SÓLO en desktop:
+          en móvil es un segundo contexto WebGL (con el fondo ya son dos) que trababa
+          el scroll; allí la escena queda como editorial limpio (título + texto). */}
+      {isDesktop && (
+        <SculptureMascot
+          sceneIndex={active}
+          style={{
+            position: "fixed", zIndex: 15, pointerEvents: "auto",
+            left: "50%", transform: "translateX(-50%)",
+            top: 0,
+            width: "min(620px, 54vw)",
+            height: "100svh",
+          }}
+        />
+      )}
 
       <div style={{ position: "relative", zIndex: 50 }}>
         <CardNav logo="/faviconAP.ico" items={menuItems}
