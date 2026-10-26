@@ -1,0 +1,4 @@
+# SPA fallback para Cloudflare Pages: cualquier ruta que no sea un archivo real
+# (p. ej. /visual, /archive al entrar directo o recargar) sirve index.html y deja
+# que react-router resuelva. Los assets de /assets/* se sirven antes que esta regla.
+/*    /index.html   200
