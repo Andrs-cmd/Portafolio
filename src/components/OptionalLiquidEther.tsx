@@ -82,18 +82,19 @@ export default function OptionalLiquidEther(props: LiquidEtherProps) {
 
   if (!enabled) return null
 
-  // Modo ligero en móvil. El costo por cuadro lo dominan la resolución de la
-  // simulación y, sobre todo, las iteraciones de Poisson (una pasada a pantalla
-  // completa cada una). En celular se recortan sin que el fondo difuso lo note,
-  // y se topan los FPS para que las pantallas de 90/120 Hz no frían la GPU y el
-  // ritmo quede parejo. Solo pisa lo necesario; el resto de props se respetan.
+  // Modo móvil. El costo por cuadro lo dominan la resolución de la simulación y
+  // las iteraciones de Poisson (una pasada a pantalla completa cada una), y se
+  // topan los FPS para que las pantallas de 90/120 Hz no frían la GPU. Como en
+  // móvil ya NO se monta la cámara 3D (ver CameraAssembly), el fluido es el único
+  // contexto WebGL y hay margen para subir la calidad: se ve bastante mejor que
+  // el recorte anterior sin volver a trabarse. Solo pisa lo necesario.
   const tuned: LiquidEtherProps = isSmall
     ? {
         ...props,
-        resolution: Math.min(props.resolution ?? 0.5, 0.4),
-        cursorSize: 70,
-        iterationsPoisson: Math.min(props.iterationsPoisson ?? 20, 8),
-        maxFps: 36,
+        resolution: Math.min(props.resolution ?? 0.6, 0.6),
+        cursorSize: 95,
+        iterationsPoisson: Math.min(props.iterationsPoisson ?? 20, 14),
+        maxFps: 50,
       }
     : props
 

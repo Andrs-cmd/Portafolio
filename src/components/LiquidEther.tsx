@@ -1031,6 +1031,8 @@ export default function LiquidEther({
       running = false;
       minFrameMs = 0;
       private _lastFrameTime = 0;
+      private _simW = 0;
+      private _simH = 0;
       private _loop = this.loop.bind(this);
       private _resize = this.resize.bind(this);
       private _onVisibility?: () => void;
@@ -1067,10 +1069,25 @@ export default function LiquidEther({
         if (!Common.renderer) return;
         this.props.$wrapper.prepend(Common.renderer.domElement);
         this.output = new Output();
+        this._simW = Common.width;
+        this._simH = Common.height;
       }
       resize() {
+        // El canvas de salida se reajusta siempre (es barato y se redibuja desde
+        // los FBO cada cuadro). Pero reasignar los FBO de la simulación los deja
+        // en cero y borra el fluido un instante. En móvil, al hacer scroll la
+        // barra del navegador aparece/desaparece y cambia sólo la altura: eso
+        // disparaba ese borrado (el parpadeo). Por eso los FBO sólo se reconstruyen
+        // cuando cambia el ancho o la altura cambia mucho (rotación), no por la
+        // barra del navegador.
         Common.resize();
-        this.output.resize();
+        const widthChanged = Common.width !== this._simW;
+        const bigHeightChange = Math.abs(Common.height - this._simH) > 160;
+        if (widthChanged || bigHeightChange) {
+          this.output.resize();
+          this._simW = Common.width;
+          this._simH = Common.height;
+        }
       }
       render() {
         if (this.autoDriver) this.autoDriver.update();
