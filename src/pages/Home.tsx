@@ -406,7 +406,7 @@ export default function Home() {
   ]
 
   return (
-    <div style={{ minHeight:"100vh", overflowX:"hidden", background:pageBg, color:isDark?"#fff":"#111", position:"relative" }}>
+    <div style={{ minHeight:"100vh", overflowX:"clip", background:pageBg, color:isDark?"#fff":"#111", position:"relative" }}>
 
       <div style={{ position:"fixed", inset:0, zIndex:0, pointerEvents:"none" }}>
         <LiquidEther

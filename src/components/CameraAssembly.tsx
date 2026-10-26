@@ -7,13 +7,14 @@ import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment
 /**
  * Sección "Arme & Desarme": la cámara DSLR (36 piezas) se desarma y se vuelve a
  * armar según el scroll. Portado del demo de C:\Users\aprad\modelado3d\camara-3d
- * a un componente React con el scroll acotado a ESTA sección (sticky), no a toda
- * la página. El GLB (Draco) y el decoder viven en /public, sin depender de CDN.
+ * a React. El "pin" es manual y determinista: un efecto de scroll conmuta el
+ * escenario a position:fixed mientras recorres PIN_DISTANCE px y calcula el
+ * progreso 0→1. No depende de position:sticky (lo rompen los contenedores de
+ * scroll de la página) ni del pin de una librería. GLB (Draco) y decoder en
+ * /public, sin CDN.
  *
- * Es un segundo contexto WebGL (Liquid Ether usa otro), así que:
- *  - se monta sólo cuando la sección se acerca al viewport (IntersectionObserver)
- *  - el bucle de render se pausa cuando la sección no se ve
- *  - se desmonta y libera todo al salir del componente
+ * Es un segundo contexto WebGL (Liquid Ether usa otro): la escena 3D se monta
+ * sólo cuando la sección se acerca (IntersectionObserver) y se libera al salir.
  */
 
 type PartRef = {
@@ -28,6 +29,7 @@ type PartRef = {
 
 const SCALE = 10 // el modelo está en metros (~15 cm) → ~1.5 unidades
 const SPREAD = 1.0
+const PIN_DISTANCE = 2400 // px de scroll que dura el arme/desarme (pinned)
 
 const smooth = (a: number, b: number, x: number) => {
   const t = Math.min(1, Math.max(0, (x - a) / (b - a)))
@@ -39,38 +41,71 @@ const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 
 
 export default function CameraAssembly({ isDark = true }: { isDark?: boolean }) {
   const sectionRef = useRef<HTMLDivElement>(null)
+  const pinRef = useRef<HTMLDivElement>(null)
   const stageRef = useRef<HTMLDivElement>(null)
   const tipRef = useRef<HTMLDivElement>(null)
   const countRef = useRef<HTMLSpanElement>(null)
   const barRef = useRef<HTMLSpanElement>(null)
+  const progRef = useRef(0) // progreso 0→1 que escribe ScrollTrigger
   const [enabled, setEnabled] = useState(false)
   const [failed, setFailed] = useState(false)
   const [loaded, setLoaded] = useState(false)
 
-  // ¿Puede el navegador crear WebGL? (igual que OptionalLiquidEther)
+  // Se muestra siempre que el navegador pueda crear WebGL. (No se apaga por
+  // prefers-reduced-motion: el usuario quiere la pieza 3D visible; el movimiento
+  // fuerte depende del scroll, que es acción del propio usuario.)
   useEffect(() => {
-    const check = () => {
-      const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
-      let webgl = false
-      try {
-        const c = document.createElement("canvas")
-        const gl = c.getContext("webgl2") || c.getContext("webgl")
-        webgl = !!gl
-        gl && (gl.getExtension("WEBGL_lose_context") as WEBGL_lose_context | null)?.loseContext()
-      } catch { webgl = false }
-      setEnabled(webgl && !reduced)
-    }
-    check()
+    let webgl = false
+    try {
+      const c = document.createElement("canvas")
+      const gl = c.getContext("webgl2") || c.getContext("webgl")
+      webgl = !!gl
+      gl && (gl.getExtension("WEBGL_lose_context") as WEBGL_lose_context | null)?.loseContext()
+    } catch { webgl = false }
+    setEnabled(webgl)
   }, [])
 
-  // Observa la sección: monta la escena sólo cuando se acerca
+  // Pin manual: conmuta el escenario a position:fixed mientras recorres la
+  // sección y escribe el progreso 0→1. secTop se cachea (y se recalcula en
+  // resize/carga) porque al fijar el wrap el layout de la sección cambia.
+  const secTopRef = useRef(0)
+  useEffect(() => {
+    if (!enabled) return
+    const recalc = () => {
+      const sec = sectionRef.current
+      if (sec) secTopRef.current = sec.getBoundingClientRect().top + window.scrollY
+    }
+    const update = () => {
+      const wrap = pinRef.current
+      if (!wrap) return
+      const y = window.scrollY
+      const secTop = secTopRef.current
+      progRef.current = Math.min(1, Math.max(0, (y - secTop) / PIN_DISTANCE))
+      if (y < secTop) { wrap.style.position = "absolute"; wrap.style.top = "0px" }
+      else if (y > secTop + PIN_DISTANCE) { wrap.style.position = "absolute"; wrap.style.top = PIN_DISTANCE + "px" }
+      else { wrap.style.position = "fixed"; wrap.style.top = "0px" }
+    }
+    recalc(); update()
+    // recalc tras el primer layout (fuentes/imagenes) y al redimensionar
+    const onResize = () => { recalc(); update() }
+    window.addEventListener("scroll", update, { passive: true })
+    window.addEventListener("resize", onResize)
+    const t = setTimeout(onResize, 300)
+    return () => {
+      window.removeEventListener("scroll", update)
+      window.removeEventListener("resize", onResize)
+      clearTimeout(t)
+    }
+  }, [enabled])
+
+  // Observa la sección: monta la escena 3D sólo cuando se acerca
   const [near, setNear] = useState(false)
   useEffect(() => {
     const el = sectionRef.current
     if (!el || !enabled) return
     const io = new IntersectionObserver(
       ([e]) => setNear(e.isIntersecting),
-      { rootMargin: "300px 0px" }
+      { rootMargin: "400px 0px" }
     )
     io.observe(el)
     return () => io.disconnect()
@@ -146,7 +181,6 @@ export default function CameraAssembly({ isDark = true }: { isDark?: boolean }) 
             maxOrder = Math.max(maxOrder, ud.order || 0)
           }
         })
-        // encuadre: centro del modelo desarmado
         for (const p of parts) p.obj.position.copy(p.base).addScaledVector(p.ex, SPREAD)
         pivot.updateMatrixWorld(true)
         new THREE.Box3().setFromObject(model).getCenter(explodeShift)
@@ -158,16 +192,6 @@ export default function CameraAssembly({ isDark = true }: { isDark?: boolean }) 
       undefined,
       (err) => { console.warn("No se pudo cargar camara.glb:", err); setFailed(true) }
     )
-
-    // ---------- progreso por scroll de la sección
-    let prog = 0
-    const progressTarget = () => {
-      const sec = sectionRef.current
-      if (!sec) return 0
-      const r = sec.getBoundingClientRect()
-      const span = r.height - window.innerHeight
-      return span > 0 ? Math.min(1, Math.max(0, -r.top / span)) : 0
-    }
 
     // ---------- arrastre e hover
     let yaw = 0, yawVel = 0, pitch = 0, dragging = false, lastX = 0, lastY = 0
@@ -221,12 +245,12 @@ export default function CameraAssembly({ isDark = true }: { isDark?: boolean }) 
     window.addEventListener("resize", resize)
     resize()
 
+    let prog = 0
     const clock = new THREE.Clock()
     renderer.setAnimationLoop(() => {
       if (disposed) return
       const dt = Math.min(clock.getDelta(), 0.05), t = clock.elapsedTime
-      const target = progressTarget()
-      prog += (target - prog) * (1 - Math.pow(0.0015, dt))
+      prog += (progRef.current - prog) * (1 - Math.pow(0.0015, dt))
       const amt = amountFor(prog)
 
       let loose = 0
@@ -283,7 +307,6 @@ export default function CameraAssembly({ isDark = true }: { isDark?: boolean }) 
     }
   }, [enabled, near])
 
-  // Si no hay WebGL / reduced-motion, no renderamos la sección pesada
   if (!enabled || failed) return null
 
   const fg = isDark ? "#eef0f3" : "#141211"
@@ -291,9 +314,9 @@ export default function CameraAssembly({ isDark = true }: { isDark?: boolean }) 
   const muted = isDark ? "rgba(240,240,245,.55)" : "rgba(20,20,20,.55)"
 
   return (
-    <section ref={sectionRef} style={{ position: "relative", height: "320vh", zIndex: 20 }} aria-label="Cámara 3D que se arma y se desarma">
-      {/* contenedor pegajoso: la cámara se queda mientras haces scroll por la sección */}
-      <div style={{ position: "sticky", top: 0, height: "100svh", overflow: "hidden" }}>
+    <section ref={sectionRef} style={{ position: "relative", zIndex: 20, height: `calc(100svh + ${PIN_DISTANCE}px)` }} aria-label="Cámara 3D que se arma y se desarma">
+      {/* el efecto de scroll conmuta este wrap entre absolute y fixed (pin) */}
+      <div ref={pinRef} style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100svh", overflow: "hidden" }}>
         <div ref={stageRef} style={{ position: "absolute", inset: 0 }} />
 
         {/* HUD */}

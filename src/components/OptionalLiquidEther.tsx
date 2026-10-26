@@ -46,12 +46,12 @@ function supportsWebGL() {
  * Renders LiquidEther when:
  * - the browser can actually create a WebGL context
  * - device has enough memory / CPU and a decent connection
- * - user has not opted into prefers-reduced-motion
  *
  * Runs on mobile too, but in a lighter mode: el costo del fluido es
  * resolución × pixel ratio, así que en pantallas pequeñas se baja la resolución
- * para conservar el efecto sin freír batería. En equipos con poca RAM, conexión
- * lenta o 'reduce movimiento' devuelve null y se ve el fondo de color liso.
+ * para conservar el efecto sin freír batería. Con poca RAM o conexión lenta
+ * devuelve null y se ve el fondo de color liso. (Ya NO se apaga por
+ * prefers-reduced-motion: el usuario lo quiere siempre visible.)
  */
 export default function OptionalLiquidEther(props: LiquidEtherProps) {
   const [enabled, setEnabled] = useState(false)
@@ -64,14 +64,16 @@ export default function OptionalLiquidEther(props: LiquidEtherProps) {
 
     const check = () => {
       const small = window.innerWidth < 1024
-      const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
+      // Nota: antes se ocultaba con prefers-reduced-motion. El usuario quiere su
+      // fondo Liquid Ether SIEMPRE visible, así que ya no lo apagamos por esa
+      // preferencia; sólo lo saltamos sin WebGL, con poca RAM o conexión lenta.
       // @ts-expect-error — navigator.deviceMemory is non-standard but supported in Chromium
       const lowMem = typeof navigator !== "undefined" && navigator.deviceMemory && navigator.deviceMemory < 4
       // @ts-expect-error — navigator.connection is non-standard
       const conn = typeof navigator !== "undefined" ? navigator.connection : undefined
       const slow = conn && (conn.saveData === true || /(2g|slow-2g)/i.test(conn.effectiveType ?? ""))
       setIsSmall(small)
-      setEnabled(hasWebGL && !reducedMotion && !lowMem && !slow)
+      setEnabled(hasWebGL && !lowMem && !slow)
     }
     check()
     window.addEventListener("resize", check)
