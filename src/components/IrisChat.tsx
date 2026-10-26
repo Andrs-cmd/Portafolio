@@ -62,6 +62,23 @@ function renderWithLinks(text: string, linkColor: string): ReactNode[] {
   return out
 }
 
+// Logo de Iris: una flor/iris abstracta (6 pétalos) — guiño al nombre y al perfil
+// "visual creator". Va en blanco sobre el disco lavanda del botón.
+function IrisMark({ size = 27 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <g fill="#ffffff">
+        {[0, 60, 120, 180, 240, 300].map((a) => (
+          <path key={a} transform={`rotate(${a} 12 12)`}
+            d="M12 12 C9.4 8.8 9.4 5.6 12 3.4 C14.6 5.6 14.6 8.8 12 12 Z" opacity={0.95} />
+        ))}
+      </g>
+      <circle cx="12" cy="12" r="2.1" fill="#ffffff" />
+      <circle cx="12" cy="12" r="2.1" fill="#8f90e6" opacity={0.35} />
+    </svg>
+  )
+}
+
 export default function IrisChat() {
   const { isDark } = useTheme()
   const [open, setOpen] = useState(false)
@@ -99,39 +116,43 @@ export default function IrisChat() {
 
   return (
     <>
-      {/* bolita flotante, sutil — solo el ícono de Iris; despliega el chat */}
+      {/* halo que late (solo cerrado) para que la bolita se note */}
+      <style>{`@keyframes irisGlow{0%,100%{box-shadow:0 10px 26px rgba(0,0,0,.30),0 0 0 0 rgba(195,196,242,.55)}50%{box-shadow:0 10px 26px rgba(0,0,0,.30),0 0 0 10px rgba(195,196,242,0)}}`}</style>
+
+      {/* bolita flotante con el logo de Iris; despliega el chat */}
       <button
         onClick={() => setOpen(o => !o)}
         aria-label={open ? "Cerrar chat de Iris" : "Preguntarle a Iris"}
         style={{
-          position: "fixed", right: 20, bottom: 20, zIndex: 9998,
-          width: 46, height: 46, borderRadius: "50%", padding: 0,
+          position: "fixed", right: 22, bottom: 22, zIndex: 9998,
+          width: 58, height: 58, borderRadius: "50%", padding: 0,
           display: "grid", placeItems: "center", cursor: "pointer",
-          border: `1px solid ${isDark ? "rgba(255,255,255,.14)" : "rgba(0,0,0,.12)"}`,
-          background: isDark ? "rgba(13,13,18,.78)" : "rgba(255,255,255,.82)",
-          backdropFilter: "blur(10px)", boxShadow: "0 6px 20px rgba(0,0,0,.22)",
+          border: "1px solid rgba(255,255,255,.4)",
+          background: "linear-gradient(145deg, #cfd0f7 0%, #9a9bec 60%, #8486e4 100%)",
+          boxShadow: "0 10px 26px rgba(0,0,0,.30)",
+          animation: open ? "none" : "irisGlow 2.8s ease-out infinite",
           transition: "transform .2s ease",
         }}
-        onMouseEnter={(e) => { e.currentTarget.style.transform = "scale(1.06)" }}
+        onMouseEnter={(e) => { e.currentTarget.style.transform = "scale(1.07)" }}
         onMouseLeave={(e) => { e.currentTarget.style.transform = "scale(1)" }}
       >
         {open
-          ? <span style={{ color: fg, fontSize: 18, lineHeight: 1, opacity: .8 }}>×</span>
-          : <span style={{ color: LAV, fontWeight: 800, fontSize: 19, fontStyle: "italic", fontFamily: "Georgia, serif" }}>i</span>}
+          ? <span style={{ color: "#17171f", fontSize: 24, lineHeight: 1, fontWeight: 400 }}>×</span>
+          : <IrisMark />}
       </button>
 
       {/* panel de chat */}
       {open && (
         <div style={{
           position: "fixed", zIndex: 9998,
-          right: "max(16px, env(safe-area-inset-right))", bottom: 78,
+          right: "max(16px, env(safe-area-inset-right))", bottom: 92,
           width: "min(360px, calc(100vw - 32px))", height: "min(520px, 70vh)",
           display: "flex", flexDirection: "column", overflow: "hidden",
           borderRadius: 18, border: `1px solid ${line}`, background: bg, color: fg,
           boxShadow: "0 24px 70px rgba(0,0,0,.45)",
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "14px 16px", borderBottom: `1px solid ${line}` }}>
-            <span style={{ width: 28, height: 28, borderRadius: "50%", background: LAV, display: "grid", placeItems: "center", color: "#141211", fontWeight: 800 }}>i</span>
+            <span style={{ width: 30, height: 30, borderRadius: "50%", background: "linear-gradient(145deg, #cfd0f7 0%, #9a9bec 60%, #8486e4 100%)", display: "grid", placeItems: "center", flexShrink: 0 }}><IrisMark size={18} /></span>
             <div style={{ lineHeight: 1.1 }}>
               <div style={{ fontWeight: 700, fontSize: 13 }}>Iris</div>
               <div style={{ fontSize: 10.5, opacity: .6 }}>Asistente de Andres Prada</div>
