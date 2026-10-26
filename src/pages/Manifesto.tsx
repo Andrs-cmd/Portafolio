@@ -5,6 +5,7 @@ import { useTheme } from "../context/ThemeContext"
 import LiquidEther from "../components/OptionalLiquidEther"
 import CardNav from "../components/CardNav"
 import "../components/CardNav.css"
+import ArtObject from "../components/ArtObject"
 import { WhatsAppFAB } from "../components/WhatsAppCTA"
 import { useSEO } from "../lib/useSEO"
 
@@ -301,20 +302,25 @@ export default function Manifesto() {
 
         {/* INTRO */}
         <Scene id="intro" isDesktop={isDesktop}>
-          {eyebrow("Section 02 · Manifiesto")}
-          <div style={{ overflow: "hidden" }}>
-            <motion.h1 variants={rise} style={{ fontSize: "clamp(3rem, 12vw, 9rem)", fontWeight: 900, textTransform: "uppercase", letterSpacing: "-.045em", lineHeight: .82, color: fg }}>Cómo</motion.h1>
+          <div style={{ display: "grid", gridTemplateColumns: isDesktop ? "1fr 0.85fr" : "1fr", gap: isDesktop ? 40 : 20, alignItems: "center" }}>
+            <div style={{ order: isDesktop ? 0 : 1 }}>
+              {eyebrow("Section 02 · Manifiesto")}
+              <div style={{ overflow: "hidden" }}>
+                <motion.h1 variants={rise} style={{ fontSize: "clamp(2.8rem, 10vw, 8rem)", fontWeight: 900, textTransform: "uppercase", letterSpacing: "-.045em", lineHeight: .82, color: fg }}>Cómo</motion.h1>
+              </div>
+              <div style={{ overflow: "hidden", marginBottom: 28 }}>
+                <motion.h1 variants={rise} style={{ fontSize: "clamp(2.8rem, 10vw, 8rem)", fontWeight: 900, textTransform: "uppercase", letterSpacing: "-.045em", lineHeight: .82, WebkitTextStroke: isDark ? "1.5px rgba(255,255,255,.28)" : "1.5px rgba(0,0,0,.22)", color: "transparent" }}>trabajo</motion.h1>
+              </div>
+              <motion.p variants={rise} style={{ fontSize: "clamp(15px, 2vw, 18px)", fontWeight: 300, lineHeight: 1.7, maxWidth: 560, color: isDark ? "#fff" : "#000" }}>
+                Seis principios que filtran qué proyectos acepto y qué resultado entrego. Si los leés y te identificás, hablemos. Si te chocan, también está bien — no somos buen match.
+              </motion.p>
+              <motion.div variants={rise} style={{ marginTop: 34, display: "flex", alignItems: "center", gap: 10, color: muted }}>
+                <motion.span animate={{ y: [0, 6, 0] }} transition={{ repeat: Infinity, duration: 1.8, ease: "easeInOut" }} style={{ fontSize: 18 }}>↓</motion.span>
+                <span style={{ fontSize: 10, letterSpacing: ".3em", textTransform: "uppercase" }}>Scroll · arrastra la pieza</span>
+              </motion.div>
+            </div>
+            <ArtObject style={{ order: isDesktop ? 0 : 0, width: "100%", height: isDesktop ? "min(54vh, 520px)" : "54vw", minHeight: isDesktop ? 340 : 220 }} />
           </div>
-          <div style={{ overflow: "hidden", marginBottom: 30 }}>
-            <motion.h1 variants={rise} style={{ fontSize: "clamp(3rem, 12vw, 9rem)", fontWeight: 900, textTransform: "uppercase", letterSpacing: "-.045em", lineHeight: .82, WebkitTextStroke: isDark ? "1.5px rgba(255,255,255,.28)" : "1.5px rgba(0,0,0,.22)", color: "transparent" }}>trabajo</motion.h1>
-          </div>
-          <motion.p variants={rise} style={{ fontSize: "clamp(15px, 2vw, 19px)", fontWeight: 300, lineHeight: 1.7, maxWidth: 620, color: isDark ? "#fff" : "#000" }}>
-            Seis principios que filtran qué proyectos acepto y qué resultado entrego. Si los leés y te identificás, hablemos. Si te chocan, también está bien — no somos buen match.
-          </motion.p>
-          <motion.div variants={rise} style={{ marginTop: 40, display: "flex", alignItems: "center", gap: 10, color: muted }}>
-            <motion.span animate={{ y: [0, 6, 0] }} transition={{ repeat: Infinity, duration: 1.8, ease: "easeInOut" }} style={{ fontSize: 18 }}>↓</motion.span>
-            <span style={{ fontSize: 10, letterSpacing: ".3em", textTransform: "uppercase" }}>Scroll</span>
-          </motion.div>
         </Scene>
 
         {/* PRINCIPIOS — una escena cada uno */}
