@@ -248,7 +248,7 @@ const cases: CaseStudy[] = [
     metrics: [
       { value: "<5 s", label: "Tiempo de respuesta" },
       { value: "100%", label: "Mensajes contestados" },
-      { value: "0 USD", label: "Costo de operación/lead" },
+      { value: "$0", label: "Costo de operación/lead" },
     ],
     stack: ["n8n", "OpenAI GPT-4", "WhatsApp Cloud API", "Notion API", "Google Sheets", "Webhooks", "Node.js"],
   },

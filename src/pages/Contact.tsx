@@ -69,11 +69,11 @@ const services = [
 ]
 
 const budgets = [
-  "Menos de USD 500",
-  "USD 500 — 2.000",
-  "USD 2.000 — 5.000",
-  "USD 5.000 — 10.000",
-  "Más de USD 10.000",
+  "Menos de $1.000.000 COP",
+  "$1.000.000 — $3.000.000 COP",
+  "$3.000.000 — $8.000.000 COP",
+  "$8.000.000 — $15.000.000 COP",
+  "Más de $15.000.000 COP",
   "No estoy seguro todavía",
 ]
 
