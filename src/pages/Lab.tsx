@@ -188,12 +188,20 @@ const nodeV = { hidden: { scale: 0, opacity: 0 }, show: { scale: 1, opacity: 1, 
 const lineV = { hidden: { scaleY: 0 }, show: { scaleY: 1, transition: { duration: 0.45, ease: EASE } } }
 const textV = { hidden: { opacity: 0, x: -8 }, show: { opacity: 1, x: 0, transition: { duration: 0.45, ease: EASE } } }
 
+// Animación en bucle (constante): el "ping" de los nodos y la energía que fluye
+// por la línea. Solo transform/opacity y background-position → muy liviano.
+const TIMELINE_KEYFRAMES = `
+@keyframes nodePing { 0%{transform:scale(1);opacity:.55} 70%{opacity:0} 100%{transform:scale(2.2);opacity:0} }
+@keyframes lineFlow { 0%{background-position:0 0} 100%{background-position:0 13px} }
+`
+
 function ProcessTimeline({ steps, isDark }: { steps: { step: string; label: string; desc: string }[]; isDark: boolean }) {
   const accent = "#c3c4f2"
   const txt = isDark ? "#fff" : "#141211"
   const sub = isDark ? "rgba(255,255,255,.60)" : "rgba(0,0,0,.58)"
   return (
     <div style={{ position: "relative" }}>
+      <style>{TIMELINE_KEYFRAMES}</style>
       {steps.map((p, i) => {
         const last = i === steps.length - 1
         return (
@@ -201,15 +209,20 @@ function ProcessTimeline({ steps, isDark }: { steps: { step: string; label: stri
             initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.6 }}
             variants={{ hidden: {}, show: { transition: { staggerChildren: 0.08, delayChildren: i * 0.12 } } }}
             style={{ display: "flex", gap: 16, alignItems: "stretch" }}>
-            {/* rail: nodo + conector que se dibuja */}
+            {/* rail: nodo (con ping en loop) + conector con energía que fluye */}
             <div style={{ position: "relative", width: 30, flexShrink: 0, display: "flex", flexDirection: "column", alignItems: "center" }}>
-              <motion.div variants={nodeV}
-                style={{ width: 30, height: 30, borderRadius: "50%", border: `1.5px solid ${accent}`, background: isDark ? "rgba(195,196,242,.12)" : "rgba(195,196,242,.20)", display: "grid", placeItems: "center", fontFamily: "monospace", fontSize: 10, fontWeight: 700, color: accent, flexShrink: 0, boxShadow: `0 0 16px ${accent}40` }}>
-                {p.step}
+              <motion.div variants={nodeV} style={{ position: "relative", width: 30, height: 30, flexShrink: 0 }}>
+                {/* ping continuo */}
+                <span aria-hidden="true" style={{ position: "absolute", inset: 0, borderRadius: "50%", border: `1.5px solid ${accent}`, animation: `nodePing 2.6s ease-out ${(i * 0.4).toFixed(2)}s infinite`, pointerEvents: "none" }} />
+                <span style={{ position: "absolute", inset: 0, borderRadius: "50%", border: `1.5px solid ${accent}`, background: isDark ? "rgba(195,196,242,.12)" : "rgba(195,196,242,.20)", display: "grid", placeItems: "center", fontFamily: "monospace", fontSize: 10, fontWeight: 700, color: accent, boxShadow: `0 0 16px ${accent}40` }}>
+                  {p.step}
+                </span>
               </motion.div>
               {!last && (
                 <motion.div variants={lineV}
-                  style={{ width: 1.5, flex: 1, minHeight: 22, marginTop: 5, background: `linear-gradient(${accent}, ${accent}22)`, transformOrigin: "top" }} />
+                  style={{ width: 2, flex: 1, minHeight: 24, marginTop: 5, borderRadius: 2, transformOrigin: "top",
+                    backgroundImage: `repeating-linear-gradient(180deg, ${accent} 0px, ${accent} 3px, ${accent}1f 3px, ${accent}1f 13px)`,
+                    backgroundSize: "100% 13px", animation: "lineFlow 1.1s linear infinite" }} />
               )}
             </div>
             {/* texto */}
