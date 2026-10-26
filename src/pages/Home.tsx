@@ -319,30 +319,23 @@ function ProjectDetail({ project, isDark, isDesktop }: { project: Project; isDar
   )
 }
 
-/* Índice editorial: filas tipográficas grandes + preview que persigue al cursor.
-   Sustituye al ScrollStack, así que el Home ya no carga Lenis ni corre JS por scroll. */
+/* Índice editorial: filas tipográficas grandes + miniatura SIEMPRE visible con
+   zoom lento constante (Ken Burns) que se agranda al pasar. Sustituye al
+   ScrollStack, así que el Home ya no carga Lenis ni corre JS por scroll. */
 function ProjectIndex({ projects, isDark, isDesktop }: { projects: Project[]; isDark: boolean; isDesktop: boolean }) {
   const [hovered, setHovered]   = useState<string | null>(null)
   const [expanded, setExpanded] = useState<string | null>(null)
-
-  // El muelle convierte la posición cruda del cursor en una persecución con inercia.
-  const mx = useMotionValue(0)
-  const my = useMotionValue(0)
-  const px = useSpring(mx, { stiffness: 130, damping: 20, mass: 0.6 })
-  const py = useSpring(my, { stiffness: 130, damping: 20, mass: 0.6 })
-
-  const activo = projects.find(p => p.id === hovered) ?? null
   const lineC  = isDark ? "rgba(255,255,255,0.13)" : "rgba(0,0,0,0.13)"
+  const thumbW = isDesktop ? 104 : 70
+  const thumbH = isDesktop ? 74 : 54
 
   return (
-    <div
-      onPointerMove={isDesktop ? (e) => { mx.set(e.clientX); my.set(e.clientY) } : undefined}
-      onPointerLeave={() => setHovered(null)}
-      style={{ borderTop: `0.5px solid ${lineC}` }}
-    >
-      {projects.map(p => {
+    <div onPointerLeave={() => setHovered(null)} style={{ borderTop: `0.5px solid ${lineC}` }}>
+      {/* zoom lento constante de cada miniatura (movimiento siempre vivo) */}
+      <style>{`@keyframes kenburns{0%{transform:scale(1.06) translate(0,0)}50%{transform:scale(1.18) translate(-2.5%,-2%)}100%{transform:scale(1.06) translate(0,0)}}`}</style>
+      {projects.map((p, i) => {
         const abierto  = expanded === p.id
-        // Al pasar el cursor por una fila, las demás se apagan: el foco es la gracia.
+        const on = hovered === p.id
         const atenuado = isDesktop && hovered !== null && hovered !== p.id && !abierto
 
         return (
@@ -352,35 +345,48 @@ function ProjectIndex({ projects, isDark, isDesktop }: { projects: Project[]; is
               onFocus={() => setHovered(p.id)}
               onClick={() => setExpanded(abierto ? null : p.id)}
               aria-expanded={abierto}
-              animate={{ opacity: atenuado ? 0.3 : 1 }}
+              animate={{ opacity: atenuado ? 0.38 : 1 }}
               transition={{ duration: 0.35, ease: "easeOut" }}
               style={{
                 width:"100%", background:"none", border:"none", cursor:"pointer",
                 display:"grid",
-                gridTemplateColumns: isDesktop ? "72px 1fr auto" : "44px 1fr",
-                alignItems:"center", gap: isDesktop ? 24 : 12,
-                padding: isDesktop ? "30px 4px" : "22px 2px",
+                gridTemplateColumns: isDesktop ? `34px ${thumbW}px 1fr auto` : `${thumbW}px 1fr auto`,
+                alignItems:"center", gap: isDesktop ? 22 : 14,
+                padding: isDesktop ? "22px 4px" : "18px 2px",
                 textAlign:"left", color:"inherit", font:"inherit",
               }}
             >
-              <span style={{ fontFamily:"monospace", fontSize:10, opacity:.6, color:isDark?"#fff":"#000" }}>{p.index}</span>
+              {isDesktop && <span style={{ fontFamily:"monospace", fontSize:10, opacity:.6, color:isDark?"#fff":"#000" }}>{p.index}</span>}
+
+              {/* miniatura siempre visible, con zoom lento + agranda al pasar */}
+              <motion.div animate={{ scale: on ? 1.07 : 1 }} transition={{ duration:.35, ease:[.16,1,.3,1] }}
+                style={{ position:"relative", width:thumbW, height:thumbH, borderRadius:10, overflow:"hidden", flexShrink:0, border:`0.5px solid ${lineC}`, transformOrigin:"center", background:isDark?"linear-gradient(135deg,rgba(195,196,242,.10),rgba(255,255,255,.03))":"linear-gradient(135deg,rgba(99,91,255,.08),rgba(0,0,0,.03))" }}>
+                <img src={p.img} alt="" loading="lazy" decoding="async"
+                  style={{ width:"100%", height:"100%", objectFit:"cover", willChange:"transform",
+                    animation:`kenburns ${15 + (i % 4) * 2}s ease-in-out ${(i * 1.3).toFixed(1)}s infinite`,
+                    filter: isDark ? (on ? "grayscale(0%) brightness(.98)" : "grayscale(55%) brightness(.68)") : (on ? "grayscale(0%) brightness(1)" : "grayscale(25%) brightness(.94)"),
+                    transition:"filter .45s" }}/>
+                {/* velo sutil que se retira al pasar */}
+                <motion.div animate={{ opacity: on ? 0 : (isDark ? .18 : .10) }} transition={{ duration:.4 }}
+                  style={{ position:"absolute", inset:0, background:isDark?"#000":"#fff", pointerEvents:"none" }}/>
+              </motion.div>
 
               <div style={{ minWidth:0 }}>
                 {p.client && (
-                  <span style={{ display:"block", fontSize:9, letterSpacing:".25em", textTransform:"uppercase", marginBottom:6, opacity:.55, color:isDark?"#fff":"#000" }}>
+                  <span style={{ display:"block", fontSize:9, letterSpacing:".25em", textTransform:"uppercase", marginBottom:5, opacity:.55, color:isDark?"#fff":"#000" }}>
                     {p.client}
                   </span>
                 )}
                 <motion.h3
-                  animate={{ x: isDesktop && (hovered === p.id || abierto) ? 14 : 0 }}
+                  animate={{ x: isDesktop && (on || abierto) ? 10 : 0 }}
                   transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                  style={{ fontSize:"clamp(1.7rem, 4.6vw, 4rem)", fontWeight:900, textTransform:"uppercase", letterSpacing:"-.035em", lineHeight:.9, color:isDark?"#fff":"#111" }}
+                  style={{ fontSize:"clamp(1.4rem, 4vw, 3.4rem)", fontWeight:900, textTransform:"uppercase", letterSpacing:"-.035em", lineHeight:.9, color:isDark?"#fff":"#111" }}
                 >
                   {p.title}
                 </motion.h3>
               </div>
 
-              <div style={{ display:"flex", alignItems:"center", gap:20, justifySelf:"end" }}>
+              <div style={{ display:"flex", alignItems:"center", gap:18, justifySelf:"end" }}>
                 {isDesktop && (
                   <>
                     <span style={{ fontSize:9, textTransform:"uppercase", letterSpacing:".22em", padding:"4px 12px", borderRadius:20, border:`0.5px solid ${lineC}`, whiteSpace:"nowrap", color:isDark?"#fff":"#000" }}>{p.category}</span>
@@ -404,27 +410,6 @@ function ProjectIndex({ projects, isDark, isDesktop }: { projects: Project[]; is
           </div>
         )
       })}
-
-      {/* Preview flotante: fuera del flujo, por encima de todo y sin capturar el ratón */}
-      {isDesktop && createPortal(
-        <motion.div style={{ position:"fixed", left:0, top:0, x:px, y:py, zIndex:55, pointerEvents:"none" }}>
-          <AnimatePresence>
-            {activo && (
-              <motion.div
-                key={activo.id}
-                initial={{ opacity:0, scale:.86 }}
-                animate={{ opacity:1, scale:1 }}
-                exit={{ opacity:0, scale:.9 }}
-                transition={{ duration:.28, ease:[0.16,1,0.3,1] }}
-                style={{ width:300, height:380, marginLeft:-150, marginTop:-190, borderRadius:14, overflow:"hidden", border:`0.5px solid ${lineC}`, boxShadow:"0 30px 80px rgba(0,0,0,.45)" }}
-              >
-                <img src={activo.img} alt="" style={{ width:"100%", height:"100%", objectFit:"cover", filter:isDark?"grayscale(30%) brightness(.85)":"grayscale(8%) brightness(.98)" }}/>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.div>,
-        document.body
-      )}
     </div>
   )
 }
