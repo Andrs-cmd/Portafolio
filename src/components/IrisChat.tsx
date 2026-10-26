@@ -66,11 +66,14 @@ function renderWithLinks(text: string, linkColor: string): ReactNode[] {
 // cuando el visitante quiere contratar. Aquí se separa ese mensaje del texto
 // visible; el frontend arma el enlace de WhatsApp (así la codificación nunca
 // se rompe) y muestra un botón para enviárselo a Andres con el contexto listo.
-const LEAD_RE = /\[\[LEAD\]\]([\s\S]*?)\[\[\/LEAD\]\]/i
+// Tolerante a cómo el modelo escriba el marcador: [[LEAD]] o [LEAD], cierre
+// [[/LEAD]] o [/LEAD], o sin cierre (hasta el final). Así no se pierde el lead.
+const LEAD_RE = /\[\[?LEAD\]\]?\s*([\s\S]*?)\s*(?:\[\[?\/LEAD\]\]?|$)/i
 function extractLead(content: string): { text: string; lead: string | null } {
   const m = content.match(LEAD_RE)
   if (!m) return { text: content, lead: null }
-  return { text: content.replace(LEAD_RE, "").trim(), lead: m[1].trim() || null }
+  const lead = m[1].trim()
+  return { text: content.replace(LEAD_RE, "").trim(), lead: lead || null }
 }
 
 // Logo de Iris: un nudo toroidal (trefoil / torus knot), la misma familia de
