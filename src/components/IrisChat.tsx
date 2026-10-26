@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState, type ReactNode } from "react"
 import { useTheme } from "../context/ThemeContext"
 
 /**
@@ -11,6 +11,40 @@ import { useTheme } from "../context/ThemeContext"
 const LAV = "#c3c4f2"
 type Msg = { role: "user" | "assistant"; content: string }
 const GREETING: Msg = { role: "assistant", content: "¡Hola! Soy Iris, la asistente de Andres. Pregúntame por sus servicios, precios, proyectos o cómo contactarlo." }
+
+// Convierte las URLs del texto (incluidos los wa.me) en enlaces cliqueables que
+// abren en una pestaña nueva — así el WhatsApp que menciona Iris lleva al chat.
+const URL_RE = /(https?:\/\/[^\s]+|wa\.me\/[^\s]+)/g
+function renderWithLinks(text: string, linkColor: string): ReactNode[] {
+  const out: ReactNode[] = []
+  let last = 0
+  let key = 0
+  let m: RegExpExecArray | null
+  URL_RE.lastIndex = 0
+  while ((m = URL_RE.exec(text))) {
+    if (m.index > last) out.push(text.slice(last, m.index))
+    let url = m[0]
+    // Recorta la puntuación final (un punto o paréntesis de cierre de frase no
+    // es parte del enlace).
+    let trail = ""
+    const tm = url.match(/[.,;:!?)]+$/)
+    if (tm) {
+      trail = tm[0]
+      url = url.slice(0, -trail.length)
+    }
+    const href = url.startsWith("http") ? url : `https://${url}`
+    out.push(
+      <a key={key++} href={href} target="_blank" rel="noopener noreferrer"
+        style={{ color: linkColor, textDecoration: "underline", fontWeight: 600, wordBreak: "break-all" }}>
+        {url}
+      </a>
+    )
+    if (trail) out.push(trail)
+    last = URL_RE.lastIndex
+  }
+  if (last < text.length) out.push(text.slice(last))
+  return out
+}
 
 export default function IrisChat() {
   const { isDark } = useTheme()
@@ -91,7 +125,7 @@ export default function IrisChat() {
           <div ref={scrollRef} style={{ flex: 1, overflowY: "auto", padding: 14, display: "flex", flexDirection: "column", gap: 10 }}>
             {msgs.map((m, i) => (
               <div key={i} style={{ alignSelf: m.role === "user" ? "flex-end" : "flex-start", maxWidth: "86%", padding: "9px 12px", borderRadius: 14, fontSize: 13, lineHeight: 1.5, background: m.role === "user" ? bubbleUser : bubbleIris, border: m.role === "user" ? `1px solid ${isDark ? "rgba(195,196,242,.25)" : "rgba(99,91,255,.2)"}` : `1px solid ${line}`, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
-                {m.content}
+                {renderWithLinks(m.content, isDark ? LAV : "#635bff")}
               </div>
             ))}
             {loading && (

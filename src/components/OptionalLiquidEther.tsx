@@ -90,10 +90,10 @@ export default function OptionalLiquidEther(props: LiquidEtherProps) {
   const tuned: LiquidEtherProps = isSmall
     ? {
         ...props,
-        resolution: Math.min(props.resolution ?? 0.5, 0.5),
-        cursorSize: 80,
-        iterationsPoisson: Math.min(props.iterationsPoisson ?? 20, 12),
-        maxFps: 48,
+        resolution: Math.min(props.resolution ?? 0.5, 0.4),
+        cursorSize: 70,
+        iterationsPoisson: Math.min(props.iterationsPoisson ?? 20, 8),
+        maxFps: 36,
       }
     : props
 

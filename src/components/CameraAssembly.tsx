@@ -116,8 +116,12 @@ export default function CameraAssembly({ isDark = true }: { isDark?: boolean }) 
     const host = stageRef.current
     let disposed = false
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" })
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, window.innerWidth < 768 ? 1.5 : 2))
+    // En móvil el costo de este segundo contexto WebGL es lo que traba el scroll:
+    // sin antialias, pixelRatio 1 (DSLR difusa, no se nota) y, abajo, tope de FPS
+    // y sin raycast de hover (en táctil no hay hover que mostrar).
+    const isMobile = window.innerWidth < 768
+    const renderer = new THREE.WebGLRenderer({ antialias: !isMobile, alpha: true, powerPreference: "high-performance" })
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1 : 2))
     renderer.toneMapping = THREE.ACESFilmicToneMapping
     renderer.toneMappingExposure = 1.05
     host.appendChild(renderer.domElement)
@@ -247,8 +251,14 @@ export default function CameraAssembly({ isDark = true }: { isDark?: boolean }) 
 
     let prog = 0
     const clock = new THREE.Clock()
-    renderer.setAnimationLoop(() => {
+    // Tope de FPS en móvil: una escena 3D a 120 Hz mientras se hace scroll es lo
+    // que se sentía trabado. 36 fps es suave de sobra para el giro/flote.
+    const minFrameMs = isMobile ? 1000 / 36 : 0
+    let lastFrame = 0
+    renderer.setAnimationLoop((time: number) => {
       if (disposed) return
+      if (minFrameMs && time - lastFrame < minFrameMs) return
+      lastFrame = time
       const dt = Math.min(clock.getDelta(), 0.05), t = clock.elapsedTime
       prog += (progRef.current - prog) * (1 - Math.pow(0.0015, dt))
       const amt = amountFor(prog)
@@ -276,7 +286,9 @@ export default function CameraAssembly({ isDark = true }: { isDark?: boolean }) 
       camera.position.set(0, 0.35 + amt * 0.6, dist)
       camera.lookAt(0, amt * 0.25, 0)
 
-      if (parts.length && !dragging) {
+      // El raycast de hover es sólo para desktop (en táctil no hay cursor que
+      // resaltar); en móvil se omite para no pagar su costo cada cuadro.
+      if (!isMobile && parts.length && !dragging) {
         ray.setFromCamera(mouse, camera)
         const hit = ray.intersectObject(pivot, true)[0]
         setHover(hit ? partOf(hit.object) : null)
