@@ -3,6 +3,7 @@ import { useState, useEffect } from "react"
 import { createPortal } from "react-dom"
 import { useTheme } from "../context/ThemeContext"
 import LiquidEther from "../components/OptionalLiquidEther"
+import CameraAssembly from "../components/CameraAssembly"
 import CardNav from "../components/CardNav"
 import "../components/CardNav.css"
 import { featuredProjects, type Project } from "../data/projects"
@@ -473,6 +474,9 @@ export default function Home() {
           <HeroText/>
         </div>
       </section>
+
+      {/* ARME & DESARME — cámara 3D (scroll-driven, se monta sola al acercarse) */}
+      <CameraAssembly isDark={isDark}/>
 
       <div style={{ position:"relative", zIndex:20, margin:"0 clamp(16px, 4vw, 48px)", display:"flex", alignItems:"center", justifyContent:"space-between", padding:"16px 0", borderTop:borderC }}>
         <span style={{ fontSize:9, letterSpacing:".35em", textTransform:"uppercase", color:isDark?"#fff":"#000" }}>Selected Works</span>
