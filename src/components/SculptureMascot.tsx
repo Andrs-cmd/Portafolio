@@ -15,19 +15,20 @@ import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v))
 const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2)
 
-// una forma + acento por escena (10)
+// un nudo toroidal distinto (p,q) + acento por escena (10)
 type Shape = { geo: () => THREE.BufferGeometry; accent: string; spin: [number, number] }
+const knot = (r: number, tube: number, p: number, q: number) => () => new THREE.TorusKnotGeometry(r, tube, 220, 24, p, q)
 const SHAPES: Shape[] = [
-  { geo: () => new THREE.IcosahedronGeometry(1.5, 1), accent: "#c3c4f2", spin: [0.14, 0.05] },  // intro
-  { geo: () => new THREE.BoxGeometry(1.9, 1.9, 1.9),  accent: "#8fb7ff", spin: [0.12, 0.10] },  // 01 decisión (estructura)
-  { geo: () => new THREE.TorusKnotGeometry(1.0, 0.33, 140, 18), accent: "#7fe3c0", spin: [0.18, 0.0] }, // 02 código (nudo)
-  { geo: () => new THREE.OctahedronGeometry(1.7, 0), accent: "#c3c4f2", spin: [0.1, 0.12] },    // 03 criterio (precisión)
-  { geo: () => new THREE.TorusGeometry(1.25, 0.4, 22, 56), accent: "#f2c28f", spin: [0.1, 0.16] }, // 04 tiempo (ciclo)
-  { geo: () => new THREE.DodecahedronGeometry(1.55, 0), accent: "#e79ad0", spin: [0.13, 0.07] }, // 05 marca (capas)
-  { geo: () => new THREE.IcosahedronGeometry(1.6, 2), accent: "#7fe3c0", spin: [0.09, 0.09] },   // 06 LATAM (mundo)
-  { geo: () => new THREE.TorusKnotGeometry(0.95, 0.3, 160, 22, 2, 5), accent: "#c3c4f2", spin: [0.2, 0.0] }, // cita
-  { geo: () => new THREE.TetrahedronGeometry(1.9, 0), accent: "#8fb7ff", spin: [0.11, 0.13] },   // match
-  { geo: () => new THREE.IcosahedronGeometry(1.55, 0), accent: "#c3c4f2", spin: [0.16, 0.08] },  // cta
+  { geo: knot(1.05, 0.32, 2, 3), accent: "#c3c4f2", spin: [0.16, 0.04] }, // intro — trébol
+  { geo: knot(1.00, 0.34, 3, 2), accent: "#8fb7ff", spin: [0.14, 0.06] }, // 01
+  { geo: knot(1.00, 0.30, 2, 5), accent: "#7fe3c0", spin: [0.18, 0.00] }, // 02
+  { geo: knot(1.00, 0.30, 3, 4), accent: "#c3c4f2", spin: [0.13, 0.07] }, // 03
+  { geo: knot(1.02, 0.30, 4, 3), accent: "#f2c28f", spin: [0.10, 0.12] }, // 04
+  { geo: knot(0.98, 0.30, 3, 5), accent: "#e79ad0", spin: [0.12, 0.08] }, // 05
+  { geo: knot(1.00, 0.30, 5, 2), accent: "#7fe3c0", spin: [0.15, 0.05] }, // 06
+  { geo: knot(0.95, 0.28, 2, 7), accent: "#c3c4f2", spin: [0.20, 0.00] }, // cita
+  { geo: knot(1.00, 0.30, 5, 3), accent: "#8fb7ff", spin: [0.11, 0.10] }, // match
+  { geo: knot(1.08, 0.34, 2, 3), accent: "#c3c4f2", spin: [0.17, 0.06] }, // cta
 ]
 
 type Piece = { group: THREE.Group; dispose: () => void }
