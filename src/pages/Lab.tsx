@@ -179,6 +179,52 @@ function ScrollBar() {
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
+   PROCESS TIMELINE — motion graphics: nodos con resorte, línea que se dibuja
+   y texto entrando escalonado. Solo SVG/CSS/framer (sin WebGL), ligero y fluido.
+───────────────────────────────────────────────────────────────────────────── */
+
+const EASE = [0.16, 1, 0.3, 1] as const
+const nodeV = { hidden: { scale: 0, opacity: 0 }, show: { scale: 1, opacity: 1, transition: { type: "spring", stiffness: 420, damping: 22 } } }
+const lineV = { hidden: { scaleY: 0 }, show: { scaleY: 1, transition: { duration: 0.45, ease: EASE } } }
+const textV = { hidden: { opacity: 0, x: -8 }, show: { opacity: 1, x: 0, transition: { duration: 0.45, ease: EASE } } }
+
+function ProcessTimeline({ steps, isDark }: { steps: { step: string; label: string; desc: string }[]; isDark: boolean }) {
+  const accent = "#c3c4f2"
+  const txt = isDark ? "#fff" : "#141211"
+  const sub = isDark ? "rgba(255,255,255,.60)" : "rgba(0,0,0,.58)"
+  return (
+    <div style={{ position: "relative" }}>
+      {steps.map((p, i) => {
+        const last = i === steps.length - 1
+        return (
+          <motion.div key={p.step}
+            initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.6 }}
+            variants={{ hidden: {}, show: { transition: { staggerChildren: 0.08, delayChildren: i * 0.12 } } }}
+            style={{ display: "flex", gap: 16, alignItems: "stretch" }}>
+            {/* rail: nodo + conector que se dibuja */}
+            <div style={{ position: "relative", width: 30, flexShrink: 0, display: "flex", flexDirection: "column", alignItems: "center" }}>
+              <motion.div variants={nodeV}
+                style={{ width: 30, height: 30, borderRadius: "50%", border: `1.5px solid ${accent}`, background: isDark ? "rgba(195,196,242,.12)" : "rgba(195,196,242,.20)", display: "grid", placeItems: "center", fontFamily: "monospace", fontSize: 10, fontWeight: 700, color: accent, flexShrink: 0, boxShadow: `0 0 16px ${accent}40` }}>
+                {p.step}
+              </motion.div>
+              {!last && (
+                <motion.div variants={lineV}
+                  style={{ width: 1.5, flex: 1, minHeight: 22, marginTop: 5, background: `linear-gradient(${accent}, ${accent}22)`, transformOrigin: "top" }} />
+              )}
+            </div>
+            {/* texto */}
+            <motion.div variants={textV} style={{ paddingTop: 4, paddingBottom: last ? 0 : 24 }}>
+              <p style={{ margin: "0 0 4px", fontSize: 13.5, fontWeight: 700, color: txt }}>{p.label}</p>
+              <p style={{ margin: 0, fontSize: 12, fontWeight: 300, lineHeight: 1.6, color: sub, maxWidth: 320 }}>{p.desc}</p>
+            </motion.div>
+          </motion.div>
+        )
+      })}
+    </div>
+  )
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
    DETAIL PANEL
 ───────────────────────────────────────────────────────────────────────────── */
 
@@ -208,18 +254,7 @@ function DetailPanel({ service, isDark }: { service: typeof services[0]; isDark:
               <span style={{ fontSize: 9, textTransform: "uppercase", letterSpacing: ".35em", color: isDark ? "#fff" : "#000", whiteSpace: "nowrap" }}>Proceso</span>
               <div style={{ flex: 1, height: .5, background: isDark ? "rgba(255,255,255,.07)" : "rgba(0,0,0,.07)" }}/>
             </div>
-            {service.process.map((p, i) => (
-              <motion.div key={p.step}
-                style={{ display: "flex", gap: 20, paddingTop: 14, paddingBottom: 14, borderBottom: i < service.process.length - 1 ? (isDark ? "1px solid rgba(255,255,255,.05)" : "1px solid rgba(0,0,0,.05)") : "none" }}
-                initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: .35, delay: i * .06 }}>
-                <span style={{ fontFamily: "monospace", fontSize: 9, paddingTop: 2, flexShrink: 0, width: 20, color: isDark ? "#fff" : "#000" }}>{p.step}</span>
-                <div>
-                  <p style={{ fontSize: 12, fontWeight: 600, marginBottom: 3, color: isDark ? "#fff" : "#000" }}>{p.label}</p>
-                  <p style={{ fontSize: 11, fontWeight: 300, lineHeight: 1.6, color: isDark ? "#fff" : "#000" }}>{p.desc}</p>
-                </div>
-              </motion.div>
-            ))}
+            <ProcessTimeline steps={service.process} isDark={isDark} />
           </div>
 
           {/* Precios */}
