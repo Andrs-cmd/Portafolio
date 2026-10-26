@@ -279,137 +279,82 @@ function SectionHeader({ label, title, accent, right, isDark }: { label:string; 
 }
 
 /* Detalle que se despliega al abrir una fila del índice */
-function ProjectDetail({ project, isDark, isDesktop }: { project: Project; isDark: boolean; isDesktop: boolean }) {
-  const link = project.links[0]
+/* Selected Works — estilo "lineup de festival": un radar de círculos concéntricos
+   con la imagen del proyecto activo en el centro + etiqueta, y a la derecha la
+   lista sincronizada. Auto-avanza; al pasar el cursor por la lista selecciona. */
+const RADAR_MS = 3800
+function ProjectRadar({ projects, isDark, isDesktop }: { projects: Project[]; isDark: boolean; isDesktop: boolean }) {
+  const [active, setActive] = useState(0)
+  const [paused, setPaused] = useState(false)
+  useEffect(() => {
+    if (paused) return
+    const id = setInterval(() => setActive(a => (a + 1) % projects.length), RADAR_MS)
+    return () => clearInterval(id)
+  }, [projects.length, paused])
+  const p = projects[active]
+  const accent = "#c3c4f2"
+  const txt = isDark ? "#fff" : "#141211"
+  const meta = isDark ? "rgba(255,255,255,.55)" : "rgba(0,0,0,.52)"
+  const panel = isDark ? "rgba(16,16,22,.72)" : "rgba(255,255,255,.74)"
+  const ringC = isDark ? "rgba(195,196,242,.22)" : "rgba(99,91,255,.20)"
+  const rowLine = isDark ? "rgba(255,255,255,.07)" : "rgba(0,0,0,.07)"
+
   return (
-    <motion.div
-      initial={{ height: 0, opacity: 0 }}
-      animate={{ height: "auto", opacity: 1 }}
-      exit={{ height: 0, opacity: 0 }}
-      transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-      style={{ overflow: "hidden" }}
-    >
-      <div style={{ display:"grid", gridTemplateColumns: isDesktop ? "1fr 320px" : "1fr", gap: isDesktop ? 48 : 20, padding: isDesktop ? "8px 0 40px" : "4px 0 32px" }}>
-        <div>
-          <p style={{ fontSize:13, fontWeight:300, lineHeight:1.75, maxWidth:560, marginBottom:20, color:isDark?"rgba(255,255,255,.82)":"rgba(0,0,0,.78)" }}>
-            {project.description}
-          </p>
-          <div style={{ display:"flex", flexWrap:"wrap", gap:6, marginBottom: link ? 24 : 0 }}>
-            {project.stack.map(t => (
-              <span key={t} style={{ fontFamily:"monospace", fontSize:9, padding:"4px 10px", borderRadius:20, color:isDark?"#fff":"#000", background:isDark?"rgba(255,255,255,0.06)":"rgba(0,0,0,0.05)", border:isDark?"1px solid rgba(255,255,255,0.14)":"1px solid rgba(0,0,0,0.10)" }}>{t}</span>
-            ))}
-          </div>
-          {link && (
-            <motion.a href={link.href} target="_blank" rel="noopener noreferrer"
-              whileHover={{ x: 4 }} whileTap={{ scale: 0.98 }}
-              style={{ display:"inline-flex", alignItems:"center", gap:10, fontSize:10, textTransform:"uppercase", letterSpacing:".18em", padding:"11px 22px", borderRadius:20, border:isDark?"0.5px solid rgba(255,255,255,0.35)":"0.5px solid rgba(0,0,0,0.30)", color:isDark?"#fff":"#000", textDecoration:"none" }}>
-              {link.label} <span>↗</span>
-            </motion.a>
-          )}
+    <div style={{ marginTop:22, borderRadius:24, border:`0.5px solid ${isDark?"rgba(255,255,255,.08)":"rgba(0,0,0,.08)"}`, background:panel, backdropFilter:"blur(10px)",
+      padding: isDesktop ? "48px 52px" : "30px 20px",
+      display:"grid", gridTemplateColumns: isDesktop ? "0.92fr 1.08fr" : "1fr", gap: isDesktop ? 50 : 32, alignItems:"center" }}>
+      <style>{`@keyframes radarSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}`}</style>
+
+      {/* RADAR concéntrico con la imagen del proyecto activo */}
+      <div style={{ position:"relative", width:"100%", maxWidth: isDesktop?360:260, aspectRatio:"1", margin:"0 auto", display:"grid", placeItems:"center" }}>
+        <div style={{ position:"absolute", width:"100%", height:"100%", borderRadius:"50%", border:`1px dashed ${ringC}`, animation:"radarSpin 26s linear infinite" }}/>
+        <div style={{ position:"absolute", width:"76%", height:"76%", borderRadius:"50%", border:`1px solid ${ringC}` }}/>
+        <div style={{ position:"absolute", width:"54%", height:"54%", borderRadius:"50%", border:`1px solid ${ringC}` }}/>
+        {/* etiqueta superior: categoría */}
+        <AnimatePresence mode="wait">
+          <motion.span key={p.id+"-cat"} initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} transition={{ duration:.35 }}
+            style={{ position:"absolute", top:"1%", left:"50%", transform:"translate(-50%,-50%)", padding:"5px 14px", borderRadius:999, border:`1px solid ${ringC}`, background:panel, fontSize:9, letterSpacing:".2em", textTransform:"uppercase", color:meta, whiteSpace:"nowrap", zIndex:3 }}>{p.category}</motion.span>
+        </AnimatePresence>
+        {/* imagen central */}
+        <div style={{ position:"relative", width:"46%", height:"46%", borderRadius:"50%", overflow:"hidden", border:`1px solid ${accent}55`, boxShadow:`0 0 44px ${accent}26`, background:isDark?"#0b0b10":"#eceae3" }}>
+          <AnimatePresence mode="wait">
+            <motion.img key={p.id} src={p.img} alt="" loading="lazy"
+              initial={{ opacity:0, scale:1.14 }} animate={{ opacity:1, scale:1 }} exit={{ opacity:0 }} transition={{ duration:.5, ease:[.16,1,.3,1] }}
+              style={{ position:"absolute", inset:0, width:"100%", height:"100%", objectFit:"cover" }}/>
+          </AnimatePresence>
         </div>
-        {/* En móvil no hay cursor que seguir, así que la imagen vive aquí */}
-        {!isDesktop && (
-          <div style={{ position:"relative", height:200, borderRadius:14, overflow:"hidden" }}>
-            <img src={project.img} alt={project.title} loading="lazy" decoding="async"
-              style={{ width:"100%", height:"100%", objectFit:"cover", filter:isDark?"grayscale(35%) brightness(.8)":"grayscale(10%) brightness(.97)" }}/>
-          </div>
-        )}
+        {/* pill del título, montado al borde inferior del centro */}
+        <AnimatePresence mode="wait">
+          <motion.span key={p.id+"-ttl"} initial={{ opacity:0, y:6 }} animate={{ opacity:1, y:0 }} exit={{ opacity:0 }} transition={{ duration:.4 }}
+            style={{ position:"absolute", top:"71%", left:"50%", transform:"translate(-50%,-50%)", padding:"7px 16px", borderRadius:999, background:accent, color:"#141211", fontSize:12, fontWeight:700, textTransform:"uppercase", letterSpacing:".02em", whiteSpace:"nowrap", zIndex:4, boxShadow:"0 6px 20px rgba(0,0,0,.3)" }}>{p.title}</motion.span>
+        </AnimatePresence>
       </div>
-    </motion.div>
-  )
-}
 
-/* Índice editorial: filas tipográficas grandes + miniatura SIEMPRE visible con
-   zoom lento constante (Ken Burns) que se agranda al pasar. Sustituye al
-   ScrollStack, así que el Home ya no carga Lenis ni corre JS por scroll. */
-function ProjectIndex({ projects, isDark, isDesktop }: { projects: Project[]; isDark: boolean; isDesktop: boolean }) {
-  const [hovered, setHovered]   = useState<string | null>(null)
-  const [expanded, setExpanded] = useState<string | null>(null)
-  const lineC  = isDark ? "rgba(255,255,255,0.13)" : "rgba(0,0,0,0.13)"
-  const thumbW = isDesktop ? 104 : 70
-  const thumbH = isDesktop ? 74 : 54
-
-  return (
-    <div onPointerLeave={() => setHovered(null)} style={{ borderTop: `0.5px solid ${lineC}` }}>
-      {/* zoom lento constante de cada miniatura (movimiento siempre vivo) */}
-      <style>{`@keyframes kenburns{0%{transform:scale(1.06) translate(0,0)}50%{transform:scale(1.18) translate(-2.5%,-2%)}100%{transform:scale(1.06) translate(0,0)}}`}</style>
-      {projects.map((p, i) => {
-        const abierto  = expanded === p.id
-        const on = hovered === p.id
-        const atenuado = isDesktop && hovered !== null && hovered !== p.id && !abierto
-
-        return (
-          <div key={p.id} style={{ borderBottom: `0.5px solid ${lineC}` }}>
-            <motion.button
-              onMouseEnter={() => setHovered(p.id)}
-              onFocus={() => setHovered(p.id)}
-              onClick={() => setExpanded(abierto ? null : p.id)}
-              aria-expanded={abierto}
-              animate={{ opacity: atenuado ? 0.38 : 1 }}
-              transition={{ duration: 0.35, ease: "easeOut" }}
-              style={{
-                width:"100%", background:"none", border:"none", cursor:"pointer",
-                display:"grid",
-                gridTemplateColumns: isDesktop ? `34px ${thumbW}px 1fr auto` : `${thumbW}px 1fr auto`,
-                alignItems:"center", gap: isDesktop ? 22 : 14,
-                padding: isDesktop ? "22px 4px" : "18px 2px",
-                textAlign:"left", color:"inherit", font:"inherit",
-              }}
-            >
-              {isDesktop && <span style={{ fontFamily:"monospace", fontSize:10, opacity:.6, color:isDark?"#fff":"#000" }}>{p.index}</span>}
-
-              {/* miniatura siempre visible, con zoom lento + agranda al pasar */}
-              <motion.div animate={{ scale: on ? 1.07 : 1 }} transition={{ duration:.35, ease:[.16,1,.3,1] }}
-                style={{ position:"relative", width:thumbW, height:thumbH, borderRadius:10, overflow:"hidden", flexShrink:0, border:`0.5px solid ${lineC}`, transformOrigin:"center", background:isDark?"linear-gradient(135deg,rgba(195,196,242,.10),rgba(255,255,255,.03))":"linear-gradient(135deg,rgba(99,91,255,.08),rgba(0,0,0,.03))" }}>
-                <img src={p.img} alt="" loading="lazy" decoding="async"
-                  style={{ width:"100%", height:"100%", objectFit:"cover", willChange:"transform",
-                    animation:`kenburns ${15 + (i % 4) * 2}s ease-in-out ${(i * 1.3).toFixed(1)}s infinite`,
-                    filter: isDark ? (on ? "grayscale(0%) brightness(.98)" : "grayscale(55%) brightness(.68)") : (on ? "grayscale(0%) brightness(1)" : "grayscale(25%) brightness(.94)"),
-                    transition:"filter .45s" }}/>
-                {/* velo sutil que se retira al pasar */}
-                <motion.div animate={{ opacity: on ? 0 : (isDark ? .18 : .10) }} transition={{ duration:.4 }}
-                  style={{ position:"absolute", inset:0, background:isDark?"#000":"#fff", pointerEvents:"none" }}/>
-              </motion.div>
-
-              <div style={{ minWidth:0 }}>
-                {p.client && (
-                  <span style={{ display:"block", fontSize:9, letterSpacing:".25em", textTransform:"uppercase", marginBottom:5, opacity:.55, color:isDark?"#fff":"#000" }}>
-                    {p.client}
-                  </span>
-                )}
-                <motion.h3
-                  animate={{ x: isDesktop && (on || abierto) ? 10 : 0 }}
-                  transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                  style={{ fontSize:"clamp(1.4rem, 4vw, 3.4rem)", fontWeight:900, textTransform:"uppercase", letterSpacing:"-.035em", lineHeight:.9, color:isDark?"#fff":"#111" }}
-                >
-                  {p.title}
-                </motion.h3>
+      {/* LISTA sincronizada */}
+      <div onMouseEnter={()=>setPaused(true)} onMouseLeave={()=>setPaused(false)} style={{ display:"flex", flexDirection:"column" }}>
+        {projects.map((d,i) => {
+          const on = i===active
+          return (
+            <div key={d.id} onMouseEnter={()=>setActive(i)} onClick={()=>setActive(i)}
+              style={{ cursor:"pointer", padding:"13px 0", borderBottom:`1px solid ${rowLine}` }}>
+              <div style={{ display:"flex", alignItems:"center", gap:12 }}>
+                <span style={{ fontFamily:"monospace", fontSize:10, color: on?accent:meta, width:24, flexShrink:0 }}>{String(i+1).padStart(2,"0")}</span>
+                <motion.span animate={{ color: on?txt:meta, x: on?4:0 }} transition={{ duration:.3 }}
+                  style={{ fontSize:"clamp(1.1rem,2vw,1.55rem)", fontWeight:800, textTransform:"uppercase", letterSpacing:"-.02em", lineHeight:1 }}>{d.title}</motion.span>
+                <span style={{ marginLeft:"auto", fontSize:9, letterSpacing:".12em", padding:"3px 10px", borderRadius:999, border:`1px solid ${isDark?"rgba(255,255,255,.16)":"rgba(0,0,0,.14)"}`, color:meta, whiteSpace:"nowrap", flexShrink:0 }}>{d.year}</span>
               </div>
-
-              <div style={{ display:"flex", alignItems:"center", gap:18, justifySelf:"end" }}>
-                {isDesktop && (
-                  <>
-                    <span style={{ fontSize:9, textTransform:"uppercase", letterSpacing:".22em", padding:"4px 12px", borderRadius:20, border:`0.5px solid ${lineC}`, whiteSpace:"nowrap", color:isDark?"#fff":"#000" }}>{p.category}</span>
-                    <span style={{ fontFamily:"monospace", fontSize:11, opacity:.6, color:isDark?"#fff":"#000" }}>{p.year}</span>
-                  </>
+              <AnimatePresence initial={false}>
+                {on && (
+                  <motion.div initial={{ height:0, opacity:0 }} animate={{ height:"auto", opacity:1 }} exit={{ height:0, opacity:0 }} transition={{ duration:.35, ease:[.16,1,.3,1] }} style={{ overflow:"hidden" }}>
+                    <p style={{ margin:"9px 0 2px 36px", fontSize:12.5, lineHeight:1.6, color:meta, maxWidth:430 }}>{d.description}</p>
+                    {d.links[0] && <a href={d.links[0].href} target="_blank" rel="noopener noreferrer" style={{ display:"inline-block", margin:"4px 0 4px 36px", fontSize:9.5, letterSpacing:".16em", textTransform:"uppercase", color:accent, textDecoration:"none" }}>{d.links[0].label} ↗</a>}
+                  </motion.div>
                 )}
-                <motion.span
-                  animate={{ rotate: abierto ? 45 : 0 }}
-                  transition={{ duration: 0.3 }}
-                  style={{ fontSize:18, lineHeight:1, opacity:.75, color:isDark?"#fff":"#000" }}
-                  aria-hidden="true"
-                >
-                  +
-                </motion.span>
-              </div>
-            </motion.button>
-
-            <AnimatePresence initial={false}>
-              {abierto && <ProjectDetail project={p} isDark={isDark} isDesktop={isDesktop}/>}
-            </AnimatePresence>
-          </div>
-        )
-      })}
+              </AnimatePresence>
+            </div>
+          )
+        })}
+      </div>
     </div>
   )
 }
@@ -515,7 +460,7 @@ export default function Home() {
       <section style={{ position:"relative", zIndex:20, paddingTop:96, paddingBottom:96 }}>
         <div style={{ padding:"0 clamp(16px, 4vw, 48px)", maxWidth:1280, margin:"0 auto" }}>
           <SectionHeader label="Proyectos seleccionados" title="Selected" accent="Works" right={`01 — ${String(projectsData.length).padStart(2, "0")}`} isDark={isDark}/>
-          <ProjectIndex projects={projectsData} isDark={isDark} isDesktop={isDesktop}/>
+          <ProjectRadar projects={projectsData} isDark={isDark} isDesktop={isDesktop}/>
         </div>
       </section>
 
