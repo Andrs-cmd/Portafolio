@@ -62,19 +62,24 @@ function renderWithLinks(text: string, linkColor: string): ReactNode[] {
   return out
 }
 
-// Logo de Iris: una flor/iris abstracta (6 pétalos) — guiño al nombre y al perfil
-// "visual creator". Va en blanco sobre el disco lavanda del botón.
-function IrisMark({ size = 27 }: { size?: number }) {
+// Logo de Iris: un nudo toroidal (trefoil / torus knot), la misma familia de
+// formas que las esculturas 3D del Manifiesto — coherencia de marca. Se traza
+// con las ecuaciones paramétricas del trefoil para que quede limpio y simétrico.
+const TREFOIL_PATH = (() => {
+  const N = 170, cx = 12, cy = 12, s = 2.85
+  let d = ""
+  for (let i = 0; i <= N; i++) {
+    const t = (i / N) * Math.PI * 2
+    const x = cx + s * (Math.sin(t) + 2 * Math.sin(2 * t))
+    const y = cy + s * (Math.cos(t) - 2 * Math.cos(2 * t))
+    d += (i === 0 ? "M" : "L") + x.toFixed(2) + " " + y.toFixed(2) + " "
+  }
+  return d + "Z"
+})()
+function IrisMark({ size = 28 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <g fill="#ffffff">
-        {[0, 60, 120, 180, 240, 300].map((a) => (
-          <path key={a} transform={`rotate(${a} 12 12)`}
-            d="M12 12 C9.4 8.8 9.4 5.6 12 3.4 C14.6 5.6 14.6 8.8 12 12 Z" opacity={0.95} />
-        ))}
-      </g>
-      <circle cx="12" cy="12" r="2.1" fill="#ffffff" />
-      <circle cx="12" cy="12" r="2.1" fill="#8f90e6" opacity={0.35} />
+      <path d={TREFOIL_PATH} stroke="#ffffff" strokeWidth="1.7" strokeLinejoin="round" strokeLinecap="round" opacity={0.96} />
     </svg>
   )
 }
