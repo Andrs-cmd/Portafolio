@@ -22,8 +22,7 @@ export const onRequestPost = async (context: { request: Request; env: Env }): Pr
 
   try {
     if (!env.BREVO_API_KEY || !env.BREVO_LIST_ID) {
-      // diagnóstico temporal: solo booleanos, nunca el valor del secreto
-      return json({ error: "La captura aún no está configurada (faltan las variables de Brevo).", _debug: { apiKey: !!env.BREVO_API_KEY, listId: !!env.BREVO_LIST_ID } }, 503)
+      return json({ error: "La captura aún no está configurada (faltan las variables de Brevo)." }, 503)
     }
 
     const body = (await request.json()) as { name?: string; email?: string; source?: string; website?: string }
