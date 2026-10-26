@@ -170,55 +170,72 @@ function HeroText() {
   )
 }
 
-function ServiceRow({ index, name, desc, what, delay, isDark }: { index:string; name:string; desc:string; what:string; delay:number; isDark:boolean }) {
-  const [hover, setHover] = useState(false)
-  const [pinned, setPinned] = useState(false)
-  const open = hover || pinned
+// Showcase AUTÓNOMO de disciplinas: se reproduce solo (no depende del mouse).
+// Recorre las 5 disciplinas en bucle, resalta la activa (nodo con órbita) y una
+// viñeta se actualiza sola explicando "qué es", con barra de progreso.
+const DISC_CYCLE_MS = 3200
+function DisciplinesShowcase({ isDark, isDesktop }: { isDark:boolean; isDesktop:boolean }) {
+  const [active, setActive] = useState(0)
+  useEffect(() => {
+    const id = setInterval(() => setActive(a => (a + 1) % services.length), DISC_CYCLE_MS)
+    return () => clearInterval(id)
+  }, [])
   const accent = "#c3c4f2"
-  const bubbleBg = isDark ? "rgba(16,16,22,.97)" : "rgba(255,255,255,.98)"
+  const txt = isDark ? "#fff" : "#141211"
+  const dim = isDark ? "rgba(255,255,255,.40)" : "rgba(0,0,0,.40)"
+  const s = services[active]
+  const nodeBg = isDark ? "#0b0b10" : "#f1ede6"
+  const trackC = isDark ? "rgba(255,255,255,.12)" : "rgba(0,0,0,.12)"
   return (
-    <motion.div
-      style={{ position:"relative", display:"flex", alignItems:"center", gap:16, paddingTop:20, paddingBottom:20, borderBottom:isDark?"1px solid rgba(255,255,255,0.06)":"1px solid rgba(0,0,0,0.06)", cursor:"pointer" }}
-      onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}
-      onClick={() => setPinned(p => !p)}
-      initial={{ opacity:0, x:-16 }} whileInView={{ opacity:1, x:0 }}
-      transition={{ duration:0.5, delay }} viewport={{ once:true }}>
-      {/* barrido de fondo al activar */}
-      <motion.div style={{ position:"absolute", inset:0, background:isDark?"rgba(195,196,242,0.05)":"rgba(99,91,255,0.04)", originX:0 }}
-        initial={{ scaleX:0 }} animate={{ scaleX:open?1:0 }} transition={{ duration:0.35 }}/>
+    <div style={{ marginTop: 34 }}>
+      <style>{`@keyframes svcOrbit{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}`}</style>
 
-      {/* viñeta que SEÑALA y explica qué es */}
-      <AnimatePresence>
-        {open && (
-          <motion.div key="tip" initial={{ opacity:0, y:8, scale:.96 }} animate={{ opacity:1, y:0, scale:1 }} exit={{ opacity:0, y:6, scale:.97 }}
-            transition={{ type:"spring", stiffness:420, damping:28 }}
-            style={{ position:"absolute", left:4, bottom:"calc(100% - 10px)", zIndex:8, maxWidth:300,
-              background:bubbleBg, border:`1px solid ${accent}66`, borderRadius:12, padding:"10px 13px",
-              boxShadow:"0 14px 36px rgba(0,0,0,.42)", pointerEvents:"none" }}>
-            <span style={{ fontSize:9.5, letterSpacing:".2em", textTransform:"uppercase", color:accent, display:"block", marginBottom:5 }}>{name}</span>
-            <p style={{ margin:0, fontSize:12.5, lineHeight:1.55, color:isDark?"#eef0f3":"#141211" }}>{what}</p>
-            {/* puntero */}
-            <span style={{ position:"absolute", left:28, top:"100%", width:12, height:12, marginTop:-6, transform:"rotate(45deg)", background:bubbleBg, borderRight:`1px solid ${accent}66`, borderBottom:`1px solid ${accent}66` }}/>
+      {/* STEPPER horizontal — avanza solo por las disciplinas */}
+      <div style={{ position:"relative", display:"flex", justifyContent:"space-between", alignItems:"center", width:"100%", maxWidth:480, margin:"0 auto", padding:"6px 17px 0" }}>
+        {/* riel */}
+        <div style={{ position:"absolute", left:17, right:17, top:"calc(50% + 3px)", height:1.5, background:trackC }}/>
+        {/* progreso recorrido */}
+        <motion.div style={{ position:"absolute", left:17, top:"calc(50% + 3px)", height:1.5, background:accent }}
+          animate={{ width:`calc((100% - 34px) * ${services.length > 1 ? active / (services.length - 1) : 0})` }} transition={{ duration:.5, ease:[.16,1,.3,1] }}/>
+        {services.map((d, i) => {
+          const on = i === active
+          const passed = i <= active
+          return (
+            <div key={d.index} style={{ position:"relative", width:34, height:34, flexShrink:0 }}>
+              {on && (
+                <div style={{ position:"absolute", inset:0, animation:"svcOrbit 4s linear infinite" }}>
+                  <span style={{ position:"absolute", top:-1, left:"50%", marginLeft:-2.5, width:5, height:5, borderRadius:"50%", background:accent, boxShadow:`0 0 8px ${accent}` }}/>
+                </div>
+              )}
+              <motion.span animate={{ scale:on?1.12:1 }} transition={{ type:"spring", stiffness:340, damping:20 }}
+                style={{ position:"absolute", inset:0, borderRadius:"50%", background:nodeBg,
+                  border:`1px solid ${passed?accent:trackC}`, display:"grid", placeItems:"center",
+                  fontFamily:"monospace", fontSize:10, color:passed?accent:dim,
+                  boxShadow:on?`0 0 18px ${accent}55`:"none", transition:"color .4s, border-color .4s, box-shadow .4s" }}>{d.index}</motion.span>
+            </div>
+          )
+        })}
+      </div>
+
+      {/* CARD que explica la disciplina activa — se actualiza sola */}
+      <div style={{ position:"relative", maxWidth:720, margin:"28px auto 0",
+        border:`1px solid ${isDark?"rgba(255,255,255,.10)":"rgba(0,0,0,.10)"}`, borderRadius:18,
+        padding: isDesktop ? "30px 30px" : "24px 20px", background:isDark?"rgba(255,255,255,.025)":"rgba(0,0,0,.02)",
+        overflow:"hidden", minHeight: isDesktop ? 180 : 210 }}>
+        <span aria-hidden="true" style={{ position:"absolute", top:-28, right:-4, fontSize:150, fontWeight:900, lineHeight:1, color:isDark?"rgba(195,196,242,.055)":"rgba(99,91,255,.05)", pointerEvents:"none" }}>{s.index}</span>
+        <AnimatePresence mode="wait">
+          <motion.div key={s.index} initial={{ opacity:0, y:16 }} animate={{ opacity:1, y:0 }} exit={{ opacity:0, y:-12 }} transition={{ duration:.45, ease:[.16,1,.3,1] }}>
+            <span style={{ fontSize:10, letterSpacing:".22em", textTransform:"uppercase", color:accent }}>{s.desc}</span>
+            <h3 style={{ margin:"10px 0 12px", fontSize:"clamp(1.5rem,3.4vw,2.1rem)", fontWeight:800, letterSpacing:"-.02em", lineHeight:1.05, color:txt }}>{s.name}</h3>
+            <p style={{ margin:0, fontSize:14, lineHeight:1.7, color:isDark?"rgba(255,255,255,.72)":"rgba(0,0,0,.68)", maxWidth:480 }}>{s.what}</p>
           </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* nodo con punto orbitando (movimiento constante) */}
-      <div style={{ position:"relative", width:34, height:34, flexShrink:0 }}>
-        <div style={{ position:"absolute", inset:0, animation:"svcOrbit 5s linear infinite" }}>
-          <span style={{ position:"absolute", top:-1, left:"50%", marginLeft:-2.5, width:5, height:5, borderRadius:"50%", background:accent, boxShadow:`0 0 8px ${accent}` }}/>
+        </AnimatePresence>
+        <div style={{ position:"absolute", left:0, bottom:0, height:2, width:"100%", background:isDark?"rgba(255,255,255,.06)":"rgba(0,0,0,.06)" }}>
+          <motion.div key={s.index} style={{ height:"100%", background:accent, transformOrigin:"left" }}
+            initial={{ scaleX:0 }} animate={{ scaleX:1 }} transition={{ duration:DISC_CYCLE_MS/1000, ease:"linear" }}/>
         </div>
-        <span style={{ position:"absolute", inset:0, borderRadius:"50%", border:isDark?"1px solid rgba(255,255,255,.16)":"1px solid rgba(0,0,0,.14)", display:"grid", placeItems:"center", fontFamily:"monospace", fontSize:10, color:isDark?"#fff":"#000" }}>{index}</span>
       </div>
-
-      {/* texto */}
-      <div style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"space-between", gap:12, minWidth:0 }}>
-        <motion.span style={{ fontSize:14.5, fontWeight:400, letterSpacing:".01em", color:isDark?"#fff":"#000" }} animate={{ x:open?6:0 }} transition={{ duration:0.25 }}>{name}</motion.span>
-        <span style={{ fontSize:9.5, letterSpacing:".14em", textTransform:"uppercase", color:isDark?"rgba(255,255,255,.6)":"rgba(0,0,0,.55)", textAlign:"right", flexShrink:0 }}>{desc}</span>
-      </div>
-      <motion.span style={{ fontSize:12, flexShrink:0, color:accent }}
-        animate={{ x:open?0:8, opacity:open?1:0 }} transition={{ duration:0.2 }}>→</motion.span>
-    </motion.div>
+    </div>
   )
 }
 
@@ -518,14 +535,9 @@ export default function Home() {
       </section>
 
       {/* SERVICIOS */}
-      <section style={{ position:"relative", zIndex:20, padding:"clamp(48px, 10vw, 96px) clamp(20px, 4vw, 48px)", maxWidth:900, margin:"0 auto" }}>
+      <section style={{ position:"relative", zIndex:20, padding:"clamp(48px, 10vw, 96px) clamp(20px, 4vw, 48px)", maxWidth:1080, margin:"0 auto" }}>
         <SectionHeader label="Lo que ofrezco" title="Servicios" accent="& Disciplinas" isDark={isDark}/>
-        <div>
-          <style>{`@keyframes svcOrbit{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}`}</style>
-          {services.map((s,i) => (
-            <ServiceRow key={s.index} index={s.index} name={s.name} desc={s.desc} what={s.what} delay={i*0.07} isDark={isDark}/>
-          ))}
-        </div>
+        <DisciplinesShowcase isDark={isDark} isDesktop={isDesktop}/>
       </section>
 
       {/* GALERÍA */}
