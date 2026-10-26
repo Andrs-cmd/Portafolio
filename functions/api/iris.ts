@@ -72,7 +72,7 @@ export const onRequestPost = async (context: { request: Request; env: Env }): Pr
     }
 
     const messages = [{ role: "system", content: SYSTEM }, ...clean]
-    const out = await env.AI.run("@cf/meta/llama-3.1-8b-instruct", { messages, max_tokens: 420, temperature: 0.5 })
+    const out = await env.AI.run("@cf/meta/llama-3.1-8b-instruct-fp8", { messages, max_tokens: 420, temperature: 0.5 })
     const reply = (out?.response || "").trim() ||
       "Perdón, no pude responder eso. Si quieres, escríbele a Andres por WhatsApp: https://wa.me/573195768097"
     return json({ reply })
