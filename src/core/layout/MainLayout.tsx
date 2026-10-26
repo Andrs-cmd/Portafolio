@@ -1,5 +1,6 @@
 import { Outlet } from "react-router-dom"
 import  Navbar  from "../navigation/Navbar"
+import IrisChat from "../../components/IrisChat"
 
 function MainLayout() {
   return (
@@ -8,6 +9,7 @@ function MainLayout() {
       <main className="main-content">
         <Outlet />
       </main>
+      <IrisChat />
     </div>
   )
 }
