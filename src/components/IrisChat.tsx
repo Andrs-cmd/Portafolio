@@ -113,17 +113,37 @@ export default function IrisChat() {
     if (!text || loading) return
     const next = [...msgs, { role: "user" as const, content: text }]
     setMsgs(next); setInput(""); setLoading(true)
+    const payload = JSON.stringify({ messages: next.filter(m => m !== GREETING) })
+    // La función de Cloudflare a veces arranca en frío y cierra la conexión
+    // antes de responder (el primer mensaje de un visitante fallaba). Reintenta
+    // hasta 3 veces ante errores de red o 5xx; un 4xx no se reintenta.
+    const ask = async (): Promise<string> => {
+      let lastErr: unknown = null
+      for (let attempt = 0; attempt < 3; attempt++) {
+        if (attempt > 0) await new Promise(res => setTimeout(res, 500 * attempt))
+        try {
+          const r = await fetch("/api/iris", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: payload,
+          })
+          if (r.ok) {
+            const data = await r.json()
+            return data.reply || "…"
+          }
+          lastErr = new Error(String(r.status))
+          if (r.status < 500) break
+        } catch (e) {
+          lastErr = e
+        }
+      }
+      throw lastErr
+    }
     try {
-      const r = await fetch("/api/iris", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ messages: next.filter(m => m !== GREETING) }),
-      })
-      if (!r.ok) throw new Error(String(r.status))
-      const data = await r.json()
-      setMsgs(m => [...m, { role: "assistant", content: data.reply || "…" }])
+      const reply = await ask()
+      setMsgs(m => [...m, { role: "assistant", content: reply }])
     } catch {
-      setMsgs(m => [...m, { role: "assistant", content: "Ahora mismo no puedo responder (Iris funciona en el sitio publicado). Mientras tanto escríbele a Andres por WhatsApp: wa.me/573195768097" }])
+      setMsgs(m => [...m, { role: "assistant", content: "Ahora mismo no puedo responder. Escríbele a Andres por WhatsApp: wa.me/573195768097" }])
     } finally { setLoading(false) }
   }
 

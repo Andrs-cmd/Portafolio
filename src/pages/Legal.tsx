@@ -7,9 +7,12 @@ import { useSEO } from "../lib/useSEO"
 /**
  * Aviso legal + Política de privacidad + Cookies. Página de texto, ligera (sin
  * WebGL) para que cargue rápido. El contenido describe de forma honesta lo que el
- * sitio realmente hace: no hay formularios que almacenen datos; el contacto es por
- * WhatsApp/email/Instagram; el chat de Iris envía la pregunta a Cloudflare Workers
- * AI solo para responder; el navegador guarda localmente la preferencia de tema.
+ * sitio realmente hace: el formulario de contacto abre WhatsApp y no almacena
+ * datos, pero los formularios opcionales de suscripción (curso / auditoría) sí
+ * guardan nombre y correo vía Brevo (email marketing, con consentimiento); el
+ * contacto directo es por WhatsApp/email/Instagram; el chat de Iris envía la
+ * pregunta a Cloudflare Workers AI solo para responder; el navegador guarda
+ * localmente la preferencia de tema.
  */
 export default function Legal() {
   useSEO({
@@ -62,14 +65,27 @@ export default function Legal() {
         </Section>
 
         <Section n="02" title="Qué datos se recogen">
-          El sitio <strong style={{ color: fg }}>no tiene formularios que almacenen tu información</strong> ni crea perfiles
-          de visitantes. El único momento en que compartes datos personales es cuando decides contactar por WhatsApp, email o
-          Instagram, o cuando escribes en el chat de Iris. En ese caso, los datos que envías son los que tú mismo escribes.
-          Como todo sitio web, el proveedor de alojamiento (Cloudflare) puede registrar datos técnicos básicos (como la
-          dirección IP) con fines de seguridad y funcionamiento.
+          El <strong style={{ color: fg }}>formulario de contacto no almacena tus datos</strong>: al enviarlo se abre
+          WhatsApp con tu mensaje ya escrito, que viaja directo a tu aplicación. Aparte, el sitio ofrece{" "}
+          <strong style={{ color: fg }}>formularios opcionales de suscripción</strong> (para recibir el curso gratis o la
+          mini-auditoría); si decides usarlos, guardamos tu nombre y correo con tu consentimiento para enviarte esos recursos
+          (ver la sección siguiente). Fuera de eso, el sitio no crea perfiles de visitantes. También compartes datos cuando
+          contactas por WhatsApp, email o Instagram, o cuando escribes en el chat de Iris. Como todo sitio web, el proveedor de
+          alojamiento (Cloudflare) puede registrar datos técnicos básicos (como la dirección IP) con fines de seguridad y
+          funcionamiento.
         </Section>
 
-        <Section n="03" title="Chat de Iris (asistente con IA)">
+        <Section n="03" title="Suscripción voluntaria y email marketing">
+          Si rellenas uno de los formularios opcionales para recibir un recurso gratis (el curso de automatizaciones o la
+          mini-auditoría de tu sitio), guardamos tu <strong style={{ color: fg }}>nombre y correo</strong> con tu
+          consentimiento, con el único fin de enviarte ese recurso y comunicaciones ocasionales sobre el trabajo de Andres.
+          Para gestionar estos envíos usamos <strong style={{ color: fg }}>Brevo</strong>, un proveedor de email marketing que
+          procesa esos datos por nuestra cuenta. No vendemos ni cedemos tus datos a terceros con fines publicitarios. Puedes{" "}
+          <strong style={{ color: fg }}>darte de baja en cualquier momento</strong> desde el enlace incluido en cada correo, o
+          escribiendo a <a href={EMAIL_HREF} style={link}>{EMAIL}</a>.
+        </Section>
+
+        <Section n="04" title="Chat de Iris (asistente con IA)">
           Iris responde preguntas sobre los servicios y proyectos de Andres. Cuando envías un mensaje, el texto se procesa
           mediante <strong style={{ color: fg }}>Cloudflare Workers AI</strong> únicamente para generar la respuesta; no se
           usa para publicidad ni se vende a terceros. Te recomendamos <strong style={{ color: fg }}>no escribir información
@@ -77,24 +93,24 @@ export default function Legal() {
           contacto es por WhatsApp o email.
         </Section>
 
-        <Section n="04" title="Cookies y almacenamiento local">
+        <Section n="05" title="Cookies y almacenamiento local">
           Este sitio <strong style={{ color: fg }}>no usa cookies de seguimiento ni analítica de terceros</strong>. Solo puede
           guardar en tu navegador (almacenamiento local) una preferencia de uso, como el tema claro u oscuro, que permanece en
           tu dispositivo y no se envía a ningún servidor. Puedes borrarla limpiando los datos del sitio en tu navegador.
         </Section>
 
-        <Section n="05" title="Tus derechos">
+        <Section n="06" title="Tus derechos">
           Conforme a la Ley 1581 de 2012 de Colombia sobre protección de datos personales, puedes solicitar el acceso,
           corrección o eliminación de cualquier dato que nos hayas compartido por los canales de contacto. Escríbenos a{" "}
           <a href={EMAIL_HREF} style={link}>{EMAIL}</a> y lo atenderemos.
         </Section>
 
-        <Section n="06" title="Propiedad intelectual">
+        <Section n="07" title="Propiedad intelectual">
           Los textos, el diseño, el código, las fotografías y las obras visuales de este sitio son propiedad de Andres Prada.
           No pueden reproducirse, copiarse ni usarse con fines comerciales sin autorización previa por escrito.
         </Section>
 
-        <Section n="07" title="Enlaces externos">
+        <Section n="08" title="Enlaces externos">
           El sitio puede enlazar a servicios de terceros (WhatsApp, Instagram, GitHub, email). Al seguirlos sales de este sitio
           y pasas a regirte por las políticas de privacidad de cada plataforma, de las que no somos responsables.
         </Section>
