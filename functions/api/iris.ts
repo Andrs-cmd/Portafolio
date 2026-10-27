@@ -54,11 +54,12 @@ Reglas:
 
 CAPTACIÓN DE LEADS (muy importante):
 Tu objetivo cuando alguien muestra interés real en contratar, cotizar, agendar o "empezar un proyecto" es convertirlo en un contacto para Andres.
-1) Si todavía no sabes su NOMBRE y QUÉ NECESITA (tipo de proyecto), pídeselo de forma natural y breve, y si quiere que agregue presupuesto o plazo, mejor. No pidas todo de golpe.
-2) En cuanto tengas al menos el nombre y qué necesita, termina tu respuesta con una ÚLTIMA LÍNEA con este formato EXACTO (y nada después):
-[[LEAD]]Hola Andres, soy <nombre>. Me interesa <qué necesita>. <detalle opcional: presupuesto/plazo/contexto>.[[/LEAD]]
-El texto dentro de [[LEAD]]...[[/LEAD]] es el mensaje, en primera persona del visitante, que se enviará a Andres por WhatsApp. Escríbelo natural y completo.
-3) Antes de esa línea, en tu respuesta visible, confirma con calidez que lo conectarás con Andres (sin mencionar el formato). Si aún faltan datos, NO pongas la línea [[LEAD]] todavía: primero pregunta.
+1) Si todavía no sabes su NOMBRE REAL y QUÉ NECESITA (tipo de proyecto), pídeselo de forma natural y breve, y si quiere que agregue presupuesto o plazo, mejor. No pidas todo de golpe.
+2) En cuanto el visitante te haya dado su nombre real y qué necesita, termina tu respuesta con una ÚLTIMA LÍNEA con este formato EXACTO (y NADA después de [[/LEAD]]):
+[[LEAD]]Hola Andres, soy Maria. Me interesa una tienda online para ropa; presupuesto medio.[[/LEAD]]
+Ese es solo un ejemplo del formato: escribe el mensaje real en primera persona del visitante, con sus datos reales, natural y completo.
+3) PROHIBIDO usar marcadores de posición entre < > (como <nombre> o <detalle>). Si NO tienes el nombre real o qué necesita, NO escribas la línea [[LEAD]] todavía: primero pregúntaselo con calidez. Mejor pedir el dato que inventar un placeholder.
+4) Antes de esa línea, en tu respuesta visible, confirma con calidez que lo conectarás con Andres (sin mencionar el formato).
 
 CONOCIMIENTO:
 ${KNOWLEDGE}`
@@ -84,9 +85,12 @@ export const onRequestPost = async (context: { request: Request; env: Env }): Pr
     }
 
     const messages = [{ role: "system", content: SYSTEM }, ...clean]
-    const out = await env.AI.run("@cf/meta/llama-3.1-8b-instruct-fp8", { messages, max_tokens: 420, temperature: 0.5 })
-    const reply = (out?.response || "").trim() ||
+    const out = await env.AI.run("@cf/meta/llama-3.1-8b-instruct-fp8", { messages, max_tokens: 600, temperature: 0.5 })
+    let reply = (out?.response || "").trim() ||
       "Perdón, no pude responder eso. Si quieres, escríbele a Andres por WhatsApp: https://wa.me/573195768097"
+    // Saneo defensivo: si la respuesta se truncó dejando un marcador [[/LEAD]]
+    // incompleto al final (p. ej. "...[/"), lo recorta para que no se cuele.
+    reply = reply.replace(/\[+\s*\/?\s*L?E?A?D?\]*\s*$/i, "").trim()
     return json({ reply })
   } catch {
     return json({ error: "No pude procesar la pregunta en este momento." }, 500)

@@ -69,10 +69,21 @@ function renderWithLinks(text: string, linkColor: string): ReactNode[] {
 // Tolerante a cómo el modelo escriba el marcador: [[LEAD]] o [LEAD], cierre
 // [[/LEAD]] o [/LEAD], o sin cierre (hasta el final). Así no se pierde el lead.
 const LEAD_RE = /\[\[?LEAD\]\]?\s*([\s\S]*?)\s*(?:\[\[?\/LEAD\]\]?|$)/i
+// Limpia el mensaje del lead: quita un marcador/fragmento de cierre colgante
+// (p. ej. "...[/" si la respuesta se truncó) y cualquier placeholder <...> que
+// el modelo haya dejado sin rellenar, y normaliza espacios.
+function cleanLead(s: string): string {
+  return s
+    .replace(/\[+\s*\/?\s*L?E?A?D?\]*\s*$/i, "")
+    .replace(/<[^>]*>/g, "")
+    .replace(/\s{2,}/g, " ")
+    .replace(/\s+([.,;:!?])/g, "$1")
+    .trim()
+}
 function extractLead(content: string): { text: string; lead: string | null } {
   const m = content.match(LEAD_RE)
   if (!m) return { text: content, lead: null }
-  const lead = m[1].trim()
+  const lead = cleanLead(m[1].trim())
   return { text: content.replace(LEAD_RE, "").trim(), lead: lead || null }
 }
 
