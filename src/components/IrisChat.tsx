@@ -87,26 +87,51 @@ function extractLead(content: string): { text: string; lead: string | null } {
   return { text: content.replace(LEAD_RE, "").trim(), lead: lead || null }
 }
 
-// Logo de Iris: un nudo toroidal (trefoil / torus knot), la misma familia de
-// formas que las esculturas 3D del Manifiesto — coherencia de marca. Se traza
-// con las ecuaciones paramétricas del trefoil para que quede limpio y simétrico.
-const TREFOIL_PATH = (() => {
-  const N = 170, cx = 12, cy = 12, s = 2.85
-  let d = ""
-  for (let i = 0; i <= N; i++) {
-    const t = (i / N) * Math.PI * 2
-    const x = cx + s * (Math.sin(t) + 2 * Math.sin(2 * t))
-    const y = cy + s * (Math.cos(t) - 2 * Math.cos(2 * t))
-    d += (i === 0 ? "M" : "L") + x.toFixed(2) + " " + y.toFixed(2) + " "
-  }
-  return d + "Z"
-})()
+// Logo de Iris: un nudo toroidal (torus knot p=2,q=3) girando en 3D — la misma
+// familia de formas que las esculturas/visuales de Andres. Se proyecta y rota en
+// un <canvas> para que esté en movimiento, igual que en el reel.
 function IrisMark({ size = 28 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d={TREFOIL_PATH} stroke="#ffffff" strokeWidth="1.7" strokeLinejoin="round" strokeLinecap="round" opacity={0.96} />
-    </svg>
-  )
+  const ref = useRef<HTMLCanvasElement>(null)
+  useEffect(() => {
+    const cv = ref.current; if (!cv) return
+    const ctx = cv.getContext("2d"); if (!ctx) return
+    const dpr = Math.min(window.devicePixelRatio || 1, 2)
+    cv.width = Math.round(size * dpr); cv.height = Math.round(size * dpr)
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+    const reduce = typeof window.matchMedia === "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    const N = 120, p = 2, q = 3, R = size * 0.42, cx = size / 2, cy = size / 2
+    let raf = 0
+    const start = performance.now()
+    const draw = (t: number) => {
+      const ax = t * 1.7, ay = t * 2.3
+      const cxx = Math.cos(ax), sxx = Math.sin(ax), cyy = Math.cos(ay), syy = Math.sin(ay)
+      const pts: Array<[number, number, number]> = []
+      for (let i = 0; i <= N; i++) {
+        const u = (i / N) * Math.PI * 2, rr = Math.cos(q * u) + 2.2
+        let x = rr * Math.cos(p * u), y = rr * Math.sin(p * u), z = -Math.sin(q * u) * 1.2
+        const y2 = y * cyy - z * syy, z2 = y * syy + z * cyy; y = y2; z = z2
+        const x2 = x * cxx - z * sxx, z3 = x * sxx + z * cxx; x = x2; z = z3
+        const sc = (R / 3.4) * (1 + z * 0.1)
+        pts.push([cx + x * sc, cy + y * sc, z])
+      }
+      ctx.clearRect(0, 0, size, size)
+      ctx.lineJoin = "round"; ctx.lineCap = "round"
+      for (let i = 0; i < N; i++) {
+        const a = pts[i], b = pts[i + 1]
+        const depth = Math.max(0, Math.min(1, (a[2] + 2.2) / 4.4))
+        ctx.globalAlpha = 0.28 + 0.72 * depth
+        ctx.strokeStyle = "#ffffff"
+        ctx.lineWidth = Math.max(0.7, size * 0.032 * (0.55 + depth))
+        ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke()
+      }
+      ctx.globalAlpha = 1
+    }
+    if (reduce) { draw(0.9); return }
+    const loop = (now: number) => { draw((now - start) / 1000); raf = requestAnimationFrame(loop) }
+    raf = requestAnimationFrame(loop)
+    return () => cancelAnimationFrame(raf)
+  }, [size])
+  return <canvas ref={ref} style={{ width: size, height: size, display: "block" }} aria-hidden="true" />
 }
 
 export default function IrisChat() {
