@@ -7,7 +7,7 @@ import CameraAssembly from "../components/CameraAssembly"
 import CardNav from "../components/CardNav"
 import "../components/CardNav.css"
 import { featuredProjects, type Project } from "../data/projects"
-import { photosCaptures, photosStudio, photosEditorial, motionPieces } from "../data/gallery"
+import { photosCaptures, photosStudio, photosEditorial, motionPieces, type GalleryPhoto } from "../data/gallery"
 import { WhatsAppFAB, WhatsAppPill, WhatsAppBanner } from "../components/WhatsAppCTA"
 import { useSEO } from "../lib/useSEO"
 import { getNavItems, NAV_CTA, INSTAGRAM, EMAIL_HREF } from "../data/nav"
@@ -29,20 +29,27 @@ function useIsDesktop() {
 const services = [
   { index: "01", name: "Desarrollo de Software",     desc: "Aplicaciones a medida",            what: "Apps web completas a la medida: dashboards, SaaS y plataformas. Del problema real del cliente, no de plantillas." },
   { index: "02", name: "Páginas Web",                desc: "Landing · Ecommerce · Académicas", what: "Landing, ecommerce y sitios con CMS. Rápidos, bonitos y pensados para convertir visitas en clientes." },
-  { index: "03", name: "Animaciones Audioreactivas", desc: "Visuales que responden al sonido", what: "Visuales en tiempo real que reaccionan al audio. Three.js, WebGL y Web Audio para marcas y artistas." },
+  { index: "03", name: "Motion & Animación",         desc: "Motion graphics · animación · audio", what: "Motion graphics, animación 2D/3D y visuales audioreactivos. Blender, Three.js, WebGL y GLSL para marcas y artistas." },
   { index: "04", name: "Fotografía",                 desc: "Editorial y comercial",            what: "Producto, retrato editorial y campañas completas, con dirección de arte de principio a fin." },
   { index: "05", name: "Esculturas & Arte",          desc: "Piezas físicas y conceptuales",    what: "Piezas físicas y digitales: edición limitada en resina, metal, madera e impresión 3D." },
 ]
 
 const projectsData = featuredProjects
 
-const galleryData = [
-  { img: photosStudio[5].src,     label: "Studio",     sub: "Belleza · 2026",   tall: true  },
-  { img: photosEditorial[8].src,  label: "GUA Series", sub: "Editorial · 2026", tall: false },
-  { img: photosEditorial[15].src, label: "GUA Series", sub: "Editorial · 2026", tall: false },
-  { img: photosStudio[3].src,     label: "Studio",     sub: "Belleza · 2026",   tall: true  },
-  { img: photosCaptures[0].src,   label: "Captures",   sub: "Daily · 2026",     tall: false },
-  { img: photosEditorial[20].src, label: "GUA Series", sub: "Editorial · 2026", tall: false },
+// Galería visual cinética: filas en marquee. Cada serie se etiqueta.
+type VItem = { src: string; ratio: GalleryPhoto["ratio"]; tag: string; cat: string }
+const tagSeries = (items: GalleryPhoto[], tag: string, cat: string): VItem[] =>
+  items.map(p => ({ src: p.thumb, ratio: p.ratio ?? "landscape", tag, cat }))
+const visualRowA: VItem[] = [
+  ...tagSeries(photosEditorial.slice(0, 7), "GUA Series", "Editorial"),
+  ...tagSeries(photosStudio.slice(0, 3), "Studio", "Belleza"),
+  ...tagSeries(photosCaptures.slice(0, 3), "Captures", "Daily"),
+]
+const visualRowB: VItem[] = [
+  ...tagSeries(photosEditorial.slice(7, 15), "GUA Series", "Editorial"),
+  ...tagSeries(photosStudio.slice(3, 6), "Studio", "Belleza"),
+  ...tagSeries(photosCaptures.slice(3, 6), "Captures", "Daily"),
+  ...tagSeries(photosEditorial.slice(15, 20), "GUA Series", "Editorial"),
 ]
 
 function ThemeToggle() {
@@ -81,13 +88,16 @@ function ScrollBar() {
   )
 }
 
-const heroImages = [
-  photosStudio[3].src,
-  photosEditorial[8].src,
-  photosEditorial[18].src,
-  photosCaptures[0].src,
-  photosStudio[5].src,
-]
+// Todas las fotos reales (GUA + Studio + Captures), barajadas una vez por carga
+// para que el hero no muestre siempre las mismas.
+const heroImages = (() => {
+  const all = [...photosEditorial, ...photosStudio, ...photosCaptures].map(p => p.src)
+  for (let i = all.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[all[i], all[j]] = [all[j], all[i]]
+  }
+  return all
+})()
 
 function HeroImagePanel() {
   const { isDark } = useTheme()
@@ -96,6 +106,9 @@ function HeroImagePanel() {
     const timer = setInterval(() => setCurrent(c => (c+1) % heroImages.length), 4000)
     return () => clearInterval(timer)
   }, [])
+  useEffect(() => { // precarga la siguiente para un crossfade suave
+    const img = new Image(); img.src = heroImages[(current + 1) % heroImages.length]
+  }, [current])
   return (
     <div style={{ position:"relative", width:"100%", height:"100%", overflow:"hidden" }}>
       <AnimatePresence>
@@ -107,13 +120,14 @@ function HeroImagePanel() {
       <div style={{ position:"absolute", inset:0, pointerEvents:"none", background:isDark?"linear-gradient(to right, rgba(6,6,6,0.45) 0%, transparent 40%)":"linear-gradient(to right, rgba(245,241,233,0.45) 0%, transparent 40%)" }}/>
       <div style={{ position:"absolute", top:24, left:24, width:24, height:24, borderLeft:isDark?"1px solid rgba(255,255,255,0.30)":"1px solid rgba(0,0,0,0.20)", borderTop:isDark?"1px solid rgba(255,255,255,0.30)":"1px solid rgba(0,0,0,0.20)", pointerEvents:"none" }}/>
       <div style={{ position:"absolute", bottom:24, right:24, width:24, height:24, borderRight:isDark?"1px solid rgba(255,255,255,0.30)":"1px solid rgba(0,0,0,0.20)", borderBottom:isDark?"1px solid rgba(255,255,255,0.30)":"1px solid rgba(0,0,0,0.20)", pointerEvents:"none" }}/>
-      <div style={{ position:"absolute", bottom:24, left:24, display:"flex", alignItems:"center", gap:8 }}>
-        {heroImages.map((_,i) => (
-          <motion.div key={i} className="rounded-full"
-            animate={{ width:i===current?16:4, height:4 }}
-            style={{ background:isDark?(i===current?"rgba(255,255,255,0.8)":"rgba(255,255,255,0.2)"):(i===current?"rgba(0,0,0,0.5)":"rgba(0,0,0,0.15)") }}
-            transition={{ duration:0.3 }}/>
-        ))}
+      <div style={{ position:"absolute", bottom:24, left:24, display:"flex", alignItems:"center", gap:12 }}>
+        <span style={{ fontFamily:"monospace", fontSize:11, letterSpacing:".12em", color:isDark?"rgba(255,255,255,0.88)":"rgba(0,0,0,0.6)" }}>
+          {String(current+1).padStart(2,"0")} / {String(heroImages.length).padStart(2,"0")}
+        </span>
+        <div style={{ width:120, height:2, background:isDark?"rgba(255,255,255,0.16)":"rgba(0,0,0,0.12)", overflow:"hidden" }}>
+          <motion.div key={current} initial={{ width:"0%" }} animate={{ width:"100%" }} transition={{ duration:4, ease:"linear" }}
+            style={{ height:"100%", background:isDark?"rgba(255,255,255,0.75)":"rgba(0,0,0,0.5)" }}/>
+        </div>
       </div>
       <div style={{ position:"absolute", top:24, right:24, fontSize:9, letterSpacing:".3em", textTransform:"uppercase", color:isDark?"#fff":"#000" }}>
         Fotografía · Arte
@@ -239,25 +253,54 @@ function DisciplinesShowcase({ isDark, isDesktop }: { isDark:boolean; isDesktop:
   )
 }
 
-function GalleryItem({ item, i, isDark }: { item:typeof galleryData[0]; i:number; isDark:boolean }) {
-  const [hovered, setHovered] = useState(false)
+// Galería visual en marquee: dos filas que se desplazan en direcciones opuestas,
+// loop infinito y sin costuras (contenido duplicado + translateX -50%). B&N que
+// pasa a color al hover, etiqueta por serie, y degradados en los bordes.
+function MarqueeRow({ items, dir, speed, h, isDark }: { items: VItem[]; dir: "l"|"r"; speed: number; h: number; isDark: boolean }) {
+  const ratioW = (r: VItem["ratio"]) => r === "portrait" ? Math.round(h*0.72) : r === "square" ? h : Math.round(h*1.5)
+  const doubled = [...items, ...items]
+  const baseFilter = isDark ? "grayscale(65%) brightness(.72)" : "grayscale(45%) brightness(.96)"
   return (
-    <motion.div style={{ position:"relative", overflow:"hidden", cursor:"pointer", gridRow:item.tall?"span 2":"span 1", aspectRatio:item.tall?undefined:"4/3" }}
-      onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
-      initial={{ opacity:0, y:24 }} whileInView={{ opacity:1, y:0 }}
-      transition={{ duration:0.6, delay:i*0.07 }} viewport={{ once:true }}>
-      <motion.img src={item.img} alt={item.label} style={{ width:"100%", height:"100%", objectFit:"cover" }}
-        animate={{ scale:hovered?1.06:1, filter:isDark?(hovered?"grayscale(0%) brightness(0.9)":"grayscale(50%) brightness(0.7)"):(hovered?"grayscale(0%) brightness(1.0)":"grayscale(30%) brightness(0.95)") }}
-        transition={{ duration:0.55 }}/>
-      <motion.div style={{ position:"absolute", inset:0, display:"flex", flexDirection:"column", justifyContent:"flex-end", padding:16, background:isDark?"rgba(0,0,0,0.55)":"rgba(255,255,255,0.60)" }}
-        animate={{ opacity:hovered?1:0 }} transition={{ duration:0.3 }}>
-        <span style={{ fontSize:9, letterSpacing:".25em", textTransform:"uppercase", marginBottom:4, color:isDark?"#fff":"#000" }}>{item.sub}</span>
-        <span style={{ fontSize:13, fontWeight:300, color:isDark?"#fff":"#111" }}>{item.label}</span>
-      </motion.div>
-      <motion.div style={{ position:"absolute", top:12, left:12, width:16, height:16, borderLeft:isDark?"1px solid rgba(255,255,255,0.40)":"1px solid rgba(0,0,0,0.30)", borderTop:isDark?"1px solid rgba(255,255,255,0.40)":"1px solid rgba(0,0,0,0.30)" }}
-        animate={{ opacity:hovered?1:0, scale:hovered?1:0.6 }} transition={{ duration:0.2 }}/>
-      <motion.div style={{ position:"absolute", bottom:12, right:12, width:16, height:16, borderRight:isDark?"1px solid rgba(255,255,255,0.40)":"1px solid rgba(0,0,0,0.30)", borderBottom:isDark?"1px solid rgba(255,255,255,0.40)":"1px solid rgba(0,0,0,0.30)" }}
-        animate={{ opacity:hovered?1:0, scale:hovered?1:0.6 }} transition={{ duration:0.2 }}/>
+    <div className="mq-row" style={{ overflow:"hidden" }}>
+      <div className="mq-track" style={{ display:"flex", width:"max-content", animation:`${dir==="l"?"mqL":"mqR"} ${speed}s linear infinite` }}>
+        {doubled.map((it,i)=>(
+          <a href="/visual" className="mq-item" key={i} aria-label={`${it.tag} — ${it.cat}`}
+            style={{ position:"relative", height:h, width:ratioW(it.ratio), flex:"0 0 auto", marginRight:14, overflow:"hidden", borderRadius:12, cursor:"pointer", background:isDark?"#111":"#eae7e0", display:"block", textDecoration:"none" }}>
+            <img src={it.src} alt={it.tag} loading="lazy" draggable={false}
+              style={{ width:"100%", height:"100%", objectFit:"cover", display:"block", filter:baseFilter }}/>
+            <div className="mq-label" style={{ position:"absolute", inset:0, display:"flex", flexDirection:"column", justifyContent:"flex-end", padding:14, background:"linear-gradient(to top, rgba(6,6,10,.78), rgba(6,6,10,.08) 55%, transparent)" }}>
+              <span style={{ fontFamily:"monospace", fontSize:9.5, letterSpacing:".22em", textTransform:"uppercase", color:"#c3c4f2", marginBottom:4 }}>{it.cat}</span>
+              <span style={{ fontSize:15, fontWeight:800, letterSpacing:"-.01em", color:"#fff", lineHeight:1 }}>{it.tag}</span>
+            </div>
+            <span className="mq-corner" style={{ position:"absolute", top:12, right:12, width:16, height:16, borderTop:"1.5px solid rgba(195,196,242,.9)", borderRight:"1.5px solid rgba(195,196,242,.9)" }}/>
+          </a>
+        ))}
+      </div>
+    </div>
+  )
+}
+function VisualMarquee({ rowA, rowB, isDark, isDesktop }: { rowA: VItem[]; rowB: VItem[]; isDark: boolean; isDesktop: boolean }) {
+  const h = isDesktop ? 248 : 158
+  const dur = isDesktop ? 64 : 46
+  return (
+    <motion.div initial={{ opacity:0, y:24 }} whileInView={{ opacity:1, y:0 }} transition={{ duration:0.7 }} viewport={{ once:true }}
+      style={{ position:"relative", display:"flex", flexDirection:"column", gap:14,
+        WebkitMaskImage:"linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent)",
+        maskImage:"linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent)" }}>
+      <style>{`
+        @keyframes mqL{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+        @keyframes mqR{from{transform:translateX(-50%)}to{transform:translateX(0)}}
+        .mq-row:hover .mq-track{animation-play-state:paused}
+        .mq-item img{transition:filter .5s ease, transform .55s cubic-bezier(.16,1,.3,1)}
+        .mq-item:hover img{filter:none !important; transform:scale(1.06)}
+        .mq-item .mq-label{opacity:0; transform:translateY(6px); transition:opacity .4s ease, transform .4s ease}
+        .mq-item:hover .mq-label{opacity:1; transform:translateY(0)}
+        .mq-item .mq-corner{opacity:0; transform:scale(.5); transition:opacity .3s ease, transform .3s ease}
+        .mq-item:hover .mq-corner{opacity:1; transform:scale(1)}
+        @media (prefers-reduced-motion: reduce){ .mq-track{animation:none !important} }
+      `}</style>
+      <MarqueeRow items={rowA} dir="l" speed={dur} h={h} isDark={isDark}/>
+      <MarqueeRow items={rowB} dir="r" speed={Math.round(dur*1.22)} h={h} isDark={isDark}/>
     </motion.div>
   )
 }
@@ -474,11 +517,7 @@ export default function Home() {
       <section style={{ position:"relative", zIndex:20, padding:"clamp(48px, 10vw, 96px) clamp(16px, 4vw, 48px)" }}>
         <div style={{ maxWidth:1280, margin:"0 auto" }}>
           <SectionHeader label="Objetos visuales" title="Foto &" accent="Arte" right="Fotografía · Escultura · Mixto" isDark={isDark}/>
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gridAutoRows:200, gap:12 }}>
-            {galleryData.map((item,i) => (
-              <GalleryItem key={i} item={item} i={i} isDark={isDark}/>
-            ))}
-          </div>
+          <VisualMarquee rowA={visualRowA} rowB={visualRowB} isDark={isDark} isDesktop={isDesktop}/>
         </div>
       </section>
 
