@@ -164,6 +164,12 @@ function ContactForm({ isDark, isDesktop }: { isDark: boolean; isDesktop: boolea
     backgroundPosition: "right 4px center",
     paddingRight: 24,
   }
+  // Las <option> del menú nativo se pintan sobre fondo blanco del SO; sin color
+  // explícito, en modo oscuro quedaban blanco sobre blanco (invisibles).
+  const optionStyle: React.CSSProperties = {
+    background: isDark ? "#141211" : "#ffffff",
+    color: isDark ? "#ffffff" : "#000000",
+  }
   const errorStyle: React.CSSProperties = {
     fontFamily: "monospace",
     fontSize: 10,
@@ -257,13 +263,13 @@ function ContactForm({ isDark, isDesktop }: { isDark: boolean; isDesktop: boolea
         <div>
           <label style={labelStyle}>Servicio</label>
           <select value={form.servicio} onChange={set("servicio")} style={selectStyle}>
-            {services.map(s => <option key={s} value={s}>{s}</option>)}
+            {services.map(s => <option key={s} value={s} style={optionStyle}>{s}</option>)}
           </select>
         </div>
         <div>
           <label style={labelStyle}>Presupuesto</label>
           <select value={form.presupuesto} onChange={set("presupuesto")} style={selectStyle}>
-            {budgets.map(b => <option key={b} value={b}>{b}</option>)}
+            {budgets.map(b => <option key={b} value={b} style={optionStyle}>{b}</option>)}
           </select>
         </div>
       </div>
