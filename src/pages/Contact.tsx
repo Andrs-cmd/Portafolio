@@ -523,11 +523,7 @@ export default function Contact() {
             Recursos gratis
           </span>
         </motion.div>
-        <div style={{ display: "grid", gridTemplateColumns: isDesktop ? "1fr 1fr" : "1fr", gap: 18 }}>
-          <OptInForm source="curso"
-            title="Curso gratis de automatizaciones"
-            subtitle="Aprende a crear automatizaciones con n8n, WhatsApp e IA. Te lo envío a tu correo."
-            cta="Quiero el curso gratis" />
+        <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 18, maxWidth: 560 }}>
           <OptInForm source="auditoria"
             title="Mini-auditoría gratis de tu sitio"
             subtitle="Déjame tu correo y reviso tu web: mejoras concretas de diseño, velocidad y conversión."
