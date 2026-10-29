@@ -109,6 +109,17 @@ function ContactForm({ isDark, isDesktop }: { isDark: boolean; isDesktop: boolea
     setTouched({ nombre: true, email: true, mensaje: true })
     if (hasErrors) return
 
+    // Guarda el lead (nombre + correo) para poder escribirle aunque no complete
+    // el WhatsApp. Fire-and-forget: nunca bloquea ni rompe el envío.
+    try {
+      fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ name: form.nombre.trim(), email: form.email.trim(), source: "contacto", website: "" }),
+        keepalive: true,
+      }).catch(() => {})
+    } catch { /* noop */ }
+
     const lines = [
       `Hola Andres! Soy ${form.nombre}${form.empresa ? ` de ${form.empresa}` : ""}.`,
       ``,
@@ -299,7 +310,7 @@ function ContactForm({ isDark, isDesktop }: { isDark: boolean; isDesktop: boolea
       </motion.button>
 
       <p style={{ fontSize: 11, lineHeight: 1.55, color: isDark ? "rgba(255,255,255,.55)" : "rgba(0,0,0,.55)", maxWidth: 460 }}>
-        Al enviar abre WhatsApp con tu mensaje ya escrito. No guardo tus datos en ningún lado.
+        Al enviar abre WhatsApp con tu mensaje ya escrito. Guardo tu nombre y correo para poder escribirte aunque no alcances a enviarlo.
       </p>
     </form>
   )
