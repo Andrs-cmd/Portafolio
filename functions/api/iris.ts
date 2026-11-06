@@ -33,6 +33,7 @@ PROYECTOS:
 - NOCTURNA: juego Android grimdark de defensa 360°, 100 personajes y 100 niveles. HTML5 Canvas, Capacitor.
 - Córtex: "segundo cerebro" de escritorio; notas/ideas como nodos flotantes con una asistente (Iris). React, Tauri, d3-force.
 - Segundo Cerebro: base de conocimiento en Obsidian con el patrón LLM Wiki de Karpathy.
+- Serverless API (andresprada.online): backend puro, sin interfaz, que hace funcionar este sitio. Endpoints serverless en Cloudflare Pages Functions: /api/iris (un modelo de lenguaje en el edge con Workers AI — el chat que estás usando ahora) y /api/subscribe (captación de correos integrada con Brevo). TypeScript, REST, edge, saneo de entradas y anti-spam. Es un ejemplo de su trabajo de backend / APIs.
 
 FOTOGRAFÍA / VISUAL: series Captures, Studio, GUA (editorial), Fauna Urbana (retratos de animales) y Callejera. También motion graphics y dirección de arte.
 

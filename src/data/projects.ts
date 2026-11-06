@@ -174,6 +174,22 @@ export const projects: Project[] = [
     lightBg: "rgba(240,239,236,0.96)",
     featured: false,
   },
+  {
+    id: "serverless-api",
+    index: "010",
+    title: "Serverless API",
+    client: "andresprada.online",
+    category: "Backend · API",
+    year: "2026",
+    description:
+      "La capa de backend —sin interfaz— que hace funcionar este mismo sitio: endpoints serverless en Cloudflare Pages Functions, desplegados en el edge. /api/iris ejecuta un modelo de lenguaje (Workers AI) con prompt, memoria de conversación y detección de leads; /api/subscribe integra la captación de correos con Brevo. Con saneo de entradas, honeypot anti-spam y respuestas en JSON. Sin servidor que mantener.",
+    stack: ["TypeScript", "Cloudflare Pages Functions", "Workers AI · LLM", "Brevo API", "REST", "Edge / Serverless"],
+    links: [],
+    img: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&q=80&w=1200",
+    darkBg: "rgba(8,16,16,0.93)",
+    lightBg: "rgba(232,240,240,0.96)",
+    featured: true,
+  },
 ]
 
 export const featuredProjects = projects.filter(p => p.featured)
