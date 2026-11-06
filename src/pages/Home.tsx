@@ -27,11 +27,22 @@ function useIsDesktop() {
 }
 
 const services = [
-  { index: "01", name: "Desarrollo de Software",     desc: "Aplicaciones a medida",            what: "Apps web completas a la medida: dashboards, SaaS y plataformas. Del problema real del cliente, no de plantillas." },
-  { index: "02", name: "Páginas Web",                desc: "Landing · Ecommerce · Académicas", what: "Landing, ecommerce y sitios con CMS. Rápidos, bonitos y pensados para convertir visitas en clientes." },
-  { index: "03", name: "Motion & Animación",         desc: "Motion graphics · animación · audio", what: "Motion graphics, animación 2D/3D y visuales audioreactivos. Blender, Three.js, WebGL y GLSL para marcas y artistas." },
-  { index: "04", name: "Fotografía",                 desc: "Editorial y comercial",            what: "Producto, retrato editorial y campañas completas, con dirección de arte de principio a fin." },
-  { index: "05", name: "Esculturas & Arte",          desc: "Piezas físicas y conceptuales",    what: "Piezas físicas y digitales: edición limitada en resina, metal, madera e impresión 3D." },
+  { index: "01", name: "Desarrollo Full-Stack",      desc: "Frontend · Backend · APIs",        what: "Apps web completas de punta a punta: frontend en React, backend y APIs en Node y Laravel, base de datos, autenticación y despliegue. SaaS, dashboards y plataformas a la medida — del problema real del cliente, no de plantillas." },
+  { index: "02", name: "Automatización & IA",        desc: "n8n · Agentes · Integraciones",    what: "Flujos con n8n, agentes de IA y chatbots que responden, califican e integran tus herramientas (WhatsApp, CRM, pagos, hojas). Automatizo lo repetitivo para que tu operación corra sola, 24/7." },
+  { index: "03", name: "Páginas Web",                desc: "Landing · Ecommerce · Académicas", what: "Landing, ecommerce y sitios con CMS. Rápidos, bonitos y pensados para convertir visitas en clientes." },
+  { index: "04", name: "Motion & Animación",         desc: "Motion graphics · animación · audio", what: "Motion graphics, animación 2D/3D y visuales audioreactivos. Blender, Three.js, WebGL y GLSL para marcas y artistas." },
+  { index: "05", name: "Fotografía",                 desc: "Editorial y comercial",            what: "Producto, retrato editorial y campañas completas, con dirección de arte de principio a fin." },
+  { index: "06", name: "Esculturas & Arte",          desc: "Piezas físicas y conceptuales",    what: "Piezas físicas y digitales: edición limitada en resina, metal, madera e impresión 3D." },
+]
+
+// Stack técnico agrupado — la prueba más clara de ser full-stack (no solo frontend).
+const techStack: { cat: string; items: string[] }[] = [
+  { cat: "Frontend",            items: ["React", "Next.js", "TypeScript", "Tailwind", "Three.js / WebGL", "Framer Motion"] },
+  { cat: "Backend & APIs",      items: ["Node.js", "Laravel · PHP", "REST APIs", "Prisma", "Webhooks", "Auth / JWT"] },
+  { cat: "Bases de datos",      items: ["PostgreSQL", "MySQL", "IndexedDB", "Dexie", "Redis"] },
+  { cat: "Móvil & Escritorio",  items: ["Capacitor", "Tauri", "Java nativo", "Gradle"] },
+  { cat: "IA & Automatización", items: ["n8n", "OpenAI · GPT-4", "Agentes IA", "RAG", "WhatsApp Cloud API"] },
+  { cat: "Infra & Deploy",      items: ["Docker", "Vercel", "Cloudflare", "Railway", "cPanel", "Git"] },
 ]
 
 const projectsData = featuredProjects
@@ -156,7 +167,7 @@ function HeroText() {
         initial={{ opacity:0, y:16 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.7, delay:0.1 }}>
         <div style={{ width:24, height:.5, background:isDark?"rgba(255,255,255,0.20)":"rgba(0,0,0,0.20)" }}/>
         <span style={{ fontSize:9, letterSpacing:".3em", textTransform:"uppercase", color:isDark?"#fff":"#000" }}>
-          Developer & Visual Creator
+          Full-Stack Developer & Visual Creator
         </span>
       </motion.div>
       <div style={{ overflow:"hidden", marginBottom:4 }}>
@@ -169,7 +180,7 @@ function HeroText() {
       </div>
       <motion.p style={{ fontSize:15, fontWeight:300, lineHeight:1.8, maxWidth:280, marginBottom:48, color:isDark?"#fff":"#000" }}
         initial={{ opacity:0, y:12 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.7, delay:0.5 }}>
-        Construyo experiencias digitales que viven entre el código, el movimiento y el arte.
+        Desarrollo full-stack de punta a punta —frontend, backend y datos— donde el código se encuentra con el movimiento y el arte.
       </motion.p>
       <motion.div style={{ display:"flex", flexDirection:"column", gap:4 }}
         initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ delay:0.7 }}>
@@ -249,6 +260,37 @@ function DisciplinesShowcase({ isDark, isDesktop }: { isDark:boolean; isDesktop:
             initial={{ scaleX:0 }} animate={{ scaleX:1 }} transition={{ duration:DISC_CYCLE_MS/1000, ease:"linear" }}/>
         </div>
       </div>
+    </div>
+  )
+}
+
+// Stack técnico: grid de capacidades agrupadas (frontend → backend → datos → deploy).
+// Es la señal más directa de full-stack y lo que faltaba en el Home.
+function TechStack({ isDark, isDesktop }: { isDark: boolean; isDesktop: boolean }) {
+  const accent = "#c3c4f2"
+  const line = isDark ? "rgba(255,255,255,.10)" : "rgba(0,0,0,.10)"
+  const cardBg = isDark ? "rgba(255,255,255,.025)" : "rgba(0,0,0,.02)"
+  const txt = isDark ? "#fff" : "#141211"
+  const meta = isDark ? "rgba(255,255,255,.64)" : "rgba(0,0,0,.6)"
+  const chipBg = isDark ? "rgba(255,255,255,.02)" : "rgba(255,255,255,.55)"
+  return (
+    <div style={{ display:"grid", gridTemplateColumns: isDesktop ? "repeat(3, 1fr)" : "1fr", gap:16 }}>
+      {techStack.map((g, i) => (
+        <motion.div key={g.cat}
+          initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }}
+          transition={{ duration:.5, delay:(i%3)*.08 }}
+          style={{ border:`1px solid ${line}`, borderRadius:16, background:cardBg, padding:"22px 20px" }}>
+          <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:16 }}>
+            <span style={{ fontFamily:"monospace", fontSize:10, color:accent }}>{String(i+1).padStart(2,"0")}</span>
+            <span style={{ fontSize:11, letterSpacing:".22em", textTransform:"uppercase", color:txt, fontWeight:600 }}>{g.cat}</span>
+          </div>
+          <div style={{ display:"flex", flexWrap:"wrap", gap:8 }}>
+            {g.items.map(t => (
+              <span key={t} style={{ fontSize:12.5, color:meta, padding:"6px 11px", borderRadius:999, border:`1px solid ${line}`, background:chipBg }}>{t}</span>
+            ))}
+          </div>
+        </motion.div>
+      ))}
     </div>
   )
 }
@@ -404,10 +446,10 @@ function ProjectRadar({ projects, isDark, isDesktop }: { projects: Project[]; is
 
 export default function Home() {
   useSEO({
-    title: "Andres Prada · Desarrollador y Diseñador Web · Bogotá",
-    description: "Desarrollo web, diseño y dirección visual desde Bogotá. Sitios, e-commerce, fotografía editorial y motion graphics para marcas con criterio.",
+    title: "Andres Prada · Desarrollador Full-Stack & Creativo Visual · Bogotá",
+    description: "Desarrollador full-stack en Bogotá: apps web y SaaS a la medida (React, Node, Laravel), backend y APIs, bases de datos, automatización con IA, motion y dirección visual. De la idea al deploy.",
     path: "/",
-    keywords: "desarrollador web bogotá, diseñador web colombia, frontend react, laravel, ui ux, portafolio andres prada, fotografía editorial, motion graphics",
+    keywords: "desarrollador full stack bogotá, full stack developer colombia, react, node.js, laravel, postgresql, apis, saas, automatización n8n, agentes ia, ui ux, portafolio andres prada",
   })
   const { isDark } = useTheme()
   const isDesktop  = useIsDesktop()
@@ -511,6 +553,12 @@ export default function Home() {
       <section style={{ position:"relative", zIndex:20, padding:"clamp(48px, 10vw, 96px) clamp(20px, 4vw, 48px)", maxWidth:1080, margin:"0 auto" }}>
         <SectionHeader label="Lo que ofrezco" title="Servicios" accent="& Disciplinas" isDark={isDark}/>
         <DisciplinesShowcase isDark={isDark} isDesktop={isDesktop}/>
+      </section>
+
+      {/* STACK TÉCNICO — señal full-stack */}
+      <section style={{ position:"relative", zIndex:20, padding:"clamp(32px, 8vw, 80px) clamp(16px, 4vw, 48px)", maxWidth:1280, margin:"0 auto" }}>
+        <SectionHeader label="De punta a punta" title="Stack" accent="Full-Stack" right="Frontend → Backend → Deploy" isDark={isDark}/>
+        <TechStack isDark={isDark} isDesktop={isDesktop}/>
       </section>
 
       {/* GALERÍA */}

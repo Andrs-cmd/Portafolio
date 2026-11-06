@@ -10,12 +10,14 @@ interface Env {
 }
 
 const KNOWLEDGE = `
-ANDRES PRADA — desarrollador frontend, diseñador web y director visual en Bogotá, Colombia.
-Tagline: "Developer & Visual Creator". Construye experiencias digitales entre el código, el movimiento y el arte.
+ANDRES PRADA — desarrollador full-stack y creador visual en Bogotá, Colombia.
+Tagline: "Full-Stack Developer & Visual Creator". Desarrolla apps web de punta a punta —frontend, backend, bases de datos, APIs y despliegue— y además diseña: motion, fotografía y arte. No es solo frontend: también hace backend, APIs, bases de datos y automatización con IA.
+STACK (full-stack): Frontend: React, Next.js, TypeScript, Tailwind, Three.js/WebGL, Framer Motion. Backend & APIs: Node.js, Laravel (PHP), REST APIs, Prisma, Auth/JWT, Webhooks. Bases de datos: PostgreSQL, MySQL, Redis, IndexedDB/Dexie. Móvil & Escritorio: Capacitor, Tauri, Java nativo. IA & Automatización: n8n, OpenAI/GPT-4, agentes, RAG, WhatsApp Cloud API. Infra & Deploy: Docker, Vercel, Cloudflare, Railway, cPanel, Git.
 Contacto: WhatsApp +57 319 576 8097 (https://wa.me/573195768097) · email aprada.web@gmail.com · Bogotá, Colombia.
 
 SERVICIOS Y PRECIOS (desde, en PESOS COLOMBIANOS — COP. Cotiza SIEMPRE en COP):
-- Desarrollo de Software (apps a medida): MVP desde $4.500.000, Producción (auth, admin, pagos, APIs) desde $12.000.000, Enterprise: cotización. Stack: React, Node, TypeScript, PostgreSQL, Prisma, Docker, Laravel.
+- Desarrollo Full-Stack (apps web a medida, de punta a punta: frontend + backend + base de datos + APIs + despliegue): MVP desde $4.500.000, Producción (auth, admin, pagos, APIs) desde $12.000.000, Enterprise: cotización. Stack: React, Node.js, TypeScript, Laravel, PostgreSQL, Prisma, Docker.
+- Automatización & IA (n8n, agentes y chatbots): automatiza procesos repetitivos, bots de WhatsApp que responden/agendan/califican, e integraciones entre herramientas (CRM, correo, pagos, hojas). Precio por cotización según el flujo. Stack: n8n, OpenAI/GPT-4, WhatsApp Cloud API, APIs, Webhooks.
 - Páginas Web: Landing desde $650.000, Sitio web (5-8 páginas con CMS) desde $1.500.000, Ecommerce desde $2.400.000. Stack: Next.js, Tailwind, Framer Motion, Sanity, Stripe, Vercel.
 - Animaciones Audioreactivas (visuales que responden al sonido): Visualizador web desde $900.000, Pieza para artista desde $1.400.000, Instalación/Live: cotización. Stack: Three.js, WebGL, Web Audio API, GLSL.
 - Fotografía (editorial y comercial): Sesión producto desde $450.000, Retrato editorial desde $600.000, Proyecto completo desde $2.200.000.
@@ -40,7 +42,7 @@ Trabaja con: quien valora el proceso, comunica claro, busca socio. No trabaja co
 
 GANCHOS / OFERTAS DE ENTRADA (ofrécelos de forma natural cuando encajen y capta el lead):
 - Mini auditoría GRATIS del sitio: si la persona ya tiene una web o quiere mejorar la que tiene, ofrécele que Andres le haga una mini auditoría sin costo (revisa su sitio y le manda mejoras concretas de diseño, velocidad y conversión). Pídele su nombre, el enlace de su web y qué le gustaría mejorar, y genera el lead.
-- Curso GRATIS de creación de automatizaciones: para quien le interesan las automatizaciones (n8n, WhatsApp, IA que responde sola, conectar herramientas), ofrécele el curso GRATUITO de Andres para aprender a crear automatizaciones. Es gratis y es el mejor gancho: dilo con naturalidad ("Andres tiene un curso gratis para aprender a automatizar, ¿te lo comparto?"). Si dice que sí, capta el lead (nombre + qué quiere automatizar) para que Andres se lo envíe. No inventes enlace ni fecha; Andres se lo hace llegar por WhatsApp.
+- Automatización & IA (servicio): para quien le interesan las automatizaciones (n8n, WhatsApp, IA que responde sola, conectar herramientas), cuéntale que Andres las construye a medida y pregúntale qué proceso le quita tiempo. Si muestra interés, capta el lead (nombre + qué quiere automatizar) para que Andres lo contacte. NO ofrezcas ningún curso gratis ni prometas material; es un servicio que se cotiza.
 `
 
 const SYSTEM = `Eres Iris, la asistente del portafolio de Andres Prada. Tu trabajo es responder preguntas de visitantes sobre Andres: sus servicios, precios, proyectos, fotografía, esculturas, cómo trabaja, su historia y cómo contactarlo.

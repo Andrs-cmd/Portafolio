@@ -43,10 +43,10 @@ export const projects: Project[] = [
     index: "002",
     title: "Sellu",
     client: "Sell-U",
-    category: "Plataforma Web",
+    category: "Full-Stack · Laravel",
     year: "2025",
     description:
-      "Plataforma para emprendedores latinos que abren LLCs en USA, gestionan impuestos y venden en marketplaces americanos. Desarrollo del front y vistas con Laravel + Blade, integraciones con pagos, panel de tracking y soporte por WhatsApp.",
+      "Plataforma para emprendedores latinos que abren LLCs en USA, gestionan impuestos y venden en marketplaces americanos. Desarrollo full-stack con Laravel + Blade y MySQL: vistas, lógica de negocio, integraciones de pagos, panel de administración y tracking, y soporte por WhatsApp.",
     stack: ["Laravel", "Blade", "MySQL", "Tailwind", "JavaScript"],
     links: [
       { label: "Ver sitio", href: "https://sellu.co/" },
@@ -115,7 +115,7 @@ export const projects: Project[] = [
     index: "006",
     title: "Átropos",
     client: "Producto propio",
-    category: "App Móvil · Android",
+    category: "Full-Stack · Móvil",
     year: "2026",
     description:
       "App de finanzas personales local-first: los datos nunca salen del teléfono. Registra los gastos sola leyendo las notificaciones push del banco mediante un plugin nativo propio en Java (NotificationListenerService) que interpreta los formatos reales de Nu, Nequi y Daviplata. Incluye motor de alarmas, presupuestos, metas de ahorro, reportes y cinco esquemas de color.",
