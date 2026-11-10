@@ -16,10 +16,10 @@ const WA_BASE   = `https://wa.me/${WA_NUMBER}?text=`
 const services = [
   {
     index: "01", slug: "software",
-    name: "Desarrollo\nde Software",
-    nameFlat: "Desarrollo de Software",
-    tagline: "Aplicaciones a medida que resuelven problemas reales",
-    description: "Diseño y construyo aplicaciones web completas desde cero. Desde dashboards internos hasta plataformas SaaS complejas. Cada proyecto parte del problema real del cliente, no de plantillas genéricas.",
+    name: "Desarrollo\nFull-Stack",
+    nameFlat: "Desarrollo Full-Stack",
+    tagline: "Apps web completas de punta a punta: frontend, backend y datos",
+    description: "Diseño y construyo aplicaciones web completas de punta a punta: frontend en React, backend y APIs en Node y Laravel, base de datos, autenticación y despliegue. Desde dashboards internos hasta plataformas SaaS. Cada proyecto parte del problema real del cliente, no de plantillas genéricas.",
     process: [
       { step: "01", label: "Diagnóstico",         desc: "Entendemos el problema y flujos críticos antes de escribir código." },
       { step: "02", label: "Arquitectura",         desc: "Stack, datos y APIs. Sin over-engineering." },
@@ -31,7 +31,7 @@ const services = [
       { tier: "Producción", price: "desde $12.000.000 COP", desc: "Auth, admin, pagos y APIs completas." },
       { tier: "Enterprise", price: "Cotización",        desc: "Proyectos complejos con múltiples módulos." },
     ],
-    stack: ["React", "Node.js", "TypeScript", "PostgreSQL", "Prisma", "Docker"],
+    stack: ["React", "Node.js", "Laravel", "TypeScript", "PostgreSQL", "Prisma", "Docker"],
     img: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=1200",
     waText: "Hola%20Andres%2C%20me%20interesa%20un%20proyecto%20de%20software%20a%20medida",
   },
@@ -326,10 +326,10 @@ function DetailPanel({ service, isDark }: { service: typeof services[0]; isDark:
 
 export default function Lab() {
   useSEO({
-    title: "Lab · Servicios de desarrollo y diseño",
-    description: "Servicios de desarrollo web, diseño UI/UX, e-commerce, fotografía editorial y motion graphics. Trabajos a medida desde Bogotá, Colombia.",
+    title: "Lab · Desarrollo Full-Stack y servicios · Andres Prada",
+    description: "Desarrollo full-stack a medida (frontend, backend, APIs y bases de datos), páginas web, automatización con IA, motion graphics y fotografía. Desde Bogotá, Colombia.",
     path: "/lab",
-    keywords: "servicios desarrollo web, diseño ui ux, e-commerce shopify, laravel, react, motion graphics, fotografía bogotá",
+    keywords: "desarrollo full stack bogotá, backend node laravel, apis, bases de datos, páginas web, react, automatización ia, motion graphics, fotografía bogotá",
   })
   const { isDark } = useTheme()
   const isDesktop = useIsDesktop()

@@ -170,14 +170,22 @@ function HeroText() {
           Full-Stack Developer & Visual Creator
         </span>
       </motion.div>
-      <div style={{ overflow:"hidden", marginBottom:4 }}>
-        <motion.h1 style={{ fontSize:"clamp(3.5rem,7vw,7.5rem)", fontWeight:900, textTransform:"uppercase", letterSpacing:"-.04em", lineHeight:.85, color:isDark?"#fff":"#111" }}
-          initial={{ y:90 }} animate={{ y:0 }} transition={{ duration:0.9, delay:0.15, ease:[0.16,1,0.3,1] }}>Andres</motion.h1>
-      </div>
-      <div style={{ overflow:"hidden", marginBottom:48 }}>
-        <motion.h1 style={{ fontSize:"clamp(3.5rem,7vw,7.5rem)", fontWeight:900, textTransform:"uppercase", letterSpacing:"-.04em", lineHeight:.85, WebkitTextStroke:isDark?"1.5px rgba(255,255,255,0.25)":"1.5px rgba(0,0,0,0.2)", color:"transparent" }}
-          initial={{ y:90 }} animate={{ y:0 }} transition={{ duration:0.9, delay:0.22, ease:[0.16,1,0.3,1] }}>Prada</motion.h1>
-      </div>
+      <h1 style={{ margin:0, padding:0 }}>
+        {/* Título accesible/SEO: un solo H1 con el rol (antes eran 2 H1 "Andres"/"Prada") */}
+        <span style={{ position:"absolute", width:1, height:1, padding:0, margin:-1, overflow:"hidden", clip:"rect(0,0,0,0)", whiteSpace:"nowrap", border:0 }}>
+          Andres Prada — Desarrollador Full-Stack &amp; Creativo Visual
+        </span>
+        <span aria-hidden="true" style={{ display:"block" }}>
+          <span style={{ display:"block", overflow:"hidden", marginBottom:4 }}>
+            <motion.span style={{ display:"block", fontSize:"clamp(3.5rem,7vw,7.5rem)", fontWeight:900, textTransform:"uppercase", letterSpacing:"-.04em", lineHeight:.85, color:isDark?"#fff":"#111" }}
+              initial={{ y:90 }} animate={{ y:0 }} transition={{ duration:0.9, delay:0.15, ease:[0.16,1,0.3,1] }}>Andres</motion.span>
+          </span>
+          <span style={{ display:"block", overflow:"hidden", marginBottom:48 }}>
+            <motion.span style={{ display:"block", fontSize:"clamp(3.5rem,7vw,7.5rem)", fontWeight:900, textTransform:"uppercase", letterSpacing:"-.04em", lineHeight:.85, WebkitTextStroke:isDark?"1.5px rgba(255,255,255,0.25)":"1.5px rgba(0,0,0,0.2)", color:"transparent" }}
+              initial={{ y:90 }} animate={{ y:0 }} transition={{ duration:0.9, delay:0.22, ease:[0.16,1,0.3,1] }}>Prada</motion.span>
+          </span>
+        </span>
+      </h1>
       <motion.p style={{ fontSize:15, fontWeight:300, lineHeight:1.8, maxWidth:280, marginBottom:48, color:isDark?"#fff":"#000" }}
         initial={{ opacity:0, y:12 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.7, delay:0.5 }}>
         Desarrollo full-stack de punta a punta —frontend, backend y datos— donde el código se encuentra con el movimiento y el arte.
@@ -598,14 +606,14 @@ export default function Home() {
             {[
               { src: photosEditorial[8].src, span: "1 / span 2 / 3 / span 2" },
               { src: photosStudio[5].src, span: "1 / 3 / 2 / 4" },
-              { src: motionPieces[0].id, span: "2 / 3 / 3 / 4", video: motionPieces[0].src },
+              { src: motionPieces[0].id, span: "2 / 3 / 3 / 4", video: motionPieces[0].thumbSrc, poster: motionPieces[0].poster },
             ].map((m, i) => (
               <motion.div key={i}
                 initial={{ opacity:0, scale:1.04 }} whileInView={{ opacity:1, scale:1 }} viewport={{ once:true }}
                 transition={{ duration:0.7, delay:i*0.08 }}
                 style={{ position:"relative", overflow:"hidden", gridArea: m.span, borderRadius:12 }}>
                 {"video" in m && m.video ? (
-                  <video src={m.video} autoPlay loop muted playsInline style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
+                  <video src={m.video} poster={(m as { poster?: string }).poster} autoPlay loop muted playsInline preload="metadata" style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
                 ) : (
                   <img src={m.src} alt="" loading="lazy" style={{ width:"100%", height:"100%", objectFit:"cover", filter: isDark ? "grayscale(15%) brightness(.9)" : "grayscale(8%) brightness(.97)" }}/>
                 )}

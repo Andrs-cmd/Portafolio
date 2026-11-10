@@ -10,6 +10,7 @@ export type GalleryPhoto = {
 export type GalleryVideo = {
   id: string
   src: string
+  thumbSrc: string
   poster: string
   title: string
 }
@@ -146,7 +147,11 @@ function video(version: string, file: string, title: string): GalleryVideo {
   return {
     id: file.replace(/\.[^.]+$/, ""),
     title,
-    src: `${CLD_VIDEO}/f_auto,q_auto/${version}/${file}`,
+    // MP4 web-optimizado (antes se servía .mov de varios MB). f_mp4 fuerza el
+    // contenedor, vc_auto el códec, q_auto la calidad y w_1000 baja la resolución.
+    src: `${CLD_VIDEO}/f_mp4,vc_auto,q_auto,w_1000/${version}/${file.replace(/\.(mov|mp4)$/i, ".mp4")}`,
+    // Variante liviana para miniaturas/usos bajo el pliegue (collage del Home).
+    thumbSrc: `${CLD_VIDEO}/f_mp4,vc_auto,q_auto:eco,w_600/${version}/${file.replace(/\.(mov|mp4)$/i, ".mp4")}`,
     poster: `${CLD_VIDEO}/f_jpg,so_1,w_1200/${version}/${file.replace(/\.(mov|mp4)$/i, ".jpg")}`,
   }
 }
