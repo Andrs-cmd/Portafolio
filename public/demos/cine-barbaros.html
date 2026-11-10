@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex,nofollow" />
+<title>Demo Cine</title>
+<meta name="description" content="Página demo cinematográfica para negocios locales — hecha por Andres Prada." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<!-- ════════════════════════════════════════════════════════════════
+     DEMO CINE — la foto del negocio manda, a pantalla completa.
+     Personaliza en el bloque CONFIG (al final). Lo que más importa son las FOTOS:
+     ponlas en alta (fotos reales del negocio = se ve espectacular).
+     Súbela a Cloudflare Pages o a app.netlify.com/drop → link al instante.
+     ════════════════════════════════════════════════════════════════ -->
+<style>
+  :root{
+    --ink:#08070a; --paper:#f3efe6; --muted:rgba(243,239,230,.66);
+    --accent:#d9a15a;                 /* acento cálido, muy sutil (se cambia en CONFIG) */
+    --line:rgba(243,239,230,.18);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--ink);color:var(--paper);font-family:Inter,system-ui,sans-serif;line-height:1.55;overflow-x:hidden}
+  .serif{font-family:'Fraunces',Georgia,serif;font-weight:400;letter-spacing:-.01em;line-height:1}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 28px;width:100%}
+  img{display:block}
+
+  /* grano + letterbox cinematográfico */
+  .grain{position:fixed;inset:0;z-index:70;pointer-events:none;opacity:.045;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+  .bars{position:fixed;inset:0;z-index:69;pointer-events:none;background:linear-gradient(180deg,rgba(0,0,0,.4),transparent 14%,transparent 86%,rgba(0,0,0,.55))}
+
+  /* nav */
+  nav{position:fixed;top:0;left:0;right:0;z-index:60;padding:22px 0;transition:background .3s,backdrop-filter .3s}
+  nav.solid{background:linear-gradient(180deg,rgba(8,7,10,.86),rgba(8,7,10,0));backdrop-filter:blur(2px)}
+  .nav-in{display:flex;align-items:center;justify-content:space-between}
+  .logo{font-family:'Fraunces';font-weight:500;font-size:21px;letter-spacing:.01em}
+  .pill{display:inline-flex;align-items:center;gap:9px;font-size:12.5px;font-weight:500;letter-spacing:.02em;color:var(--paper);padding:8px 15px;border:1px solid var(--line);border-radius:999px;background:rgba(0,0,0,.25);backdrop-filter:blur(8px)}
+  .live{width:7px;height:7px;border-radius:50%;background:#58d08b;box-shadow:0 0 10px #58d08b}
+
+  /* escena full-bleed reutilizable */
+  .scene{position:relative;min-height:100svh;display:flex;align-items:flex-end;overflow:hidden}
+  .scene-bg{position:absolute;inset:-8% 0;background-size:cover;background-position:center;will-change:transform;z-index:0}
+  .scene-tint{position:absolute;inset:0;z-index:1;background:
+     linear-gradient(180deg,rgba(8,7,10,.35) 0%,rgba(8,7,10,.05) 30%,rgba(8,7,10,.15) 55%,rgba(8,7,10,.92) 100%)}
+  .scene-in{position:relative;z-index:2;width:100%;padding-bottom:9vh}
+
+  /* hero */
+  .hero .scene-bg{animation:ken 26s ease-in-out infinite alternate}
+  @keyframes ken{from{transform:scale(1.02)}to{transform:scale(1.16)}}
+  .kick{font-size:13.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--paper);opacity:.85;margin-bottom:22px;display:flex;align-items:center;gap:12px}
+  .kick::before{content:"";width:34px;height:1px;background:var(--accent)}
+  .hero h1{font-size:clamp(3.2rem,10.5vw,9rem);font-weight:300;letter-spacing:-.02em;max-width:14ch}
+  .hero h1 b{font-weight:500;font-style:italic}
+  .hero .tag{margin:24px 0 34px;font-size:clamp(1.05rem,2.2vw,1.4rem);color:var(--paper);opacity:.92;max-width:32ch}
+  .cta-row{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+  .btn{display:inline-flex;align-items:center;gap:10px;font-weight:500;font-size:15px;padding:16px 28px;border-radius:2px;transition:transform .25s,background .25s,color .25s}
+  .btn-main{background:var(--paper);color:var(--ink)}
+  .btn-main:hover{transform:translateY(-2px)}
+  .btn-ghost{border:1px solid var(--line);color:var(--paper)}
+  .btn-ghost:hover{border-color:var(--paper)}
+  .scrollcue{position:absolute;right:28px;bottom:9vh;z-index:3;writing-mode:vertical-rl;font-size:11.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:14px}
+  .scrollcue::after{content:"";width:1px;height:46px;background:linear-gradient(var(--muted),transparent)}
+
+  /* frase manifiesto sobre foto */
+  .manifesto .scene-in{padding:0;display:flex;align-items:center;min-height:100svh}
+  .manifesto p{font-family:'Fraunces';font-weight:300;font-size:clamp(1.8rem,5vw,3.6rem);line-height:1.18;max-width:20ch;letter-spacing:-.01em}
+  .manifesto .scene-tint{background:radial-gradient(120% 90% at 30% 50%,rgba(8,7,10,.78),rgba(8,7,10,.5))}
+
+  /* servicios — carta elegante sobre fondo oscuro con foto tenue */
+  .menu{position:relative;padding:130px 0;overflow:hidden}
+  .menu-bg{position:absolute;inset:0;background-size:cover;background-position:center;opacity:.14;z-index:0;filter:grayscale(.3)}
+  .menu::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,var(--ink),rgba(8,7,10,.7),var(--ink));z-index:1}
+  .menu .wrap{position:relative;z-index:2}
+  .menu-head{font-family:'Fraunces';font-weight:300;font-size:clamp(2rem,6vw,3.4rem);margin-bottom:8px}
+  .menu-sub{color:var(--muted);margin-bottom:46px;font-size:1rem}
+  .item{display:grid;grid-template-columns:1fr auto;gap:4px 22px;align-items:baseline;padding:22px 0;border-top:1px solid var(--line)}
+  .item:last-child{border-bottom:1px solid var(--line)}
+  .item .n{font-family:'Fraunces';font-weight:400;font-size:clamp(1.3rem,3.2vw,1.9rem)}
+  .item .p{font-family:'Fraunces';font-weight:500;font-size:clamp(1.1rem,2.6vw,1.5rem);color:var(--accent);white-space:nowrap}
+  .item .d{grid-column:1/2;color:var(--muted);font-size:14px}
+
+  /* galería cinematográfica (full-bleed apiladas, con parallax) */
+  .gcap{position:absolute;left:0;right:0;bottom:9vh;z-index:2}
+  .gcap .t{font-family:'Fraunces';font-weight:300;font-size:clamp(1.6rem,4.5vw,2.8rem)}
+  .gcap .s{color:var(--muted);font-size:14px;margin-top:6px;letter-spacing:.02em}
+
+  /* detalles (horario / ubicación) */
+  .facts{padding:120px 0;border-top:1px solid var(--line)}
+  .facts-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:34px}
+  .fact .k{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+  .fact .v{font-family:'Fraunces';font-weight:300;font-size:clamp(1.3rem,2.6vw,1.7rem);line-height:1.25}
+
+  /* cierre full-bleed */
+  .close .scene-in{padding-bottom:0;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100svh;text-align:center}
+  .close .scene-tint{background:radial-gradient(120% 100% at 50% 50%,rgba(8,7,10,.55),rgba(8,7,10,.82))}
+  .close h2{font-family:'Fraunces';font-weight:300;font-size:clamp(2.6rem,8vw,6rem);max-width:16ch;margin-bottom:34px;line-height:1.05}
+
+  footer{padding:46px 0;color:var(--muted);font-size:13px;background:var(--ink)}
+  .foot-in{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;align-items:center}
+  .made{font-size:12px;opacity:.7;margin-top:5px}
+  footer a:hover{color:var(--paper)}
+
+  .wafab{position:fixed;right:22px;bottom:22px;z-index:68;width:56px;height:56px;border-radius:50%;background:#25d366;display:flex;align-items:center;justify-content:center;box-shadow:0 14px 34px rgba(0,0,0,.5)}
+  .wafab svg{width:29px;height:29px;fill:#fff}
+
+  .reveal{opacity:0;transform:translateY(24px)}
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important}
+    .reveal{opacity:1;transform:none}
+    .hero .scene-bg{animation:none}
+  }
+</style>
+</head>
+<body>
+<div class="grain"></div><div class="bars"></div>
+
+<nav id="nav"><div class="wrap nav-in">
+  <div class="logo" id="logo">Negocio</div>
+  <span class="pill"><span class="live"></span><span id="pill-txt">Reservas abiertas hoy</span></span>
+</div></nav>
+
+<main>
+<!-- HERO -->
+<section class="scene hero" id="hero">
+  <div class="scene-bg" id="hero-bg"></div>
+  <div class="scene-tint"></div>
+  <div class="scene-in"><div class="wrap">
+    <div class="kick reveal" id="kick">Negocio</div>
+    <h1 class="serif reveal" id="hero-h1">Negocio</h1>
+    <p class="tag reveal" id="hero-tag">Frase.</p>
+    <div class="cta-row reveal">
+      <a class="btn btn-main" id="cta-1" href="#">Reservar por WhatsApp</a>
+      <a class="btn btn-ghost" href="#servicios">Ver servicios</a>
+    </div>
+  </div></div>
+  <div class="scrollcue">Desliza</div>
+</section>
+
+<!-- MANIFIESTO -->
+<section class="scene manifesto" id="manifesto">
+  <div class="scene-bg parallax" id="man-bg"></div>
+  <div class="scene-tint"></div>
+  <div class="scene-in"><div class="wrap"><p class="reveal" id="man-text"></p></div></div>
+</section>
+
+<!-- SERVICIOS -->
+<section class="menu" id="servicios">
+  <div class="menu-bg" id="menu-bg"></div>
+  <div class="wrap">
+    <h2 class="menu-head reveal" id="menu-head">La carta</h2>
+    <p class="menu-sub reveal" id="menu-sub"></p>
+    <div id="items"></div>
+  </div>
+</section>
+
+<!-- GALERÍA (se llena por JS: una escena full-bleed por foto) -->
+<div id="gallery"></div>
+
+<!-- DETALLES -->
+<section class="facts"><div class="wrap">
+  <div class="facts-grid">
+    <div class="fact reveal"><div class="k">Horario</div><div class="v serif" id="f-hora"></div></div>
+    <div class="fact reveal"><div class="k">Dónde</div><div class="v serif" id="f-dir"></div></div>
+    <div class="fact reveal"><div class="k">Reserva</div><div class="v serif">Escríbenos por WhatsApp y listo</div></div>
+  </div>
+</div></section>
+
+<!-- CIERRE -->
+<section class="scene close" id="close">
+  <div class="scene-bg parallax" id="close-bg"></div>
+  <div class="scene-tint"></div>
+  <div class="scene-in"><div class="wrap" style="display:flex;flex-direction:column;align-items:center">
+    <h2 class="reveal" id="close-h">¿Reservamos?</h2>
+    <a class="btn btn-main reveal" id="cta-2" href="#" style="font-size:16px;padding:18px 34px">Reservar por WhatsApp</a>
+  </div></div>
+</section>
+
+<footer><div class="wrap foot-in">
+  <div>
+    <span id="foot-name" style="color:var(--paper);font-family:'Fraunces';font-size:16px"></span>
+    <div class="made">Página hecha por Andres Prada · andresprada.online</div>
+  </div>
+  <div style="display:flex;gap:20px">
+    <a id="foot-ig" href="#" target="_blank" rel="noopener">Instagram</a>
+    <a id="foot-wa" href="#" target="_blank" rel="noopener">WhatsApp</a>
+  </div>
+</div></footer>
+</main>
+
+<a class="wafab" id="wafab" href="#" target="_blank" rel="noopener" aria-label="WhatsApp">
+  <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163a11.867 11.867 0 01-1.587-5.945C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 018.413 3.488 11.824 11.824 0 013.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 01-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.82 9.82 0 001.516 5.26l-.999 3.648 3.472-.607zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.52.149-.174.198-.298.297-.496.099-.198.05-.372-.025-.521-.074-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+</a>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+/* ═══════════════ CONFIG — edita SOLO esto ═══════════════ */
+const CONFIG = {
+  negocio:   "Barbería Bárbaros",
+  tipoZona:  "Barbería · Suba, Bogotá",
+  // El nombre acepta <b>cursiva</b> para resaltar una palabra en el hero.
+  heroTitulo:"Donde el <b>estilo</b> no tiene reglas",
+  frase:     "Reserva por WhatsApp, llega a tu hora y siéntate. Del corte nos encargamos nosotros.",
+  cierre:    "Tu próxima cita, a un mensaje.",
+  manifiesto:"No es solo un corte. Es el rato que te tomas para ti.",
+  whatsapp:  "573195768097",           // ⚠️ CAMBIA por el WhatsApp de Bárbaros antes de enviar
+  instagram: "https://instagram.com/",  // ⚠️ pon el @ real de Bárbaros
+  horario:   "Lun a Sáb\n10:00 a.m. – 9:00 p.m.",
+  direccion: "Cra 89 #127d-16\nSuba, Bogotá",
+  accent:    "#d9a15a",                // acento cálido
+
+  // ░░ FOTOS — lo más importante. Pon fotos reales del negocio en alta (w=1600+). ░░
+  heroImg:  "https://images.unsplash.com/photo-1512690459411-b9245aed614b?auto=format&fit=crop&q=85&w=1600",
+  manImg:   "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?auto=format&fit=crop&q=85&w=1600",
+  menuImg:  "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&q=85&w=1400",
+  closeImg: "https://images.unsplash.com/photo-1536520002442-39764a41e987?auto=format&fit=crop&q=85&w=1600",
+
+  servicios: [
+    { nombre:"Corte clásico",      desc:"Lavado, corte y peinado",       precio:"$25.000" },
+    { nombre:"Corte + barba",      desc:"El combo completo, perfilado",  precio:"$35.000" },
+    { nombre:"Perfilado de barba", desc:"Toalla caliente y aceite",      precio:"$18.000" },
+    { nombre:"Diseños y líneas",   desc:"Freestyle, detalles finos",     precio:"$30.000" },
+    { nombre:"Corte niño",         desc:"Rápido y sin dramas",           precio:"$20.000" },
+  ],
+
+  galeria: [
+    { src:"https://images.unsplash.com/photo-1605497788044-5a32c7078486?auto=format&fit=crop&q=85&w=1600", titulo:"El fade", sub:"Precisión en cada pasada" },
+    { src:"https://images.unsplash.com/photo-1622286342621-4bd786c2447c?auto=format&fit=crop&q=85&w=1600", titulo:"La barba", sub:"Perfilado a navaja" },
+    { src:"https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&q=85&w=1600", titulo:"El ritual", sub:"Tómate el momento" },
+  ],
+};
+/* ═══════════════ fin CONFIG ═══════════════ */
+
+const C=CONFIG, $=(id)=>document.getElementById(id);
+document.documentElement.style.setProperty('--accent',C.accent);
+const waLink=`https://wa.me/${C.whatsapp}?text=`+encodeURIComponent(`Hola ${C.negocio}! Quiero reservar una cita 🙌`);
+const nl=(s)=>s.replace(/\n/g,'<br>');
+
+document.title=C.negocio;
+$('logo').textContent=C.negocio;
+$('kick').textContent=C.tipoZona;
+$('hero-h1').innerHTML=C.heroTitulo;
+$('hero-tag').textContent=C.frase;
+$('man-text').textContent=C.manifiesto;
+$('close-h').textContent=C.cierre;
+$('menu-sub').textContent=`Precios desde · ${C.tipoZona.split('·')[0].trim()}`;
+$('f-hora').innerHTML=nl(C.horario);
+$('f-dir').innerHTML=nl(C.direccion);
+$('foot-name').textContent=C.negocio;
+$('foot-ig').href=C.instagram;
+['cta-1','cta-2','foot-wa','wafab'].forEach(id=>$(id).href=waLink);
+$('hero-bg').style.backgroundImage=`url("${C.heroImg}")`;
+$('man-bg').style.backgroundImage=`url("${C.manImg}")`;
+$('menu-bg').style.backgroundImage=`url("${C.menuImg}")`;
+$('close-bg').style.backgroundImage=`url("${C.closeImg}")`;
+
+$('items').innerHTML=C.servicios.map(s=>`
+  <div class="item reveal"><div class="n serif">${s.nombre}</div><div class="p">${s.precio}</div><div class="d">${s.desc}</div></div>`).join('');
+
+$('gallery').innerHTML=C.galeria.map(g=>`
+  <section class="scene">
+    <div class="scene-bg parallax" style="background-image:url('${g.src}')"></div>
+    <div class="scene-tint"></div>
+    <div class="gcap"><div class="wrap"><div class="t serif reveal">${g.titulo}</div><div class="s reveal">${g.sub}</div></div></div>
+  </section>`).join('');
+
+/* nav sólido al hacer scroll */
+addEventListener('scroll',()=>{ $('nav').classList.toggle('solid', scrollY>40); });
+
+/* GSAP: parallax de fotos + reveals cinematográficos */
+if(window.gsap){
+  gsap.registerPlugin(ScrollTrigger);
+  const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  if(!reduce){
+    // parallax suave en cada foto de fondo
+    document.querySelectorAll('.parallax').forEach(bg=>{
+      gsap.fromTo(bg,{yPercent:-8},{yPercent:8,ease:'none',
+        scrollTrigger:{trigger:bg.closest('.scene'),start:'top bottom',end:'bottom top',scrub:true}});
+    });
+    // reveal: entra con fundido hacia arriba, agrupado por escena
+    gsap.utils.toArray('.reveal').forEach(el=>{
+      gsap.to(el,{opacity:1,y:0,duration:1,ease:'power3.out',
+        scrollTrigger:{trigger:el,start:'top 88%'}});
+    });
+    // hero: secuencia de entrada al cargar
+    const hv=document.querySelectorAll('#hero .reveal');
+    gsap.to(hv,{opacity:1,y:0,duration:1.1,ease:'power3.out',stagger:.12,delay:.2});
+  }
+}
+</script>
+</body>
+</html>
