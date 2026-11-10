@@ -356,7 +356,7 @@ function CaseSection({ c, isDark, isDesktop }: { c: CaseStudy; isDark: boolean; 
 export default function Automation() {
   useSEO({
     title: "Automation · Agentes IA con n8n",
-    description: "Casos de automatización con n8n + OpenAI: agentes que responden y califican leads, agentes que leen handoffs y generan landings. Workflows productivos en producción.",
+    description: "Casos de automatización con n8n + OpenAI: agentes que responden y califican leads, y agentes que leen handoffs y generan landings. En producción.",
     path: "/automation",
     keywords: "n8n colombia, automatización ia, agentes openai, gpt-4, whatsapp api, workflow automation, handoff figma a html, no-code automation",
   })

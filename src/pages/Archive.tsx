@@ -249,7 +249,7 @@ export default function Archive() {
           }}>
           <div style={{ display: "flex", gap: 6, height: isDesktop ? 140 : 120 }}>
             <div style={{ flex: 1, overflow: "hidden", borderRadius: 10 }}>
-              <img src={photosEditorial[8].src} alt="" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }}/>
+              <img src={photosEditorial[8].thumb} srcSet={photosEditorial[8].srcSet} sizes="(min-width: 980px) 24vw, 45vw" alt="Fotografía editorial del archivo visual de Andres Prada" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }}/>
             </div>
             <div style={{ flex: 1, overflow: "hidden", borderRadius: 10 }}>
               <video src={motionPieces[1].src} autoPlay loop muted playsInline style={{ width: "100%", height: "100%", objectFit: "cover" }}/>

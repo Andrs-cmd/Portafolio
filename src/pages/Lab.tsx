@@ -327,7 +327,7 @@ function DetailPanel({ service, isDark }: { service: typeof services[0]; isDark:
 export default function Lab() {
   useSEO({
     title: "Lab · Desarrollo Full-Stack y servicios · Andres Prada",
-    description: "Desarrollo full-stack a medida (frontend, backend, APIs y bases de datos), páginas web, automatización con IA, motion graphics y fotografía. Desde Bogotá, Colombia.",
+    description: "Desarrollo full-stack a medida: frontend, backend, APIs y bases de datos, páginas web, automatización con IA, motion y fotografía. Desde Bogotá.",
     path: "/lab",
     keywords: "desarrollo full stack bogotá, backend node laravel, apis, bases de datos, páginas web, react, automatización ia, motion graphics, fotografía bogotá",
   })
@@ -649,7 +649,7 @@ export default function Lab() {
           {/* mini collage */}
           <div style={{ display: "flex", gap: 6, height: isDesktop ? 140 : 120 }}>
             <div style={{ flex: 1, overflow: "hidden", borderRadius: 10 }}>
-              <img src={photosStudio[5].src} alt="" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }}/>
+              <img src={photosStudio[5].thumb} srcSet={photosStudio[5].srcSet} sizes="(min-width: 980px) 24vw, 45vw" alt="Fotografía de estudio de Andres Prada" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }}/>
             </div>
             <div style={{ flex: 1, overflow: "hidden", borderRadius: 10 }}>
               <video src={motionPieces[0].src} autoPlay loop muted playsInline style={{ width: "100%", height: "100%", objectFit: "cover" }}/>

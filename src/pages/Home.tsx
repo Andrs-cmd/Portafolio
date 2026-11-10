@@ -455,7 +455,7 @@ function ProjectRadar({ projects, isDark, isDesktop }: { projects: Project[]; is
 export default function Home() {
   useSEO({
     title: "Andres Prada · Desarrollador Full-Stack & Creativo Visual · Bogotá",
-    description: "Desarrollador full-stack en Bogotá: apps web y SaaS a la medida (React, Node, Laravel), backend y APIs, bases de datos, automatización con IA, motion y dirección visual. De la idea al deploy.",
+    description: "Desarrollador full-stack en Bogotá: apps web y SaaS con React, Node y Laravel, APIs, bases de datos, automatización con IA y motion. De la idea al deploy.",
     path: "/",
     keywords: "desarrollador full stack bogotá, full stack developer colombia, react, node.js, laravel, postgresql, apis, saas, automatización n8n, agentes ia, ui ux, portafolio andres prada",
   })
@@ -604,8 +604,8 @@ export default function Home() {
           {/* mini collage */}
           <div style={{ position:"relative", display:"grid", gridTemplateColumns:"repeat(3, 1fr)", gridTemplateRows:"repeat(2, 1fr)", gap:6, padding:24, minHeight: isDesktop ? "auto" : 240 }}>
             {[
-              { src: photosEditorial[8].src, span: "1 / span 2 / 3 / span 2" },
-              { src: photosStudio[5].src, span: "1 / 3 / 2 / 4" },
+              { src: photosEditorial[8].thumb, srcSet: photosEditorial[8].srcSet, alt: "Fotografía editorial de Andres Prada", span: "1 / span 2 / 3 / span 2" },
+              { src: photosStudio[5].thumb, srcSet: photosStudio[5].srcSet, alt: "Retrato de estudio de Andres Prada", span: "1 / 3 / 2 / 4" },
               { src: motionPieces[0].id, span: "2 / 3 / 3 / 4", video: motionPieces[0].thumbSrc, poster: motionPieces[0].poster },
             ].map((m, i) => (
               <motion.div key={i}
@@ -615,7 +615,7 @@ export default function Home() {
                 {"video" in m && m.video ? (
                   <video src={m.video} poster={(m as { poster?: string }).poster} autoPlay loop muted playsInline preload="metadata" style={{ width:"100%", height:"100%", objectFit:"cover" }}/>
                 ) : (
-                  <img src={m.src} alt="" loading="lazy" style={{ width:"100%", height:"100%", objectFit:"cover", filter: isDark ? "grayscale(15%) brightness(.9)" : "grayscale(8%) brightness(.97)" }}/>
+                  <img src={m.src} srcSet={(m as { srcSet?: string }).srcSet} sizes="(min-width: 980px) 12vw, 30vw" alt={(m as { alt?: string }).alt || ""} loading="lazy" style={{ width:"100%", height:"100%", objectFit:"cover", filter: isDark ? "grayscale(15%) brightness(.9)" : "grayscale(8%) brightness(.97)" }}/>
                 )}
               </motion.div>
             ))}
